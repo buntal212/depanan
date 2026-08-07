@@ -1,0 +1,81 @@
+// app global css in SCSS form
+
+
+// body.body--dark {
+//   background: $dark-page !important;
+//   color: $grey-3 !important;
+// }
+// body.body--light {
+//   background: $grey-4 !important;
+// }
+
+
+.body--dark {
+  background: $dark-page !important;
+  color: $grey-5 ;
+}
+.body--light {
+  background: $grey-2 !important;
+  color: $grey-10;
+}
+
+
+
+// fields
+
+.q-field--outlined .q-field__label {
+  transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  transition-property: opacity, transform, left, top, padding, background-color;
+  transform-origin: left center;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.q-field--outlined.q-field--labeled.q-field--float {
+  // Change the label position
+  & .q-field__label {
+    top: 0;
+    z-index: 1;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: white;
+    // transform: translateY(-40%) scale(.75);
+  }
+
+  // Adjust the left position if there is inner prepend
+  & .q-field__prepend + .q-field__control-container .q-field__label {
+    left: -20px;
+  }
+
+  // Reduce the top padding when floating in outlined style
+  & .q-field__control-container {
+    padding-top: 5px; // freamwork 24px
+
+    & .q-field__native,
+    & .q-field__prefix,
+    & .q-field__suffix {
+      padding-top: 0;
+    }
+  }
+
+  &.q-textarea {
+    & .q-field__control-container {
+      padding-top: 16px; // freamwork 26px
+      padding-bottom: 10px; // Avoid page strange shakes
+
+      & .q-field__native {
+        padding-top: 1px; // Avoid scoll bar in textarea （this from freamwork）
+      }
+    }
+  }
+}
+
+.body--dark {
+  .q-field--outlined.q-field--labeled {
+    & .q-field__label {
+      background-color: $dark-page;
+    }
+  }
+}
+
+
