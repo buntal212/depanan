@@ -1,8 +1,24 @@
 <template>
   <div class="fit">
-    <ListPage v-if="isList" @add="isList = false" />
+    <ListPage
+      v-if="isList"
+      @add="
+        () => {
+          item = null
+          isList = false
+        }
+      "
+      @edit="
+        (data) => {
+          // console.log('edit', data);
 
-    <FormPage v-else @back="isList = true" />
+          item = data
+          isList = false
+        }
+      "
+    />
+
+    <FormPage v-else :data="item" @back="isList = true" />
   </div>
 </template>
 
@@ -12,6 +28,7 @@ const ListPage = defineAsyncComponent(() => import('./comp/ListPage.vue'))
 const FormPage = defineAsyncComponent(() => import('./comp/FormPage.vue'))
 
 const isList = ref(true)
+const item = ref(null)
 </script>
 
 <style scoped></style>

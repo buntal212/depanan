@@ -22,10 +22,32 @@
                   label="Nama Pegawai"
                   :valid="{ required: false }"
                 />
-                <app-input class="col-6" v-model="store.form.username" label="Username" />
-                <app-input class="col-6" v-model="store.form.password" label="Password" />
-                <app-input class="col-6" v-model="store.form.email" label="Email" />
-                <app-input class="col-6" v-model="store.form.jabatan" label="Jabatan" />
+                <app-input
+                  class="col-6"
+                  v-model="store.form.username"
+                  label="Username"
+                  :valid="{ required: false }"
+                />
+                <app-input
+                  class="col-6"
+                  v-model="store.form.password"
+                  label="Password"
+                  :valid="{ required: false }"
+                />
+                <app-input
+                  class="col-6"
+                  v-model="store.form.email"
+                  :valid="{ email: true }"
+                  label="Email"
+                />
+                <app-select
+                  class="col-6"
+                  v-model="store.form.jabatan"
+                  label="Jabatan"
+                  :options="store?.jabatan"
+                  option-label="keterangan"
+                  @update:model-value="(val) => isiJabatan(val)"
+                />
                 <app-input class="col-12" v-model="store.form.alamat" label="Alamat" />
                 <app-input
                   class="col-5"
@@ -73,7 +95,8 @@
                     type="submit"
                     :dense="false"
                     label="Simpan"
-                    color="teal"
+                    color="grey-10"
+                    class="text-yellow-9"
                   />
                 </div>
               </div>
@@ -93,6 +116,7 @@
 <script setup>
 import { useQuasar } from 'quasar'
 import { useAdminFormMasterPegawaiStore } from 'src/stores/admin/master/pegawai/form'
+// import { useAdminMasterPegawaiStore } from 'src/stores/admin/master/pegawai/list'
 import { computed, onMounted } from 'vue'
 
 const emits = defineEmits(['back'])
@@ -102,14 +126,26 @@ const isMobile = computed(() => {
 })
 
 const store = useAdminFormMasterPegawaiStore()
-
-onMounted(() => {
-  store.initReset()
+// const selectPegawai = useAdminMasterPegawaiStore()
+const props = defineProps({
+  data: {
+    type: Object,
+    default: null,
+  },
 })
+onMounted(() => {
+  store.initReset(props.data)
+})
+
+function isiJabatan(val) {
+  store.form.jabatan = val?.keterangan
+  store.form.kodejabatan = val?.kode
+  console.log('val', store.form)
+}
 
 function onSubmit() {
   // console.log('submit form barang');
 
-  store.save()
+  store.save(props.data)
 }
 </script>

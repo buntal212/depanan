@@ -1,5 +1,6 @@
 // app global css in SCSS form
 
+@import './text-sizes.scss';
 
 // body.body--dark {
 //   background: $dark-page !important;
@@ -9,17 +10,14 @@
 //   background: $grey-4 !important;
 // }
 
-
 .body--dark {
   background: $dark-page !important;
-  color: $grey-5 ;
+  color: $grey-5;
 }
 .body--light {
   background: $grey-2 !important;
   color: $grey-10;
 }
-
-
 
 // fields
 
@@ -77,5 +75,3 @@
     }
   }
 }
-
-

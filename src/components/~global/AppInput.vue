@@ -1,5 +1,6 @@
 <template>
   <q-input
+    ref="appInput"
     outlined
     :dense="dense"
     :label="label"
@@ -23,6 +24,8 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
 const props = defineProps({
   dense: {
     type: Boolean,
@@ -61,7 +64,8 @@ const props = defineProps({
     default: null
   }
 })
-
+const appInput = ref(null)
+defineExpose({ appInput })
 const requiredRule = (val) => {
   if (props.valid === null) {
     return true

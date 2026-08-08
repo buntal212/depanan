@@ -1,170 +1,279 @@
 <template>
-  <div class="q-pa-md fit">
-    <!-- Header Section -->
-    <q-btn label="Add User" color="primary" @click="openForm" class="q-mb-md" />
-    <q-btn label="Export to Excel" color="primary" @click="exportToExcel" />
-    <!-- Grid Layout: Form and List -->
-    <!-- <q-layout view="lHh Lpr lFf"> -->
-      <!-- <div-container> -->
-        <!-- <div class="fit column"> -->
-          <div class="row full-width">
-            <!-- Form Section (Responsive: Takes full width on small screens) -->
-            <div :class="`col-${isMobile ? 12 : 12}`" >
-              <q-card v-if="formDialogOpen">
-                <q-card-section>
-                  <div class="text-h6">{{ editingIndex !== null ? 'Edit User' : 'Add User' }}</div>
-                  <q-input v-model="form.name" label="Name" />
-                  <q-input v-model="form.email" label="Email" type="email" />
-                </q-card-section>
+  <q-page class="dashboard-page q-pa-md q-pa-lg-lg">
+    <section class="dashboard-hero q-pa-lg q-mb-lg">
+      <div class="row items-center justify-between q-col-gutter-md">
+        <div class="col-12 col-md-auto">
+          <div class="text-overline text-primary text-weight-bold">RINGKASAN TOKO</div>
+          <h1 class="text-h4 text-weight-bold q-my-xs">Selamat datang kembali</h1>
+          <div class="text-grey-6">Pantau aktivitas dan performa toko hari ini.</div>
+        </div>
+        <div class="col-12 col-md-auto row items-center q-gutter-sm">
+          <q-chip color="primary" text-color="white" icon="calendar_month">
+            {{ todayLabel }}
+          </q-chip>
+          <q-btn
+            color="primary"
+            unelevated
+            icon="refresh"
+            label="Muat ulang"
+            :loading="store.loading"
+            @click="loadDashboard"
+          />
+        </div>
+      </div>
+    </section>
 
-                <q-card-actions>
-                  <q-btn flat label="Cancel" color="negative" @click="closeForm" />
-                  <q-btn flat label="Save" color="primary" @click="saveUser" />
-                </q-card-actions>
-              </q-card>
+    <q-banner v-if="store.error" rounded class="bg-orange-1 text-orange-10 q-mb-lg">
+      <template #avatar><q-icon name="info" color="orange" /></template>
+      {{ store.error }}
+      <template #action>
+        <q-btn flat color="orange-10" label="Coba lagi" @click="loadDashboard" />
+      </template>
+    </q-banner>
+
+    <section class="row q-col-gutter-md q-mb-lg">
+      <div v-for="item in summaryCards" :key="item.label" class="col-12 col-sm-6 col-lg-3">
+        <q-card flat bordered class="summary-card full-height">
+          <q-card-section class="row items-center no-wrap q-pa-lg">
+            <div class="summary-icon" :style="{ background: item.background, color: item.color }">
+              <q-icon :name="item.icon" size="28px" />
             </div>
-
-            <!-- List Section (Responsive: Takes full width on small screens) -->
-            <div :class="`col-${isMobile ? 12 : 12}`" >
-              <q-list bordered>
-                <q-item-label header>Users List</q-item-label>
-                <q-item v-for="(user, index) in users" :key="index" clickable>
-                  <q-item-section>
-                    <div>{{ user.name }}</div>
-                    <div>{{ user.email }}</div>
-                  </q-item-section>
-                  <q-item-section side>
-                    <q-btn color="secondary" icon="edit" @click="editUser(user, index)" />
-                    <q-btn color="negative" icon="delete" @click="deleteUser(index)" />
-                  </q-item-section>
-                </q-item>
-              </q-list>
+            <div class="q-ml-md ellipsis">
+              <div class="text-caption text-grey-6 text-uppercase">{{ item.label }}</div>
+              <q-skeleton v-if="store.loading" type="text" width="110px" height="30px" />
+              <div v-else class="text-h5 text-weight-bold ellipsis">{{ item.value }}</div>
+              <div class="text-caption text-grey-6">{{ item.caption }}</div>
             </div>
-          </div>
+          </q-card-section>
+        </q-card>
+      </div>
+    </section>
 
-          <div class="row full-width">
-            <q-table
-              :rows="users"
-              :columns="columns"
-              :rows-per-page-options="[10, 20, 50]"
-              row-key="id"
-              dense
-              flat
-              bordered
-              class="q-mt-md full-width"
-            >
-              <template v-slot:body="props">
-                <q-tr :props="props">
-                  <q-td v-for="col in props.cols" :key="col.name" :props="props">
-                    {{ col.value }}
-                  </q-td>
-                </q-tr>
-              </template>
-            </q-table>
-          </div>
-        <!-- </div> -->
-      <!-- </div-container> -->
-    <!-- </q-layout> -->
-  </div>
+    <section class="row q-col-gutter-lg q-mb-lg">
+      <div class="col-12 col-xl-6">
+        <q-card flat bordered class="panel-card">
+          <q-card-section>
+            <q-skeleton v-if="store.loading" height="350px" square />
+            <e-chart
+              v-else
+              dark
+              title="Penjualan Bulanan"
+              :xAxisData="store.salesData.months"
+              :series="store.salesData.series"
+            />
+          </q-card-section>
+        </q-card>
+      </div>
+
+      <div class="col-12 col-xl-6">
+        <q-card flat bordered class="panel-card">
+          <q-card-section>
+            <q-skeleton v-if="store.loading" height="350px" square />
+            <e-chart
+              v-else
+              dark
+              title="10 Produk Terlaris"
+              :xAxisData="store.topProductsData.products"
+              :series="store.topProductsData.series"
+              horizontal
+            />
+          </q-card-section>
+        </q-card>
+      </div>
+    </section>
+
+    <section class="row q-col-gutter-lg">
+      <div class="col-12 col-lg-6">
+        <q-card flat bordered class="panel-card">
+          <q-card-section>
+            <q-skeleton v-if="store.loading" height="350px" square />
+            <e-chart
+              v-else
+              dark
+              title="Status Transaksi"
+              :series="store.salesDistributionData.series"
+            />
+          </q-card-section>
+        </q-card>
+      </div>
+      <div class="col-12 col-lg-6">
+        <q-card flat bordered class="panel-card">
+          <q-card-section>
+            <q-skeleton v-if="store.loading" height="350px" square />
+            <e-chart
+              v-else
+              dark
+              title="Tren Penjualan Tahun Ini"
+              :xAxisData="store.salesTrendData.trendMonths"
+              :series="store.salesTrendData.trendSeries"
+            />
+          </q-card-section>
+        </q-card>
+      </div>
+    </section>
+
+    <section class="row q-col-gutter-lg q-mt-sm">
+      <div v-for="list in recentLists" :key="list.title" class="col-12 col-lg-6">
+        <recent-list
+          :title="list.title"
+          :subtitle="list.subtitle"
+          :to="list.to"
+          :items="list.items"
+          :loading="store.loading"
+        />
+      </div>
+    </section>
+  </q-page>
 </template>
 
 <script setup>
-import { useQuasar } from 'quasar';
-import { ref, computed } from 'vue';
-import { Workbook } from 'exceljs';
+import { computed, onMounted } from 'vue'
+import EChart from 'src/components/charts/EChart.vue'
+import RecentList from './RecentList.vue'
+import { useAdminDashboardStore } from 'src/stores/admin/dashboard'
 
+const store = useAdminDashboardStore()
 
-const users = ref([]);  // List of users
-const columns = ref([
-  { name: 'name', label: 'Name', field: 'name' },
-  { name: 'email', label: 'Email', field: 'email' },
-  // ...
-]);
+const numberFormatter = new Intl.NumberFormat('id-ID')
+const todayLabel = new Intl.DateTimeFormat('id-ID', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric',
+}).format(new Date())
 
-// const pagination = ref({
-//   rowsPerPage: 10,
-// });
-const formDialogOpen = ref(false);  // Whether the form dialog is open
-const form = ref({
-  name: '',
-  email: ''
-});
-const editingIndex = ref(null);  // Index of the user being edited
+const summaryCards = computed(() => [
+  {
+    label: 'Total pendapatan',
+    value: store.formattedTotalPendapatan,
+    caption: 'Akumulasi periode aktif',
+    icon: 'payments',
+    color: '#2563eb',
+    background: '#dbeafe',
+  },
+  {
+    label: 'Transaksi',
+    value: numberFormatter.format(store.summaryStats.totalPenjualan),
+    caption: 'Penjualan tercatat',
+    icon: 'receipt_long',
+    color: '#059669',
+    background: '#d1fae5',
+  },
+  {
+    label: 'Produk',
+    value: numberFormatter.format(store.summaryStats.totalProduk),
+    caption: 'Produk dalam katalog',
+    icon: 'inventory_2',
+    color: '#d97706',
+    background: '#fef3c7',
+  },
+  {
+    label: 'Pelanggan',
+    value: numberFormatter.format(store.summaryStats.totalPelanggan),
+    caption: 'Pelanggan terdaftar',
+    icon: 'groups',
+    color: '#7c3aed',
+    background: '#ede9fe',
+  },
+])
 
-// Computed property to check if the screen size is mobile
-const $q = useQuasar();
-const isMobile = computed(() => {
-  return $q.screen.lt.sm; // Quasar screen size helper
-});
+const loadDashboard = () => store.fetchDashboardData()
 
-// Methods
-const openForm = () => {
-  formDialogOpen.value = true;
-  resetForm();
-};
+const recentLists = computed(() => [
+  {
+    title: '5 Penjualan Terakhir',
+    subtitle: 'Transaksi penjualan terbaru',
+    to: '/admin/transaksi/penjualan',
+    items: store.recentSales,
+  },
+  {
+    title: '5 Pembelian Terakhir',
+    subtitle: 'Penerimaan faktur terbaru',
+    to: '/admin/transaksi/penerimaan',
+    items: store.recentPurchases,
+  },
+  {
+    title: '5 Pembayaran Hutang Terakhir',
+    subtitle: 'Pembayaran kepada supplier',
+    to: '/admin/transaksi/pembayaran-hutang',
+    items: store.recentDebtPayments,
+  },
+  {
+    title: '5 Pembayaran Piutang Terakhir',
+    subtitle: 'Pembayaran dari pelanggan',
+    to: '/admin/transaksi/pembayaran-piutang',
+    items: store.recentReceivablePayments,
+  },
+])
 
-const closeForm = () => {
-  formDialogOpen.value = false;
-  resetForm();
-};
-
-const resetForm = () => {
-  form.value.name = '';
-  form.value.email = '';
-  editingIndex.value = null;
-};
-
-const saveUser = () => {
-  if (editingIndex.value === null) {
-    // Add new user
-    users.value.push({ ...form.value });
-  } else {
-    // Update existing user
-    users.value.splice(editingIndex.value, 1, { ...form.value });
-  }
-  closeForm();
-};
-
-const editUser = (user, index) => {
-  form.value.name = user.name;
-  form.value.email = user.email;
-  editingIndex.value = index;
-  formDialogOpen.value = true;
-};
-
-const deleteUser = (index) => {
-  users.value.splice(index, 1);
-};
-
-function exportToExcel() {
-  const workbook = new Workbook();
-  const worksheet = workbook.addWorksheet('Users');
-
-  worksheet.addRow(['Name', 'Email']);
-
-  users.value.forEach((user) => {
-    worksheet.addRow([user.name, user.email]);
-  });
-
-  workbook.xlsx.writeBuffer().then((buffer) => {
-    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'users.xlsx';
-    a.click();
-  });
-}
-
+onMounted(loadDashboard)
 </script>
 
 <style scoped>
-.q-page {
-  padding: 20px;
+.dashboard-page {
+  color: #f8fafc;
+  background: #050505;
+  min-height: 100%;
 }
 
-/* Style for mobile view (when screen is small) */
-.q-card {
-  width: 100%;
+.dashboard-hero {
+  background: linear-gradient(135deg, #111827, #09090b);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 20px;
+}
+
+.summary-card,
+.panel-card {
+  color: #f8fafc;
+  background: #111111;
+  border-radius: 16px;
+  border-color: rgba(148, 163, 184, 0.15);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(10px);
+}
+
+.summary-card {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.09);
+}
+
+.summary-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.panel-card {
+  min-height: 100%;
+}
+
+:global(.body--dark) .dashboard-page {
+  background: #050505;
+}
+
+:global(.body--dark) .dashboard-hero {
+  background: linear-gradient(135deg, #111827, #09090b);
+  border-color: rgba(148, 163, 184, 0.16);
+}
+
+:global(.body--dark) .summary-card,
+:global(.body--dark) .panel-card {
+  background: #111111;
+  border-color: rgba(148, 163, 184, 0.13);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+@media (max-width: 599px) {
+  .dashboard-hero {
+    border-radius: 14px;
+  }
 }
 </style>

@@ -22,7 +22,13 @@
                   label="Nama Pelanggan"
                   :valid="{ required: false }"
                 />
-                <app-input class="col-6" v-model="store.form.telepon" label="Telepon" />
+                <app-input
+                  class="col-12"
+                  v-model="store.form.telepon"
+                  :valid="{ number: true }"
+                  label="Telepon"
+                />
+                <app-input class="col-6" v-model="store.form.namabank" label="Nama Bank" />
                 <app-input
                   class="col-6"
                   v-model="store.form.norek"
@@ -45,7 +51,8 @@
                     type="submit"
                     :dense="false"
                     label="Simpan"
-                    color="cyan"
+                    color="grey-10"
+                    class="text-yellow-9"
                   />
                 </div>
               </div>
@@ -74,14 +81,19 @@ const isMobile = computed(() => {
 })
 
 const store = useAdminFormMasterPelangganStore()
-
+const props = defineProps({
+  data: {
+    type: Object,
+    default: null,
+  },
+})
 onMounted(() => {
-  store.initReset()
+  store.initReset(props.data)
 })
 
 function onSubmit() {
   // console.log('submit form barang');
 
-  store.save()
+  store.save(props.data)
 }
 </script>

@@ -61,6 +61,7 @@ const props = defineProps({
 const refAuto = ref(null)
 const optionx = ref([])
 
+defineExpose({ refAuto })
 
 async function filterFn (val, update, abort) {
   if (val.length < props.filterMin) {
@@ -77,11 +78,11 @@ async function filterFn (val, update, abort) {
 
   const {data} = await api.get(props.url, params)
   // console.log('data', data);
-  
+
   update(() => {
     optionx.value = data
   })
-      
+
 }
 
 function anotherValid (val) {

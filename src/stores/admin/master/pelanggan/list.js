@@ -1,10 +1,12 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { api } from 'src/boot/axios'
+import { notifError, notifSuccess } from 'src/modules/notifs'
 
 export const useAdminMasterPelangganStore = defineStore('admin-master-pelanggan-store', {
   state: () => ({
     meta: null,
     items: [],
+    itemsall: [],
     inisial: [],
     isError: false,
     loading: false,
@@ -42,6 +44,36 @@ export const useAdminMasterPelangganStore = defineStore('admin-master-pelanggan-
       }
     },
 
+    async getListall() {
+      // console.log('get master barang page', this.params.page);
+      this.params.page = 1
+      this.isError = false
+      this.loading = true
+      try {
+        const { data } = await api.get('/v1/master/pelanggan/listpelangganall')
+        console.log('get Pelanggan', data)
+        this.meta = data
+        this.itemsall = data
+        const databaru = {
+          id: 0,
+          kodeplgn: '0',
+          nama: 'Non Pelanggan',
+          alamat: '',
+          telepon: '',
+          keterangan: '',
+          namabank: '',
+          norek: '',
+        }
+        this.itemsall.unshift(databaru)
+        this.loading = false
+        // this.items = data
+      } catch (error) {
+        console.log(error)
+        this.isError = true
+        this.loading = false
+      }
+    },
+
     loadMore(index, done) {
       this.isError = false
       this.params.page = index
@@ -67,6 +99,23 @@ export const useAdminMasterPelangganStore = defineStore('admin-master-pelanggan-
             resolve()
           })
       })
+    },
+    async deleteItem(id) {
+      this.items = this.items.filter((item) => item.id !== id)
+      const params = { id }
+      try {
+        const resp = await api.post(`/v1/master/pelanggan/hapus`, params)
+        console.log('delete', resp)
+        if (resp.status === 200) {
+          const newArr = this.items?.filter((item) => item?.id !== id)
+          this.items = newArr
+
+          notifSuccess('Data berhasil dihapus')
+        }
+      } catch (error) {
+        console.log('del Pelanggan error', error)
+        notifError('Terjadi Kesalahan')
+      }
     },
   },
 })

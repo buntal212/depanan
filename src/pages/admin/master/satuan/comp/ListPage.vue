@@ -25,7 +25,13 @@
                 </div>
 
                 <div class="col-auto">
-                  <app-btn icon="add" tooltip="Tambah Data" color="accent" @click="emits('add')" />
+                  <app-btn
+                    icon="add"
+                    class="text-yellow-8"
+                    tooltip="Tambah Data"
+                    color="grey-10"
+                    @click="emits('add')"
+                  />
                 </div>
               </div>
             </q-item-label>
@@ -54,7 +60,7 @@
                   @mouseleave="hoveredId = null"
                 >
                   <q-item-section avatar>
-                    <q-avatar color="accent" text-color="white">{{ item.satuan[0] }}</q-avatar>
+                    <q-avatar color="yellow-9" text-color="white">{{ item.satuan[0] }}</q-avatar>
                   </q-item-section>
                   <q-item-section>
                     <q-item-label lines="1">{{ item?.satuan }}</q-item-label>
@@ -64,8 +70,8 @@
                   </q-item-section>
                   <q-item-section v-if="hoveredId === item?.id" side>
                     <div class="flex q-gutter-sm">
-                      <app-btn-edit-list />
-                      <app-btn-delete-list />
+                      <app-btn-edit-list @click="edit(item)" />
+                      <app-btn-delete-list @click="del(item)" />
                     </div>
                   </q-item-section>
                   <q-item-section v-else side top>
@@ -78,7 +84,7 @@
 
               <template v-slot:loading>
                 <div v-if="!store.isError" class="text-center q-my-md">
-                  <q-spinner-dots color="accent" size="40px" />
+                  <q-spinner-dots color="yellow-9" size="40px" />
                 </div>
               </template>
             </q-infinite-scroll>
@@ -92,6 +98,7 @@
   </div>
 </template>
 <script setup>
+import { useQuasar } from 'quasar'
 import { humanDate, jamTnpDetik } from 'src/modules/utils'
 import { useAdminMasterSatuanStore } from 'src/stores/admin/master/satuan/list'
 import { computed, onBeforeMount, ref } from 'vue'
@@ -102,13 +109,34 @@ const infiniteScroll = ref(null)
 const hoveredId = ref(null)
 // const items = ref([ {}, {}, {}, {}, {}, {}, {},{},{},{},{}, {} ])
 
-const emits = defineEmits(['add'])
+const emits = defineEmits(['add', 'edit'])
+const $q = useQuasar()
 onBeforeMount(() => {
   // Promise.all([
   //   store.getList(null)
   // ])
 })
-
+const edit = (item) => {
+  emits('edit', item)
+}
+const del = (item) => {
+  $q.dialog({
+    title: 'Peringatan',
+    message: 'Apakah Data ini akan dihapus?',
+    cancel: true,
+    // persistent: true
+  })
+    .onOk(() => {
+      // const params = { id: selected.value }
+      store.deleteItem(item?.id)
+    })
+    .onCancel(() => {
+      console.log('Cancel')
+    })
+    .onDismiss(() => {
+      // console.log('I am triggered on both OK and Cancel')
+    })
+}
 // eslint-disable-next-line no-unused-vars
 const next = computed(() => {
   let page = false

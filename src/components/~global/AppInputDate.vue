@@ -27,16 +27,6 @@
         @click="showDate"
       />
     </template>
-    <template
-      v-else-if="modelProp"
-      #append
-    >
-      <q-icon
-        name="icon-mat-cancel"
-        class="cursor-pointer"
-        @click.stop.prevent="modelProp = null"
-      />
-    </template>
     <template #prepend>
       <q-popup-proxy
         ref="refPopup"
@@ -47,8 +37,9 @@
         <!-- <q-menu v-model="showing"> -->
         <q-date
           v-if="typeDate"
+          ref="refDate"
           v-model="modelProp"
-          mask="YYYY-MM-DD"
+          mask="DD MMMM YYYY"
           today-btn
           @update:model-value="closeDate()"
         >
@@ -82,8 +73,10 @@
 </template>
 
 <script setup>
+import { date } from 'quasar'
 import { ref, onMounted, computed } from 'vue'
-const emits = defineEmits(['showDate', 'setModel'])
+
+const emits = defineEmits(['showDate', 'setModel', 'setDisplay', 'dbModel'])
 const props = defineProps({
   icon: {
     type: String,
@@ -114,7 +107,6 @@ const props = defineProps({
     default: true
   },
   valid: { type: Boolean, default: false },
-  clearable: { type: Boolean, default: false },
   autofocus: { type: Boolean, default: false },
   dense: { type: Boolean, default: true },
   filled: { type: Boolean, default: true },
@@ -127,7 +119,44 @@ const props = defineProps({
 
 const modelProp = computed({
   get () { return props.model },
-  set (val) { emits('setModel', val) }
+  set (val) {
+    const temp = val.split(' ')
+    let newTgl = ''
+    if (temp[1] === 'Mei') {
+      newTgl = temp[0] + ' May ' + temp[2]
+    }
+    else if (temp[1] === 'Oktober') {
+      newTgl = temp[0] + ' October ' + temp[2]
+    }
+    else if (temp[1] === 'Agustus') {
+      newTgl = temp[0] + ' August ' + temp[2]
+    }
+    else if (temp[1] === 'Desember') {
+      newTgl = temp[0] + ' December ' + temp[2]
+    }
+    else if (temp[1] === 'Juli') {
+      newTgl = temp[0] + ' July ' + temp[2]
+    }
+    else if (temp[1] === 'Juni') {
+      newTgl = temp[0] + ' June ' + temp[2]
+    }
+    else if (temp[1] === 'Januari') {
+      newTgl = temp[0] + ' January ' + temp[2]
+    }
+    else if (temp[1] === 'Februari') {
+      newTgl = temp[0] + ' February ' + temp[2]
+    }
+    else if (temp[1] === 'Maret') {
+      newTgl = temp[0] + ' March ' + temp[2]
+    }
+    else {
+      newTgl = val
+    }
+    emits('setModel', newTgl)
+    emits('setDisplay', val)
+    emits('dbModel', date.formatDate(newTgl, 'YYYY-MM-DD'))
+    // console.log('app input date', date.formatDate(newTgl, 'YYYY-MM-DD'))
+  }
 })
 // const modelProp = toRef(props, 'model')// react to ref
 // watch(modelProp, (value) => {
@@ -136,7 +165,7 @@ const modelProp = computed({
 
 const refInputDate = ref(null)
 const refPopup = ref(null)
-defineExpose({ refInputDate })
+const refDate = ref(null)
 // const showing = ref(false)
 // const modelProxy = ref()
 
@@ -153,9 +182,8 @@ function anotherValid (val) {
 }
 
 function closeDate () {
-  // console.log('hide', refInputDate.value)
+  // console.log('hide', refPopup.value)
   refPopup.value.hide()
-  refInputDate.value.blur()
 }
 function showDate () {
   // console.log('show', refPopup.value)

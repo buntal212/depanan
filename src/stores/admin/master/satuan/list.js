@@ -1,5 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { api } from 'src/boot/axios'
+import { notifError, notifSuccess } from 'src/modules/notifs'
 
 export const useAdminMasterSatuanStore = defineStore('admin-master-satuan-store', {
   state: () => ({
@@ -67,6 +68,23 @@ export const useAdminMasterSatuanStore = defineStore('admin-master-satuan-store'
             resolve()
           })
       })
+    },
+    async deleteItem(id) {
+      this.items = this.items.filter((item) => item.id !== id)
+      const params = { id }
+      try {
+        const resp = await api.post(`/v1/master/satuan/hapussatuan`, params)
+        console.log('delete', resp)
+        if (resp.status === 200) {
+          const newArr = this.items?.filter((item) => item?.id !== id)
+          this.items = newArr
+
+          notifSuccess('Data berhasil dihapus')
+        }
+      } catch (error) {
+        console.log('del Satuan error', error)
+        notifError('Terjadi Kesalahan')
+      }
     },
   },
 })

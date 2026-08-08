@@ -1,35 +1,48 @@
 import { defineBoot } from '#q-app/wrappers'
 import { useAppStore } from 'src/stores/app'
+import * as storage from 'src/modules/storage'
 
 export default defineBoot(({ router, store }) => {
   console.groupCollapsed('[boot routing]')
-  console.log('router',router);
-  const app = useAppStore(store);
-  
+  // console.log('router', router)
+  const app = useAppStore(store)
+
   router.beforeEach((to, from, next) => {
+    const token = storage.getLocalToken()
+    const user = storage.getUser()
+    const requireAuth = to.matched.some((route) => route.meta.requireAuth)
 
-    const isAuth = app?.auth
-    console.log('auth from store',isAuth);
-    const requireAuth = to.matched.some(route => route.meta.requireAuth)
-    // Now you need to add your authentication logic here, like calling an API endpoint
-    // console.log('beforeEach',to, from, next);
-    if (requireAuth && !isAuth) {
-      next({ path: '/auth' })
+    const isTokenExpired = () => {
+      const activeTime = localStorage.getItem('activeTime')
+      if (activeTime) {
+        const lastActive = new Date(activeTime)
+        const now = new Date()
+        const hoursDiff = (now - lastActive) / (1000 * 60 * 60)
+        return hoursDiff > 24
+      }
+      return false
     }
-    else if (!requireAuth && isAuth) {
+
+    if (token && user && !app.auth) {
+      app.restoreSession(token, user)
+    }
+
+    if (requireAuth) {
+      if (!token || !user) {
+        next({ path: '/auth' })
+        return
+      }
+
+      if (isTokenExpired()) {
+        app.logout()
+        next({ path: '/auth' })
+        return
+      }
+    } else if (token && to.path === '/auth') {
       next({ path: '/' })
+      return
     }
-    else {
-      next()
-    }
-    
-  })
 
-  router.onError((error, to) => {
-    if (error.message.includes('Failed to fetch dynamically imported module')) {
-      window.location = to.fullPath
-    }
+    next()
   })
-
-  console.groupEnd()
 })

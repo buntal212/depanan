@@ -22,50 +22,7 @@
                   label="Data Satuan"
                   :valid="{ required: false }"
                 />
-                <!-- <app-input class="col-6" v-model="store.form.username" label="Username" />
-                <app-input class="col-6" v-model="store.form.password" label="Password" />
-                <app-input class="col-6" v-model="store.form.email" label="Email" />
-                <app-input class="col-6" v-model="store.form.jabatan" label="Jabatan" />
-                <app-input class="col-12" v-model="store.form.alamat" label="Alamat" />
-                <app-input
-                  class="col-5"
-                  v-model="store.form.nohp"
-                  label="No. Hp"
-                  :valid="{ number: true }"
-                  @update:model-value="
-                    (val) => {
-                      //untuk hapus o dipean angka pake ini yaa
-                      const _removedZeros = val?.replace(/^0+/, '')
-                      if (val > 1) store.form.isi = _removedZeros
-                    }
-                  "
-                /> -->
-                <!-- <app-input
-                  class="col-6"
-                  v-model="store.form.hargajual1"
-                  label="Harga Jual 1"
-                  :valid="{ number: true }"
-                  @update:model-value="
-                    (val) => {
-                      //untuk hapus o dipean angka pake ini yaa
-                      const _removedZeros = val?.replace(/^0+/, '')
-                      if (val > 1) store.form.hargajual1 = _removedZeros
-                    }
-                  "
-                />
-                <app-input
-                  class="col-6"
-                  v-model="store.form.hargajual2"
-                  label="Harga Jual 2"
-                  :valid="{ number: true }"
-                  @update:model-value="
-                    (val) => {
-                      //untuk hapus o dipean angka pake ini yaa
-                      const _removedZeros = val?.replace(/^0+/, '')
-                      if (val > 1) store.form.hargajual2 = _removedZeros
-                    }
-                  "
-                /> -->
+
                 <div class="col-12">
                   <q-separator class="q-my-md" />
                   <app-btn
@@ -73,15 +30,11 @@
                     type="submit"
                     :dense="false"
                     label="Simpan"
-                    color="accent"
+                    color="grey-10"
+                    class="text-yellow-9"
                   />
                 </div>
               </div>
-              <!-- <div :class="`col-${isMobile ? 12 : 6}`" class="row q-col-gutter-md">
-                <div>
-                  <app-btn type="submit" :dense="false" label="Simpan" color="primary" />
-                </div>
-              </div> -->
             </div>
           </q-card-section>
         </q-form>
@@ -103,13 +56,19 @@ const isMobile = computed(() => {
 
 const store = useAdminFormMasterSatuanStore()
 
+const props = defineProps({
+  data: {
+    type: Object,
+    default: null,
+  },
+})
 onMounted(() => {
-  store.initReset()
+  store.initReset(props.data)
 })
 
 function onSubmit() {
   // console.log('submit form barang');
 
-  store.save()
+  store.save(props.data)
 }
 </script>

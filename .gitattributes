@@ -1,0 +1,17 @@
+# Semua file teks akan di-normalisasi ke LF
+* text=auto
+
+# Khusus file .vue dipaksa pakai LF
+*.vue text eol=lf
+
+# File konfigurasi dan script umum juga pakai LF
+*.js text eol=lf
+*.ts text eol=lf
+*.json text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.sh text eol=lf

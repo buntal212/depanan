@@ -1,12 +1,12 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { api } from 'src/boot/axios'
+import { notifError, notifSuccess } from 'src/modules/notifs'
 
 export const useAdminMasterSupplierStore = defineStore('admin-master-supplier-store', {
   state: () => ({
     meta: null,
     items: [],
     itemsall: [],
-    inisial: [],
     isError: false,
     loading: false,
     params: {
@@ -31,7 +31,6 @@ export const useAdminMasterSupplierStore = defineStore('admin-master-supplier-st
       }
       try {
         const { data } = await api.get('/v1/master/supplier/list', params)
-        console.log('get Pelanggan', data)
         this.meta = data
         this.items = data?.data
         this.loading = false
@@ -69,11 +68,27 @@ export const useAdminMasterSupplierStore = defineStore('admin-master-supplier-st
           })
       })
     },
+    async deleteItem(id) {
+      this.items = this.items.filter((item) => item.id !== id)
+      const params = { id }
+      try {
+        const resp = await api.post(`/v1/master/supplier/hapus`, params)
+        console.log('delete', resp)
+        if (resp.status === 200) {
+          const newArr = this.items?.filter((item) => item?.id !== id)
+          this.items = newArr
+
+          notifSuccess('Data berhasil dihapus')
+        }
+      } catch (error) {
+        console.log('del Supplier error', error)
+        notifError('Terjadi Kesalahan')
+      }
+    },
     async getAllList() {
       try {
         const { data } = await api.get('/v1/master/supplier/alllist')
         this.itemsall = data
-        console.log('sasa', this.itemsall)
         this.loading = false
         // this.items = data
       } catch (error) {

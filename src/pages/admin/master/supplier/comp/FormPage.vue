@@ -44,7 +44,8 @@
                     type="submit"
                     :dense="false"
                     label="Simpan"
-                    color="light-green"
+                    color="grey-10"
+                    class="text-yellow-9"
                   />
                 </div>
               </div>
@@ -74,13 +75,19 @@ const isMobile = computed(() => {
 
 const store = useAdminFormMasterSupplierStore()
 
+const props = defineProps({
+  data: {
+    type: Object,
+    default: null,
+  },
+})
 onMounted(() => {
-  store.initReset()
+  store.initReset(props.data)
 })
 
 function onSubmit() {
   // console.log('submit form barang');
 
-  store.save()
+  store.save(props.data)
 }
 </script>

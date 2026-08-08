@@ -19,7 +19,7 @@ export const useAdminMasterSatuanSelectStore = defineStore('admin-master-satuan-
 
       try {
         const { data } = await api.get('/v1/master/select/master-satuan-all')
-        console.log('get Satuan all', data)
+        // console.log('get Satuan all', data)
         if (data) {
           this.items = data
         }

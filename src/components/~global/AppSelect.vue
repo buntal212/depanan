@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 const emits = defineEmits(['selected', 'onEnter'])
 const props = defineProps({
   options: { type: Array, default: () => [] },
@@ -56,7 +56,15 @@ const props = defineProps({
   hint: { type: String, default: null }
 })
 const refAuto = ref(null)
-const optionx = ref(props.options)
+const optionx = ref([])
+
+watch(
+  () => props.options,
+  (options) => {
+    optionx.value = Array.isArray(options) ? [...options] : []
+  },
+  { immediate: true, deep: true },
+)
 
 
 function filterFn (val, update) {

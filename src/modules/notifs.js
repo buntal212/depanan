@@ -14,11 +14,11 @@ const notifSuccess = (msg) => {
 }
 const notifError = (msg) => {
   Notify.create({
-    message: msg || 'Sucees!, Wow Kerja Bagus!',
+    message: msg || 'Ada Kesalahan!',
     icon: tabAlertTriangle,
     position: 'bottom',
     actions: [
-      { label: 'Dismiss', color: 'primary', handler: () => { /* console.log('wooow') */ } }
+      { label: 'Dismiss', color: 'negative', handler: () => { /* console.log('wooow') */ } }
     ]
   })
 }
