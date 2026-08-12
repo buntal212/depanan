@@ -56,12 +56,7 @@ export default defineConfig((ctx) => {
       // publicPath: '/',
       // analyze: true,
       env: {
-        API: ctx?.dev
-          ? // ? 'https://api.jangurkeramik.my.id'
-            // 'http://localhost/newtokobangunan/belakang-toko/public'
-            // 'http://belakang-toko.test'
-            'http://localhost:8183'
-          : 'https://api.jangurkeramik.my.id',
+        API: process.env.VITE_SERV || (ctx?.dev ? 'http://localhost:8183' : 'https://api.jangurkeramik.my.id'),
         //: 'http://api.jangur.net:8111', buat server
 
         WS: ctx.dev ? 'https://socket.jangurkeramik.my.id' : 'https://socket.jangurkeramik.my.id',
