@@ -158,52 +158,40 @@ export const useAppStore = defineStore('app-store', {
       localStorage.setItem('activeTime', new Date().toString())
     },
 
-    login(payload) {
+    async login(payload) {
       this.loading = true
       this.titleLoading = 'SEDANG SINKRON DATA'
-      return new Promise((resolve, reject) => {
-        api
-          .post('/login', payload)
-          .then((resp) => {
+      try {
+        const resp = await api.post('/login', payload)
             storage.setLocalToken(resp.data.token)
             storage.setUser(resp.data.user)
-            localStorage.setItem('activeTime', new Date())
-            console.log('login', resp)
+            localStorage.setItem('activeTime', new Date().toString())
             const hdd = storage.getLocalToken()
             const hddUser = storage.getUser()
-            if (hdd && hddUser) {
-              this.SET_TOKEN_USER(hdd, hddUser)
-            }
+            if (!hdd || !hddUser) throw new Error('Data sesi login tidak lengkap')
+            await this.SET_TOKEN_USER(hdd, hddUser)
             const adminLeftMenu = useLeftDrawerStore()
             const selectSatuan = useAdminMasterSatuanSelectStore()
             const selectBrands = useAdminMasterBrandSelectStore()
             const profiltoko = useProfilStore()
-            Promise.all([
+            void Promise.allSettled([
               adminLeftMenu.getMenu(),
               selectSatuan.getDataAll(),
               selectBrands.getDataAll(),
               profiltoko.getProfil(),
-            ]).finally(() => {
-              setTimeout(() => {
-                routerInstance.push('/')
-                this.loading = false
-
-                // Inisialisasi timer inaktivitas setelah login
-                this.initInactivityTimer()
-
-                // Setup event listeners
-                this.setupActivityListeners()
-              }, 500)
-            })
-            resolve(resp)
-          })
-          .catch((error) => {
-            console.log(error)
-            this.loading = false
-            notifError('Login Gagal')
-            reject(error)
-          })
-      })
+            ])
+            this.initInactivityTimer()
+            this.setupActivityListeners()
+            await routerInstance.push('/')
+            return resp
+      } catch (error) {
+        console.error('Login error:', error)
+        notifError('Login Gagal')
+        throw error
+      } finally {
+        this.loading = false
+        this.titleLoading = ''
+      }
     },
     async SET_TOKEN_USER(token, auth) {
       try {

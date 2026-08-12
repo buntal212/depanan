@@ -8,7 +8,8 @@ const base = SERV
 
 // console.log('boot', base);
 // base = storage.getApp('app-store') ? storage.getApp('app-store').ipserver : ''
-const token = JSON.parse(localStorage.getItem('token')) ?? null
+const savedToken = localStorage.getItem('token')
+const token = savedToken ? JSON.parse(savedToken) : null
 const api = axios.create({ baseURL: base + '/api' })
 
 // function setBase(url) {
@@ -16,7 +17,7 @@ const api = axios.create({ baseURL: base + '/api' })
 // }
 
 api.defaults.headers.get.Accepts = 'application/json'
-api.defaults.headers.common.Authorization = `Bearer ${token}`
+if (token) api.defaults.headers.common.Authorization = `Bearer ${token}`
 //......................asli....//
 // function setToken(tokentok) {
 //   api.defaults.headers.common.Authorization = `Bearer ${tokentok}`
