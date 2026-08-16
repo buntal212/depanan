@@ -433,10 +433,19 @@ async function setThumbnail(identifier, isTemp = false) {
 
 // Fungsi untuk mendapatkan URL gambar (preview)
 const getImageUrl = (image) => {
+  if (image && typeof image === 'object' && !(image instanceof File) && !(image instanceof Blob)) {
+    image = image.gambar || image.image || image.path || image.url
+  }
+
   if (image instanceof File || image instanceof Blob) {
     return URL.createObjectURL(image)
   }
-  return pathImg + image // Jika gambar sudah ada di server
+
+  if (!image) return ''
+  if (/^https?:\/\//i.test(image)) return image
+
+  const cleanPath = String(image).replace(/^\/+/, '')
+  return cleanPath.startsWith('storage/') ? `${pathImg.replace(/storage\/$/, '')}/${cleanPath}` : `${pathImg}${cleanPath}`
 }
 
 // Fungsi untuk submit form

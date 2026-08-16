@@ -11,14 +11,14 @@
     </div>
     <div class="col flex-end content-center q-pl-sm">
       <div class="text-bold" style="font-size: x-large">
-        {{ profil.profilData.namatoko }}
+        {{ profil.profilData?.namatoko || 'Nama Toko' }}
       </div>
       <div>
-        {{ profil.profilData.alamat }}
+        {{ profil.profilData?.alamat || '-' }}
       </div>
       <div>
-        <span class="q-pr-sm">Telp : {{ profil.profilData.telepon }}</span>
-        <span>email : {{ profil.profilData.email }} </span>
+        <span class="q-pr-sm">Telp : {{ profil.profilData?.telepon || '-' }}</span>
+        <span>email : {{ profil.profilData?.email || '-' }} </span>
       </div>
     </div>
   </div>
@@ -48,7 +48,14 @@
 </template>
 <script setup>
 // import { useLaporanPenjualanStore } from 'src/stores/admin/laporan/lap_penjualan/list'
+import { onMounted } from 'vue'
 import { useProfilStore } from 'src/stores/admin/profil'
 const profil = useProfilStore()
+
+onMounted(async () => {
+  if (!profil.profilData?.namatoko) {
+    await profil.getProfil()
+  }
+})
 // const store = useLaporanPenjualanStore()
 </script>

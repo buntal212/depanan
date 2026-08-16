@@ -32,7 +32,10 @@ export const useProfilStore = defineStore('profil-toko-store', {
       //this.loading = true
       try {
         const { data } = await api.get('/v1/settings/profiltoko/getprofil')
-        this.profilData = data.result || data
+        // Backend dapat mengembalikan respons langsung atau dibungkus
+        // dalam `data`/`result` (tergantung endpoint dan versi API).
+        const payload = data?.data ?? data
+        this.profilData = payload?.result ?? payload
 
         // Debugging
         // console.log('Data profil:', this.profilData)

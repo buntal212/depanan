@@ -45,16 +45,16 @@
                 class="row full-width text-center text-bold flex-center"
                 style="font-size: medium"
               >
-                {{ profil.profilData.namatoko }}
+                {{ profil.profilData?.namatoko || 'Nama Toko' }}
               </div>
               <div class="row full-width text-center flex-center" style="">
-                {{ profil.profilData.alamat }}
+                {{ profil.profilData?.alamat || '-' }}
               </div>
               <div class="row full-width text-center flex-center" style="">
-                Telp : {{ profil.profilData.telepon }}
+                Telp : {{ profil.profilData?.telepon || '-' }}
               </div>
               <div class="row q-pb-xs full-width text-center flex-center" style="">
-                Email : {{ profil.profilData.email }}
+                Email : {{ profil.profilData?.email || '-' }}
               </div>
               <div class="q-pt-xs" style="border-top-style: solid; border-width: 1px"></div>
               <div class="row text-bold full-width" style="">
@@ -255,16 +255,16 @@
                     </div>
                     <div class="col content-center">
                       <div class="text-bold" style="font-size: large">
-                        {{ profil.profilData.namatoko }}
+                        {{ profil.profilData?.namatoko || 'Nama Toko' }}
                       </div>
                       <div>
-                        {{ profil.profilData.alamat }}
+                        {{ profil.profilData?.alamat || '-' }}
                       </div>
                       <div>
-                        <span class="q-pr-sm">Telp : {{ profil.profilData.telepon }}</span>
+                        <span class="q-pr-sm">Telp : {{ profil.profilData?.telepon || '-' }}</span>
                       </div>
                       <div>
-                        <span>Email : {{ profil.profilData.email }} </span>
+                        <span>Email : {{ profil.profilData?.email || '-' }} </span>
                       </div>
                     </div>
                   </div>
@@ -535,7 +535,7 @@
                 </div>
                 <div class="col flex-end content-center text-center">
                   <div>Probolinggo, {{ dateFullFormat(store.itemCetak?.tgl) }}</div>
-                  <div>{{ profil.profilData.namatoko }}</div>
+                  <div>{{ profil.profilData?.namatoko || 'Nama Toko' }}</div>
                   <div style="height: 30px"></div>
                   <div>{{ profil.profilData.pemilik }}</div>
                 </div>

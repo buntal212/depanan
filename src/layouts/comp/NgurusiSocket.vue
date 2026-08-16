@@ -16,7 +16,10 @@ const auth = useAppStore()
 onMounted(() => {
   // console.log('dari ngurusi socket ...');
   
-  joinkeOrderPenjualan(auth.user?.id)
+  // Socket tidak boleh menghambat halaman ketika sesi belum siap.
+  if (auth.auth && auth.user?.id) {
+    joinkeOrderPenjualan(auth.user.id)
+  }
 
 });
 

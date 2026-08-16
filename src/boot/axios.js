@@ -8,9 +8,25 @@ const base = SERV
 
 // console.log('boot', base);
 // base = storage.getApp('app-store') ? storage.getApp('app-store').ipserver : ''
-const savedToken = localStorage.getItem('token')
-const token = savedToken ? JSON.parse(savedToken) : null
-const api = axios.create({ baseURL: base + '/api' })
+const readJsonStorage = (key) => {
+  const value = localStorage.getItem(key)
+  if (!value) return null
+
+  try {
+    return JSON.parse(value)
+  } catch {
+    // Data session lama/korup tidak boleh menghentikan bootstrap aplikasi.
+    localStorage.removeItem(key)
+    return null
+  }
+}
+
+const token = readJsonStorage('token')
+const api = axios.create({
+  baseURL: base + '/api',
+  // Jangan biarkan halaman menunggu selamanya jika API sedang mati/lambat.
+  timeout: 10000,
+})
 
 // function setBase(url) {
 //   api = axios.create({ baseURL: url + '/api' })
@@ -59,7 +75,7 @@ const setToken = (token) => {
 }
 const deleteToken = () => delete api.defaults.headers.common['Authorization']
 
-const pathImg = SERV + '/storage/'
+const pathImg = process.env.STORAGE_URL || SERV + '/storage/'
 export default defineBoot(({ app }) => {
   app.config.globalProperties.$SERV = SERV
   app.config.globalProperties.$axios = axios

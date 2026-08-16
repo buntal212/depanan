@@ -93,9 +93,9 @@
                   <q-item-section avatar>
                     <q-avatar>
                       <q-img
-                        v-if="item.image"
-                        :src="getImageUrl(item.image)"
-                        @click="imgClick(getImageUrl(item.image))"
+                        v-if="item.image || item.gambar || item.rincians?.[0]?.gambar"
+                        :src="getImageUrl(item.image || item.gambar || item.rincians?.[0]?.gambar)"
+                        @click="imgClick(getImageUrl(item.image || item.gambar || item.rincians?.[0]?.gambar))"
                       />
                     </q-avatar>
                   </q-item-section>
@@ -260,10 +260,19 @@ onBeforeMount(() => {
 })
 // Fungsi untuk mendapatkan URL gambar
 const getImageUrl = (image) => {
+  if (image && typeof image === 'object' && !(image instanceof File) && !(image instanceof Blob)) {
+    image = image.gambar || image.image || image.path || image.url
+  }
+
   if (image instanceof File || image instanceof Blob) {
     return URL.createObjectURL(image)
   }
-  return pathImg + image // Jika gambar sudah ada di server
+
+  if (!image) return ''
+  if (/^https?:\/\//i.test(image)) return image
+
+  const cleanPath = String(image).replace(/^\/+/, '')
+  return cleanPath.startsWith('storage/') ? `${pathImg.replace(/storage\/$/, '')}/${cleanPath}` : `${pathImg}${cleanPath}`
 }
 const imgClick = (val) => {
   console.log('img', val)

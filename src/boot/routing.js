@@ -34,7 +34,16 @@ export default defineBoot(({ router, store }) => {
       }
 
       if (isTokenExpired()) {
-        app.logout()
+        // Bersihkan session terlebih dahulu agar guard tidak berputar:
+        // / -> /auth -> / -> /auth ketika request logout backend macet.
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        localStorage.removeItem('activeTime')
+        storage.deleteHeaderToken()
+        app.auth = false
+        app.token = null
+        app.user = null
+        app.stopInactivityTimer()
         next({ path: '/auth' })
         return
       }

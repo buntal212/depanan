@@ -26,14 +26,14 @@
                   </div>
                   <div class="col content-center">
                     <div class="text-bold" style="font-size: x-large">
-                      {{ profil.profilData.namatoko }}
+                      {{ profil.profilData?.namatoko || 'Nama Toko' }}
                     </div>
                     <div>
-                      {{ profil.profilData.alamat }}
+                      {{ profil.profilData?.alamat || '-' }}
                     </div>
                     <div>
-                      <span class="q-pr-sm">Telp : {{ profil.profilData.telepon }}</span>
-                      <span>Email : {{ profil.profilData.email }} </span>
+                      <span class="q-pr-sm">Telp : {{ profil.profilData?.telepon || '-' }}</span>
+                      <span>Email : {{ profil.profilData?.email || '-' }} </span>
                     </div>
                   </div>
                 </div>
@@ -110,7 +110,7 @@
               </div>
               <div class="col flex-end content-center text-center">
                 <div>Probolinggo, {{ dateFullFormat(store.dataprops?.tglorder) }}</div>
-                <div>{{ profil.profilData.namatoko }}</div>
+                <div>{{ profil.profilData?.namatoko || 'Nama Toko' }}</div>
                 <div style="height: 50px"></div>
                 <div>{{ profil.profilData.pemilik }}</div>
               </div>

@@ -108,7 +108,10 @@ export const useAdminDashboardStore = defineStore('admin-dashboard-store', {
         this.recentReceivablePayments = data.recentReceivablePayments
       } catch (error) {
         console.error('Gagal memuat dashboard:', error)
-        this.error = 'Data dashboard belum dapat dimuat dari server.'
+        this.error =
+          error.code === 'ECONNABORTED'
+            ? 'Server terlalu lama merespons. Silakan coba lagi.'
+            : 'Data dashboard belum dapat dimuat dari server.'
       } finally {
         this.loading = false
       }
