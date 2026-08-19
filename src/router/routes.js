@@ -139,6 +139,10 @@ const routes = [
         path: '/admin/settings/hakakses',
         component: () => import('pages/admin/settings/hakakses/IndexPage.vue'),
       },
+      {
+        path: '/admin/settings/lokasiabsen',
+        component: () => import('pages/admin/settings/lokasiabsen/IndexPage.vue'),
+      },
 
       // profile
       { path: '/admin/profile', component: () => import('pages/admin/profile/IndexPage.vue') },
