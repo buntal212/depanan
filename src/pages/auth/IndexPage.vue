@@ -38,10 +38,10 @@ const app = useAppStore()
 const form = ref({ username: '', password: '' })
 
 function onSubmit() {
-  const formData = new FormData()
-  formData.append('username', form.value.username)
-  formData.append('password', form.value.password)
-  app.login(formData)
+  app.login({
+    username: form.value.username,
+    password: form.value.password,
+  })
 }
 </script>
 

@@ -163,8 +163,14 @@ export const useAppStore = defineStore('app-store', {
       this.titleLoading = 'SEDANG SINKRON DATA'
       try {
         const resp = await api.post('/login', payload)
-            storage.setLocalToken(resp.data.token)
-            storage.setUser(resp.data.user)
+            const responseData = resp.data?.data ?? resp.data
+            const sessionToken = responseData?.token ?? responseData?.access_token
+            const sessionUser = responseData?.user ?? resp.data?.user
+            if (!sessionToken || !sessionUser) {
+              throw new Error(resp.data?.message || 'Response login tidak berisi token dan user')
+            }
+            storage.setLocalToken(sessionToken)
+            storage.setUser(sessionUser)
             localStorage.setItem('activeTime', new Date().toString())
             const hdd = storage.getLocalToken()
             const hddUser = storage.getUser()
@@ -186,7 +192,7 @@ export const useAppStore = defineStore('app-store', {
             return resp
       } catch (error) {
         console.error('Login error:', error)
-        notifError('Login Gagal')
+        notifError(error.response?.data?.message || error.message || 'Login Gagal')
         throw error
       } finally {
         this.loading = false
