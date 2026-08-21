@@ -17,6 +17,7 @@ export const useAdminFormMasterPegawaiStore = defineStore('admin-form-master-peg
       kodejabatan: 2,
       nohp: null,
       alamat: null,
+      shift: null,
     },
     loading: false,
     jabatan: [
@@ -24,6 +25,7 @@ export const useAdminFormMasterPegawaiStore = defineStore('admin-form-master-peg
       { keterangan: 'Pegawai', kode: 2 },
       { keterangan: 'Sales', kode: 3 },
     ],
+    shifts: [],
     payload: {
       submenu: '',
       menu: '',
@@ -36,12 +38,15 @@ export const useAdminFormMasterPegawaiStore = defineStore('admin-form-master-peg
 
   actions: {
     initReset(data) {
+      this.getShifts()
       if (data) {
         return new Promise((resolve) => {
           for (const key in this.form) {
             this.form[key] = data[key]
           }
           this.form.username = data?.username
+          // Password tidak pernah dikirim oleh backend; tampilkan sebagai password tersamarkan.
+          this.form.password = '••••••••'
           console.log(this.form)
 
           resolve()
@@ -57,7 +62,17 @@ export const useAdminFormMasterPegawaiStore = defineStore('admin-form-master-peg
           kodejabatan: 2,
           nohp: null,
           alamat: null,
+          shift: null,
         }
+      }
+    },
+
+    async getShifts() {
+      try {
+        const { data } = await api.get('/v1/master/shiftkerja/listdata', { params: { per_page: 100 } })
+        this.shifts = data?.data || []
+      } catch (error) {
+        notifError(error?.response?.data?.message || 'Data shift gagal dimuat')
       }
     },
 

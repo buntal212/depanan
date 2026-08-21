@@ -31,6 +31,7 @@
                 <app-input
                   class="col-6"
                   v-model="store.form.password"
+                  type="password"
                   label="Password"
                   :valid="{ required: false }"
                 />
@@ -47,6 +48,17 @@
                   :options="store?.jabatan"
                   option-label="keterangan"
                   @update:model-value="(val) => isiJabatan(val)"
+                />
+                <app-select
+                  class="col-6"
+                  v-model="store.form.shift"
+                  label="Shift kerja"
+                  :options="store.shifts"
+                  option-label="nama"
+                  option-value="id"
+                  emit-value
+                  map-options
+                  clearable
                 />
                 <app-input class="col-12" v-model="store.form.alamat" label="Alamat" />
                 <app-input
