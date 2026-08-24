@@ -133,6 +133,10 @@ const routes = [
         path: '/admin/laporan/hutangpiutang',
         component: () => import('pages/admin/laporan/hutangpiutang/IndexPage.vue'),
       },
+      {
+        path: '/admin/laporan/absensi',
+        component: () => import('pages/admin/laporan/absensi/IndexPage.vue'),
+      },
 
       // Settings
       {
@@ -171,6 +175,11 @@ const routes = [
     path: '/absensi',
     component: () => import('layouts/absensi/AbsenLayout.vue'),
     children: [{ path: '', component: () => import('pages/absensi/IndexPage.vue') }],
+  },
+  {
+    path: '/admin/laporan/absensi/cetak',
+    meta: { requireAuth: true },
+    component: () => import('pages/admin/laporan/absensi/PrintPage.vue'),
   },
 
   // Always leave this as last one,
