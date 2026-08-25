@@ -52,6 +52,10 @@ const routes = [
 
       //Transaksi
       {
+        path: '/admin/transaksi/absensi',
+        component: () => import('pages/admin/transaksi/absensi/IndexPage.vue'),
+      },
+      {
         path: '/admin/transaksi/orderbarang',
         component: () => import('pages/admin/transaksi/orderbarang/IndexPage.vue'),
       },
