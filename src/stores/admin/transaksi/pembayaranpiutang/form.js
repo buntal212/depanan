@@ -13,6 +13,9 @@ export const useAdminFormTransaksiPembayaranPiutangStore = defineStore(
       loadingcaripiutang: false,
       loadingsimpan: false,
       itemPembayaranpiutang: null,
+      dialogRiwayat: false,
+      loadingRiwayat: false,
+      riwayatNota: null,
       items: [],
       rinci: [],
       form: {
@@ -44,6 +47,20 @@ export const useAdminFormTransaksiPembayaranPiutangStore = defineStore(
         } catch (error) {
           console.log(error)
           this.loadingcaripiutang = false
+        }
+      },
+
+      async getRiwayatNota(noPenjualan) {
+        this.loadingRiwayat = true
+        this.riwayatNota = null
+        try {
+          const { data } = await api.get(
+            `/v1/transaksi/pembayaranpiutang/riwayat-nota/${encodeURIComponent(noPenjualan)}`,
+          )
+          this.riwayatNota = data.data || null
+          this.dialogRiwayat = true
+        } finally {
+          this.loadingRiwayat = false
         }
       },
 

@@ -93,6 +93,17 @@
                   <q-item-section side>
                     <div class="q-gutter-sm">
                       <q-btn
+                        flat
+                        round
+                        size="md"
+                        color="primary"
+                        icon="history"
+                        aria-label="Buka histori pembayaran hutang"
+                        @click="bukaRiwayatHutang(item.nopenerimaan)"
+                      >
+                        <q-tooltip>Histori pembayaran hutang ini</q-tooltip>
+                      </q-btn>
+                      <q-btn
                         :loading="
                           storeform.loadingsimpan &&
                           storeform.form.nopenerimaan === item?.nopenerimaan
@@ -112,6 +123,60 @@
           </q-list>
         </div>
       </q-card-section>
+    </q-card>
+  </q-dialog>
+
+  <q-dialog v-model="storeform.dialogRiwayat">
+    <q-card style="width: 900px; max-width: 96vw">
+      <q-card-section class="row items-center justify-between q-pb-sm">
+        <div>
+          <div class="text-h6">Rincian Pembayaran Hutang</div>
+          <div class="text-caption">Histori pembayaran per No. Penerimaan</div>
+        </div>
+        <q-btn flat round dense icon="close" v-close-popup aria-label="Tutup dialog" />
+      </q-card-section>
+      <q-separator />
+      <q-card-section v-if="storeform.loadingRiwayat" class="text-center q-py-xl">
+        <q-spinner-dots color="primary" size="36px" />
+      </q-card-section>
+      <q-card-section v-else-if="!storeform.riwayatHutang" class="text-center text-grey q-py-xl">
+        Belum ada pembayaran untuk hutang ini.
+      </q-card-section>
+      <template v-else>
+        <q-card-section class="q-pa-md">
+          <div class="row q-col-gutter-md">
+            <div class="col-12 col-sm-8">
+              <q-card flat bordered class="history-info-card full-height">
+                <q-card-section class="q-pa-sm">
+                  <div class="text-caption text-grey-6">Supplier</div>
+                  <div class="text-subtitle1 text-weight-bold">{{ storeform.riwayatHutang.nama_supplier || '-' }}</div>
+                  <div class="text-caption text-grey-6 q-mt-sm">No. Penerimaan</div>
+                  <div class="text-weight-bold">{{ storeform.riwayatHutang.nopenerimaan }}</div>
+                </q-card-section>
+              </q-card>
+            </div>
+            <div class="col-12 col-sm-4">
+              <q-card flat bordered class="history-info-card full-height">
+                <q-card-section class="q-pa-sm">
+                  <div class="text-caption text-grey-6">Tanggal Penerimaan</div>
+                  <div class="text-subtitle1 text-weight-bold">{{ humanDate(storeform.riwayatHutang.tgl_penerimaan) }}</div>
+                  <div class="text-caption text-grey-6 q-mt-sm">No. Faktur</div>
+                  <div class="text-weight-bold">{{ storeform.riwayatHutang.nofaktur || '-' }}</div>
+                </q-card-section>
+              </q-card>
+            </div>
+            <div class="col-12 col-sm-4"><q-card flat bordered class="history-money-card full-height"><q-card-section class="q-pa-sm"><div class="text-caption text-grey-6">Total Hutang</div><div class="text-subtitle1 text-weight-bold">{{ formatRpDouble(storeform.riwayatHutang.total_hutang) }}</div></q-card-section></q-card></div>
+            <div class="col-12 col-sm-4"><q-card flat bordered class="history-money-card full-height"><q-card-section class="q-pa-sm"><div class="text-caption text-grey-6">Total Dibayar</div><div class="text-subtitle1 text-weight-bold text-positive">{{ formatRpDouble(storeform.riwayatHutang.total_dibayar) }}</div></q-card-section></q-card></div>
+            <div class="col-12 col-sm-4"><q-card flat bordered class="history-money-card full-height"><q-card-section class="q-pa-sm"><div class="text-caption text-grey-6">Sisa Hutang</div><div class="text-subtitle1 text-weight-bold text-negative">{{ formatRpDouble(storeform.riwayatHutang.sisa_hutang) }}</div></q-card-section></q-card></div>
+          </div>
+        </q-card-section>
+        <q-separator />
+        <q-card-section class="q-py-sm"><div class="text-subtitle2 text-weight-bold">Detail Pembayaran ({{ storeform.riwayatHutang.rincian.length }})</div></q-card-section>
+        <q-markup-table flat dense wrap-cells>
+          <thead><tr><th class="text-left">Tanggal Bayar</th><th class="text-left">No. Pembayaran</th><th class="text-left">Cara Bayar</th><th class="text-left">Keterangan</th><th class="text-right">Nominal Bayar</th></tr></thead>
+          <tbody><tr v-for="rincian in storeform.riwayatHutang.rincian" :key="rincian.id"><td>{{ humanDate(rincian.tgl_bayar) }}</td><td>{{ rincian.nopembayaran || '-' }}</td><td>{{ rincian.cara_bayar || '-' }}</td><td>{{ rincian.keterangan || '-' }}</td><td class="text-right text-weight-bold">{{ formatRpDouble(rincian.jumlah) }}</td></tr></tbody>
+        </q-markup-table>
+      </template>
     </q-card>
   </q-dialog>
 </template>
@@ -162,4 +227,18 @@ function onSubmit(item) {
     storeform.simpan()
   }
 }
+
+async function bukaRiwayatHutang(noPenerimaan) {
+  try {
+    await storeform.getRiwayatHutang(noPenerimaan)
+  } catch (error) {
+    notifError(error?.response?.data?.message || 'Gagal memuat rincian pembayaran hutang.')
+  }
+}
 </script>
+
+<style scoped>
+.history-info-card,
+.history-money-card { min-height: 76px; }
+.history-money-card .q-card__section { text-align: right; }
+</style>

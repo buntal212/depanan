@@ -138,6 +138,10 @@ const routes = [
         component: () => import('pages/admin/laporan/hutangpiutang/IndexPage.vue'),
       },
       {
+        path: '/admin/laporan/pembayaran-piutang',
+        component: () => import('pages/admin/laporan/pembayaranpiutang/IndexPage.vue'),
+      },
+      {
         path: '/admin/laporan/absensi',
         component: () => import('pages/admin/laporan/absensi/IndexPage.vue'),
       },
