@@ -59,10 +59,10 @@ export default defineConfig((ctx) => {
       // publicPath: '/',
       // analyze: true,
       env: {
-        API: env.VITE_SERV || (ctx?.dev ? 'http://localhost:8183' : 'https://api.jangurkeramik.my.id'),
+        API: env.VITE_SERV || (ctx?.dev ? 'http://localhost:8183' : 'https://apijangur.jangur-keramik.my.id'),
         STORAGE_URL:
           env.VITE_STORAGE_URL ||
-          `${env.VITE_SERV || (ctx?.dev ? 'http://localhost:8183' : 'https://api.jangurkeramik.my.id')}/storage/`,
+          `${env.VITE_SERV || (ctx?.dev ? 'http://localhost:8183' : 'https://apijangur.jangur-keramik.my.id')}/storage/`,
         //: 'http://api.jangur.net:8111', buat server
 
         WS: ctx.dev ? 'https://socket.jangurkeramik.my.id' : 'https://socket.jangurkeramik.my.id',
