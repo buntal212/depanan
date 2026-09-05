@@ -25,8 +25,25 @@ jobs:
       - name: Build frontend
         run: npm run build
 
-      # Bersihkan hasil build lama.
-      # File konfigurasi aaPanel/Nginx tetap dipertahankan.
+      - name: Cek SSH key GitHub
+        shell: bash
+        env:
+          DEPLOY_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        run: |
+          set -e
+
+          printf '%s\n' "$DEPLOY_KEY" > /tmp/deploy_key
+          chmod 600 /tmp/deploy_key
+
+          echo "========================================"
+          echo "Fingerprint key yang dipakai GitHub:"
+          echo "========================================"
+
+          ssh-keygen -y -f /tmp/deploy_key > /tmp/deploy_key.pub
+          ssh-keygen -lf /tmp/deploy_key.pub
+
+          rm -f /tmp/deploy_key /tmp/deploy_key.pub
+
       - name: Bersihkan build lama
         uses: appleboy/ssh-action@v1
         with:
@@ -73,7 +90,8 @@ jobs:
 
             test -f "$WEBROOT/index.html"
 
-            echo "================================="
+            echo "========================================"
             echo "DEPLOY BERHASIL"
-            echo "================================="
+            echo "========================================"
+
             ls -lah "$WEBROOT"
