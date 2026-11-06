@@ -17,17 +17,24 @@
             <div class="row q-col-gutter-md justify-around">
               <div :class="`col-${isMobile ? 12 : 6}`" class="row q-col-gutter-md">
                 <app-input
-                  class="col-12"
-                  v-model="store.form.nama"
-                  label="Nama Pelanggan"
+                  class="col-6"
+                  v-model="store.form.nama_toko"
+                  label="Nama Toko"
                   :valid="{ required: false }"
                 />
                 <app-input
-                  class="col-12"
-                  v-model="store.form.telepon"
-                  :valid="{ number: true }"
-                  label="Telepon"
+                  class="col-6"
+                  v-model="store.form.nama_owner"
+                  label="Nama Owner"
                 />
+                <app-input
+                  class="col-6"
+                  v-model="store.form.no_tlp"
+                  label="No. Tlp"
+                />
+                <app-input class="col-6" v-model="store.form.no_ktp" label="No. KTP" />
+                <app-input class="col-12" v-model="store.form.no_npwp" label="No. NPWP" />
+                <app-input class="col-12" v-model="store.form.alamat" label="Alamat" />
                 <app-input class="col-6" v-model="store.form.namabank" label="Nama Bank" />
                 <app-input
                   class="col-6"
@@ -42,8 +49,6 @@
                     }
                   "
                 />
-                <app-input class="col-12" v-model="store.form.alamat" label="Alamat" />
-
                 <div class="col-12">
                   <q-separator class="q-my-md" />
                   <app-btn

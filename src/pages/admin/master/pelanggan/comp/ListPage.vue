@@ -60,13 +60,13 @@
                   @mouseleave="hoveredId = null"
                 >
                   <q-item-section avatar>
-                    <q-avatar color="yellow-9" text-color="white">{{ item.nama[0] }}</q-avatar>
+                    <q-avatar color="yellow-9" text-color="white">{{ item?.nama_toko?.[0] || item?.nama?.[0] || '?' }}</q-avatar>
                   </q-item-section>
                   <q-item-section>
-                    <q-item-label lines="1">{{ item?.nama }}</q-item-label>
+                    <q-item-label lines="1">{{ item?.nama_toko || item?.nama }}</q-item-label>
                     <q-item-label caption lines="2">
                       <span class="text-weight-bold"
-                        >{{ item?.telepon }} - Norek: {{ item?.norek }} ({{ item?.namabank }})
+                        >{{ item?.nama_owner || '-' }} · {{ item?.no_tlp || item?.telepon || '-' }}
                       </span>
                     </q-item-label>
                   </q-item-section>
