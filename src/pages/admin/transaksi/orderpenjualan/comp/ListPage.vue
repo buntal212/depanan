@@ -15,42 +15,68 @@
                       style="min-width: 350px"
                       :debounce="300"
                       @update:model-value="
-                        (e) => {
-                          infiniteScroll.reset()
-                          store.getList()
-                        }
+                        refreshList
                       "
                     />
-                    <div class="q-pl-sm" />
-                    <!-- <q-btn-dropdown
-                      class="text-yellow-8"
-                      color="grey-10"
-                      rounded
-                      fab-mini
-                      glossy
-                      dropdown-icon="filter_alt"
-                      menu-self="bottom start"
-                      transition-show="scale"
-                      transition-hide="scale"
+                    <q-input
+                      v-model="store.params.tanggal_mulai"
+                      class="q-ml-sm"
+                      style="width: 165px"
+                      dense
+                      outlined
+                      readonly
+                      clearable
+                      label="Dari tanggal"
+                      @update:model-value="refreshList"
                     >
-                      <q-list class="justify-center q-pr-sm">
-                        <q-item
-                          v-for="item in store.filterstok"
-                          :key="item.value"
-                          clickable
-                          v-close-popup
-                          @click="filter(item)"
-                        >
-                          <q-item-section>
-                            <q-item-label>{{ item.label }}</q-item-label>
-                          </q-item-section>
-                        </q-item>
-                      </q-list>
-                    </q-btn-dropdown> -->
-                    <div class="q-pl-sm" />
-                    <div>
-                      <q-item-label>{{ label }}</q-item-label>
-                    </div>
+                      <template #append>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-date
+                              v-model="store.params.tanggal_mulai"
+                              mask="YYYY-MM-DD"
+                              @update:model-value="refreshList"
+                            />
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      v-model="store.params.tanggal_selesai"
+                      class="q-ml-sm"
+                      style="width: 165px"
+                      dense
+                      outlined
+                      readonly
+                      clearable
+                      label="Sampai tanggal"
+                      @update:model-value="refreshList"
+                    >
+                      <template #append>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-date
+                              v-model="store.params.tanggal_selesai"
+                              mask="YYYY-MM-DD"
+                              @update:model-value="refreshList"
+                            />
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-select
+                      v-model="store.params.status_order"
+                      class="q-ml-sm"
+                      style="width: 190px"
+                      dense
+                      outlined
+                      clearable
+                      emit-value
+                      map-options
+                      label="Status order"
+                      :options="statusOptions"
+                      @update:model-value="refreshList"
+                    />
                   </div>
                 </div>
 
@@ -85,24 +111,34 @@
                   transition="fade"
                   class="example-item"
                 >
-                  
                   <q-card
                     flat
                     class="cursor-pointer q-pa-sm q-mb-sm"
+                    @click="emits('edit', item)"
                     @mouseover="hoveredId = i"
                     @mouseleave="hoveredId = null"
                     :class="hoveredId === i ? 'bg-grey-9 text-white' : ''"
-                    style="transition: all 0.2s ease; border-radius: 10px;"
+                    style="transition: all 0.2s ease; border-radius: 10px"
                   >
                     <!-- Order Header -->
                     <q-card-section class="q-pb-sm flex justify-between items-center q-pa-sm">
                       <div>
-                        <div class="text-body2 text-weight-medium" :class="$q.dark.isActive? 'text-grey-5': 'text-dark'">Order # {{ item?.noorder }}</div>
-                        <div class="text-caption ">
-                          Tanggal : {{ humanDate(item?.tglorder) }} Jam : {{ jamTnpDetik(item?.tglorder) }}
+                        <div
+                          class="text-body2 text-weight-medium"
+                          :class="$q.dark.isActive ? 'text-grey-5' : 'text-dark'"
+                        >
+                          Order # {{ item?.noorder }}
+                        </div>
+                        <div class="text-caption">
+                          Tanggal : {{ humanDate(item?.tglorder) }} Jam :
+                          {{ jamTnpDetik(item?.tglorder) }}
+                        </div>
+                        <div class="text-caption">
+                          Pelanggan: {{ item?.pelanggan?.nama || '-' }} · Sales:
+                          {{ item?.sales?.nama || '-' }}
                         </div>
                       </div>
-                      <BadgeStatusOrder :status="item?.status_order" /> 
+                      <BadgeStatusOrder :status="item?.status_order" />
                     </q-card-section>
                     <q-separator />
 
@@ -111,7 +147,7 @@
                       <div class="flex justify-between items-center full-width">
                         <div class="row items-center q-col-gutter-md">
                           <!-- Thumbnails -->
-                          <div class="flex items-center" style="margin-left: 5px;">
+                          <div class="flex items-center" style="margin-left: 5px">
                             <div class="flex avatar-wrapper avatar-group">
                               <q-img
                                 v-for="(img, index) in item.rincians?.length"
@@ -119,7 +155,7 @@
                                 src="/images/No-Image.svg"
                                 class="avatar-img"
                                 :class="{ 'ml-negative': index !== 0 }"
-                                :style="`border: 2px solid ${$q.dark.isActive? 'white':'gray'};`"
+                                :style="`border: 2px solid ${$q.dark.isActive ? 'white' : 'gray'};`"
                               />
                             </div>
                           </div>
@@ -127,26 +163,26 @@
                           <div class="col">
                             <div class="row items-center q-gutter-xs text-body">
                               <q-icon name="shopping_cart"></q-icon>
-                                <span>{{ item?.rincians?.length }} Rincian item</span>
+                              <span>{{ item?.rincians?.length }} Rincian item</span>
                             </div>
                             <div class="text-base text-weight-bold text-grey-7">
-                              Total : Rp {{ formatRp(item.total_harga )}}
+                              Total : Rp {{ formatRp(item.total_harga) }}
                             </div>
                           </div>
                         </div>
-                        <app-btn-edit-list @click="emits('edit', item)" tooltip="Atur Order" />
+                        <app-btn-edit-list
+                          @click.stop="emits('edit', item)"
+                          tooltip="Lihat detail order"
+                        />
                       </div>
                     </q-card-section>
                   </q-card>
-
-
-
                 </q-intersection>
               </template>
 
               <template v-else #default>
                 <div class="col full-height">
-                  <AppEmptyList 
+                  <AppEmptyList
                     empty-title="Data Order Penjualan tidak ditemukan"
                     empty-description="Harap menggunakan Filter atau Pencarian Data yang valid"
                   />
@@ -157,12 +193,9 @@
                 <div v-if="!store.isError" class="text-center q-my-md">
                   <q-spinner-dots color="yellow-9" size="40px" />
                 </div>
-                
               </template>
             </q-infinite-scroll>
           </div>
-
-          
         </q-list>
       </div>
     </div>
@@ -175,30 +208,38 @@ import { useAdminOrderPenjualanStore } from 'src/stores/admin/transaksi/orderpen
 import { useQuasar } from 'quasar'
 import { humanDate, jamTnpDetik, formatRp } from 'src/modules/formatter'
 
-const BadgeStatusOrder = defineAsyncComponent(()=> import('./BadgeStatusOrder.vue'))
+const BadgeStatusOrder = defineAsyncComponent(() => import('./BadgeStatusOrder.vue'))
 
 const store = useAdminOrderPenjualanStore()
 const { getList } = store
-const emits = defineEmits(['add','edit'])
+const emits = defineEmits(['add', 'edit'])
 const $q = useQuasar()
 
 const scrollTarget = ref(null)
 const infiniteScroll = ref(null)
 const hoveredId = ref(null)
-const label = ref('All Stock')
+const statusOptions = [
+  { label: 'Semua status', value: null },
+  { label: 'Draf', value: '1' },
+  { label: 'Diproses', value: '2' },
+  { label: 'Disetujui', value: '3' },
+  { label: 'Tunggu Pengiriman', value: '4' },
+  { label: 'Dikirim', value: '5' },
+  { label: 'Selesai', value: '6' },
+  { label: 'Batal Order', value: '9' },
+]
+
+const refreshList = () => {
+  infiniteScroll.value?.reset()
+  getList()
+}
 
 onBeforeMount(() => {
   getList()
 })
-
-
-
-
 </script>
 
-
 <style lang="scss" scoped>
-
 .avatar-wrapper {
   display: inline-flex;
   align-items: center;
@@ -219,7 +260,6 @@ onBeforeMount(() => {
 .ml-negative {
   margin-left: -30px;
 }
-
 
 .example-item {
   height: 155px;

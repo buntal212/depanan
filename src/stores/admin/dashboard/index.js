@@ -33,6 +33,9 @@ export const useAdminDashboardStore = defineStore('admin-dashboard-store', {
     recentPurchases: [],
     recentDebtPayments: [],
     recentReceivablePayments: [],
+    piutangJatuhTempo: [],
+    hutangJatuhTempo: [],
+    batasJatuhTempo: null,
   }),
 
   getters: {
@@ -106,6 +109,9 @@ export const useAdminDashboardStore = defineStore('admin-dashboard-store', {
         this.recentPurchases = data.recentPurchases
         this.recentDebtPayments = data.recentDebtPayments
         this.recentReceivablePayments = data.recentReceivablePayments
+        this.piutangJatuhTempo = data?.jatuhTempo?.piutang || []
+        this.hutangJatuhTempo = data?.jatuhTempo?.hutang || []
+        this.batasJatuhTempo = data?.jatuhTempo?.batasTanggal || null
       } catch (error) {
         console.error('Gagal memuat dashboard:', error)
         this.error =

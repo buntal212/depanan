@@ -11,12 +11,12 @@
         clearable
         valid
         :options="store.sales"
-        :disable="store?.item?.detail?.length>0"
+        :disable="store.dariOrder || store?.item?.detail?.length > 0"
       />
       </div>
       <div class="col-6 text-right">
 
-        <app-btn class="q-mr-xs" icon="restore" tooltip="Nota Baru" color="green" @click="()=>{
+        <app-btn v-if="!store.dariOrder" class="q-mr-xs" icon="restore" tooltip="Nota Baru" color="green" @click="()=>{
           store.noNota=null
           store.resetForm()
           store.item=null
@@ -44,13 +44,14 @@
         label="Cari barang"
         :filter-min="3"
         filter-by="namabarang"
+        :disable="store.dariOrder"
 
         @selected="selected($event)"
         @on-input="onInput($event)"
       />
     </div>
     <div class="col-auto" style="width: 15%;">
-      <app-input ref="refJumlahB" v-model="store.form.jumlahB" :label="'Jumlah ('+ (store?.barang?.satuan_b??'')+')'"  :autofocus="false" @keyup.enter.stop="onEnterinput()"
+      <app-input ref="refJumlahB" v-model="store.form.jumlahB" :label="'Jumlah ('+ (store?.barang?.satuan_b??'')+')'" :autofocus="false" :readonly="store.dariOrder" @keyup.enter.stop="onEnterinput()"
       @clear=setNol(strJumlahB) @update:model-value="(val)=>{
         const _removedZeros = val?.replace(/^0+/, '')
 
@@ -60,7 +61,7 @@
       />
     </div>
     <div class="col-auto" style="width: 15%;">
-      <app-input ref="refJumlah" v-model="store.form.jumlahK" :label="'Jumlah ('+ (store?.barang?.satuan_k??'')+')'"  :autofocus="false" @keyup.enter.stop="onEnterinput()"
+      <app-input ref="refJumlah" v-model="store.form.jumlahK" :label="'Jumlah ('+ (store?.barang?.satuan_k??'')+')'" :autofocus="false" :readonly="store.dariOrder" @keyup.enter.stop="onEnterinput()"
        @clear=setNol(strJumlah) @update:model-value="(val)=>{
         const _removedZeros = val?.replace(/^0+/, '')
         store.setForm('jumlahK',_removedZeros)
@@ -75,19 +76,19 @@
       <app-input-rp currency outlined v-model="store.form.jumlah" :label="'(Stok'+ (store?.barang?.jumlah_k??0)+')'" :autofocus="false" readonly  />
     </div>
     <div class="col-auto" style="width: 15%;">
-      <app-input-rp v-if="store.form.jumlahB>0 && store.form.jumlahK<=0" currency v-model="store.form.hargaJualB" label="Harga Jual" outlined :autofocus="false" @keyup.enter.stop="onEnterinput()"
+      <app-input-rp v-if="store.form.jumlahB>0 && store.form.jumlahK<=0" currency v-model="store.form.hargaJualB" label="Harga Jual" outlined :autofocus="false" :readonly="store.dariOrder" @keyup.enter.stop="onEnterinput()"
       @update:model-value="(val)=>{
         const jual=olahUang(val)
         store.setForm('harga_jual',jual/store.form.isi)
         console.log('gede', jual,store.form.harga_jual);
 
     }" />
-      <app-input-rp v-else currency v-model="store.form.harga_jual" label="Harga Jual" outlined :autofocus="false" @keyup.enter.stop="onEnterinput()"
+      <app-input-rp v-else currency v-model="store.form.harga_jual" label="Harga Jual" outlined :autofocus="false" :readonly="store.dariOrder" @keyup.enter.stop="onEnterinput()"
       @clear="()=>{
       store.setForm('harga_jual',isNaN(store?.barang?.hargajual1)?0:parseFloat(store?.barang?.hargajual1))
     }" />
     </div>
-    <div class="col-auto" style="width: 10%;"><app-input-rp currency outlined v-model="store.form.diskon" label="Diskon (Rp)" :autofocus="false" @keyup.enter.stop="onEnterinput()" @clear=setNol(strDsikon) /></div>
+    <div class="col-auto" style="width: 10%;"><app-input-rp currency outlined v-model="store.form.diskon" label="Diskon (Rp)" :autofocus="false" :readonly="store.dariOrder" @keyup.enter.stop="onEnterinput()" @clear=setNol(strDsikon) /></div>
 
   </div>
 </template>

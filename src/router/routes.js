@@ -159,6 +159,10 @@ const routes = [
         path: '/admin/settings/lokasiabsen',
         component: () => import('pages/admin/settings/lokasiabsen/IndexPage.vue'),
       },
+      {
+        path: '/admin/settings/ppn',
+        component: () => import('pages/admin/settings/ppn/IndexPage.vue'),
+      },
 
       // profile
       { path: '/admin/profile', component: () => import('pages/admin/profile/IndexPage.vue') },

@@ -50,6 +50,7 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
     dispTempo: null,
     noNota: null,
     item: null,
+    dariOrder: false,
     sales: [],
     list: useListPenjualanStore(),
   }),
@@ -78,11 +79,13 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
       this.openPembayaran = false
       this.item = null
       this.noNota = null
+      this.dariOrder = false
       this.resetForm()
       this.form.sales_id = null
       this.formPembayaran = {
         no_penjualan: null,
-        cara_bayar: '5', // tunai atau kredit, tunai flag 5, kredit 2
+        flag: '5',
+        cara_bayar: 'cash',
         bayar: 0,
         total: 0,
         kembali: 0,
@@ -103,6 +106,49 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
       this.dispTempo = null
       this.item = null
       this.openDialogTempo = false
+    },
+    pastikanSalesTersedia(sales) {
+      if (!sales?.id || this.sales.some((item) => String(item.id) === String(sales.id))) return
+      this.sales = [sales, ...this.sales]
+    },
+    gunakanOrderPenjualan(penjualan) {
+      this.resetPembayaran()
+      this.dariOrder = true
+      this.noNota = penjualan?.no_penjualan || null
+      this.item = penjualan || null
+      this.form.sales_id = penjualan?.sales_id || null
+      this.form.pelanggan_id = penjualan?.pelanggan_id || null
+      this.formPembayaran.pelanggan_id = penjualan?.pelanggan_id || null
+      this.formPembayaran.dataPelanggan = {
+        nama: penjualan?.pelanggan?.nama || '',
+        tlp: penjualan?.pelanggan?.telepon || '',
+        alamat: penjualan?.pelanggan?.alamat || '',
+      }
+      this.pastikanSalesTersedia(penjualan?.sales)
+      this.siapkanPembayaran(penjualan)
+    },
+    siapkanPembayaran(penjualan) {
+      const order = penjualan?.order_sumber
+      const sistemBayar = order?.sistem_bayar
+      const flag = sistemBayar === 'tempo' ? '2' : sistemBayar === 'dp' ? '7' : '5'
+      const total = Number(penjualan?.total || 0)
+
+      this.item = penjualan || null
+      this.noNota = penjualan?.no_penjualan || null
+      this.formPembayaran = {
+        no_penjualan: penjualan?.no_penjualan || null,
+        pelanggan_id: penjualan?.pelanggan_id || null,
+        flag,
+        cara_bayar: sistemBayar === 'tempo' ? '' : (order?.cara_bayar || 'cash'),
+        bayar: sistemBayar === 'dp' ? Number(order?.down_payment || 0) : sistemBayar === 'tempo' ? 0 : total,
+        total,
+        kembali: 0,
+        dataPelanggan: {
+          nama: penjualan?.pelanggan?.nama || '',
+          tlp: penjualan?.pelanggan?.telepon || '',
+          alamat: penjualan?.pelanggan?.alamat || '',
+        },
+      }
     },
     async simpanDetail() {
       this.loading = true
@@ -176,7 +222,8 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
 
       await api.get('v1/transaksi/penjualan/list-sales').then((resp) => {
         console.log('sales', resp)
-        this.sales = resp?.data
+        this.sales = Array.isArray(resp?.data) ? resp.data : []
+        this.pastikanSalesTersedia(this.item?.sales)
       })
     },
     simpanPembayaran() {

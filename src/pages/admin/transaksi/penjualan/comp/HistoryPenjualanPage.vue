@@ -188,6 +188,14 @@
                           class="q-mr-xs"
                           @click="lihatCetak(item)"
                         ></app-btn-cetak>
+                        <app-btn
+                          v-if="item?.flag !== null && String(item?.flag) !== '6'"
+                          class="q-mr-xs"
+                          icon="local_shipping"
+                          color="teal"
+                          tooltip="Cetak Surat Jalan"
+                          @click="lihatSuratJalan(item)"
+                        />
                       </div>
                     </q-item-section>
 
@@ -306,6 +314,7 @@
     </div>
   </div>
   <DialogCetak v-model="store.opendialogCetakkedua" />
+  <DialogSuratJalan v-model="store.openDialogSuratJalan" />
 </template>
 
 <script setup>
@@ -320,6 +329,9 @@ import { computed, defineAsyncComponent, onBeforeMount, ref, shallowRef } from '
 const store = useListPenjualanStore()
 const app = useAppStore()
 const DialogCetak = shallowRef(defineAsyncComponent(() => import('./cetak/DialogCetak.vue')))
+const DialogSuratJalan = shallowRef(
+  defineAsyncComponent(() => import('./cetak/DialogSuratJalan.vue')),
+)
 const scrollTarget = ref(null)
 const infiniteScroll = ref(null)
 const hoveredId = ref(null)
@@ -356,7 +368,11 @@ function loadMore(index, done) {
 function lihatCetak(item) {
   store.itemCetak = item
   store.opendialogCetakkedua = true
-  console.log('itemCetak di list', store.itemCetak)
+}
+
+function lihatSuratJalan(item) {
+  store.itemSuratJalan = item
+  store.openDialogSuratJalan = true
 }
 
 function statusFlag(item) {

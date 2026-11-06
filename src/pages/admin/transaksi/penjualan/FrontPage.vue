@@ -16,6 +16,9 @@
       </div>
       <div class="col-10">
         <div class="row justify-center text-weight-bold text-h5 q-my-xs">Penjualan</div>
+        <div v-if="dariOrder" class="row justify-center text-primary text-weight-medium q-mb-xs">
+          Melanjutkan Order # {{ dariOrder }}
+        </div>
         <div class="row justify-center text-weight-bold q-my-xs">
           <div class="col-5 text-center">
             <div class="row justify-center q-col-gutter-x-xs">
@@ -37,10 +40,7 @@
           color="blue"
           @click="
             () => {
-              store.openPembayaran = true
-              store.formPembayaran.total = store.item?.total
-              store.formPembayaran.total_diskon = store.item?.total_diskon
-              store.formPembayaran.no_penjualan = store.noNota
+              bukaPembayaran(store.item)
               console.log('store.formPembayaran', store.formPembayaran)
             }
           "
@@ -97,6 +97,7 @@ import { formatDouble } from 'src/modules/formatter'
 import { useFromPenjualanStore } from 'src/stores/admin/transaksi/penjualan/form'
 import { useListPenjualanStore } from 'src/stores/admin/transaksi/penjualan/list'
 import { defineAsyncComponent, ref, shallowRef } from 'vue'
+import { useRoute } from 'vue-router'
 
 const FormPage = shallowRef(defineAsyncComponent(() => import('./comp/FormPage.vue')))
 const ListPage = shallowRef(defineAsyncComponent(() => import('./comp/ListPage.vue')))
@@ -110,25 +111,30 @@ const DialogCetak = shallowRef(defineAsyncComponent(() => import('./comp/cetak/D
 const DialogTempo = shallowRef(defineAsyncComponent(() => import('./comp/DialogTempo.vue')))
 
 const isList = ref(true)
+const route = useRoute()
+const dariOrder = route.query.dari_order || null
 const store = useFromPenjualanStore()
 const list = useListPenjualanStore()
+if (dariOrder) isList.value = false
 list.getList()
 store.getSales()
 function useNota(val) {
   // console.log('use nota',  val);
   isList.value = false
+  store.dariOrder = Boolean(val?.noorder) || String(val?.no_penjualan || '').startsWith('OPJ-')
   store.form.sales_id = val?.sales_id
   store.noNota = val?.no_penjualan
   store.item = val
+  store.pastikanSalesTersedia(val?.sales)
+  store.siapkanPembayaran(val)
 }
 function bayar(item) {
   console.log('bayar', item)
-  store.noNota = item?.no_penjualan
-  store.item = item
+  bukaPembayaran(item)
+}
+function bukaPembayaran(item) {
+  store.siapkanPembayaran(item)
   store.openPembayaran = true
-  store.formPembayaran.total = item?.total
-  store.formPembayaran.total_diskon = item?.total_diskon
-  store.formPembayaran.no_penjualan = item?.no_penjualan
 }
 function tempo(item) {
   store.formTempo.jml_tempo=30

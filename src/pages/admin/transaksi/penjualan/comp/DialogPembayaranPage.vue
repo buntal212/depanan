@@ -47,7 +47,7 @@
                       option-label="label"
                       option-value="value"
                       @update:model-value="selectCaraBayar"
-                      :disable="store.loadingPembayaran"
+                      :disable="store.loadingPembayaran || pembayaranOrderTerkunci"
                       :loading="store.loadingPembayaran"
                     />
                     <app-select
@@ -56,7 +56,7 @@
                       v-model="store.formPembayaran.cara_bayar"
                       label="Pilih Cara Bayar"
                       :options="['cash', 'transfer']"
-                      :disable="store.loadingPembayaran"
+                      :disable="store.loadingPembayaran || pembayaranOrderTerkunci"
                       :loading="store.loadingPembayaran"
                     />
                     <app-select-server
@@ -77,6 +77,18 @@
                       :disable="store.loadingPembayaran"
                       @update:model-value="setPelanggan"
                     />
+                    <div v-if="store.formPembayaran.pelanggan_id" class="col-12">
+                      <q-card flat bordered class="q-pa-sm">
+                        <div class="text-caption text-grey-6">Pelanggan dari order</div>
+                        <div class="text-weight-bold">
+                          {{ store?.item?.pelanggan?.nama || store.formPembayaran.dataPelanggan.nama || '-' }}
+                        </div>
+                        <div class="text-caption">
+                          {{ store?.item?.pelanggan?.telepon || store.formPembayaran.dataPelanggan.tlp || '-' }}
+                          · {{ store?.item?.pelanggan?.alamat || store.formPembayaran.dataPelanggan.alamat || '-' }}
+                        </div>
+                      </q-card>
+                    </div>
                     <template v-if="!store.formPembayaran.pelanggan_id">
                       <div class="col-12 q-mb-md">
                         <div class="row text-weight-bold q-mb-sm justify-center">
@@ -217,12 +229,13 @@ const store = useFromPenjualanStore()
 
 const storelist = useListPenjualanStore()
 
-const optionCaraBayar = ref([
+const optionCaraBayar = computed(() => [
   { label: 'Lunas', value: '5' },
   { label: 'Down Payment (DP)', value: '7' },
   { label: 'Tempo', value: '2' },
   // { label: 'Hutang', value: '2' },
 ])
+const pembayaranOrderTerkunci = computed(() => Boolean(store?.item?.order_sumber?.sistem_bayar))
 const refPelanggan = ref(null)
 function validasi(){
   let valid=false

@@ -158,6 +158,16 @@
               </div>
               <div class="q-pt-xs" style="border-top-style: dashed; border-width: 1px"></div>
               <div class="row full-width">
+                <span class="col-auto">Subtotal </span>
+                <q-space />
+                <span> {{ formatRpDouble(subtotalNota()) }}</span>
+              </div>
+              <div v-if="adaPpn()" class="row full-width">
+                <span class="col-auto">PPN ({{ formatDouble(ppnPersen()) }}%) </span>
+                <q-space />
+                <span> {{ formatRpDouble(ppnNominal()) }}</span>
+              </div>
+              <div class="row full-width text-bold">
                 <span class="col-auto">Total </span>
                 <q-space />
                 <span> {{ formatRpDouble(store.itemCetak?.total) }}</span>
@@ -445,14 +455,34 @@
                       <td colspan="5">
                         <div class="row justify-between">
                           <div class="flex-start">
+                            <span hidden></span>
+                          </div>
+                          <div class="text-bold flex-end q-pl-sm">SUBTOTAL</div>
+                        </div>
+                      </td>
+                      <td class="text-bold text-right">
+                        {{ formatRpDouble(subtotalNota()) }}
+                      </td>
+                    </tr>
+                    <tr v-if="adaPpn()">
+                      <td colspan="5">
+                        <div class="row justify-between">
+                          <div class="flex-start"><span hidden></span></div>
+                          <div class="text-bold flex-end q-pl-sm">PPN ({{ formatDouble(ppnPersen()) }}%)</div>
+                        </div>
+                      </td>
+                      <td class="text-bold text-right">{{ formatRpDouble(ppnNominal()) }}</td>
+                    </tr>
+                    <tr>
+                      <td colspan="5">
+                        <div class="row justify-between">
+                          <div class="flex-start">
                             Terbilang : {{ terbilangRupiah(store.itemCetak?.total) }} Rupiah,
                           </div>
                           <div class="text-bold flex-end q-pl-sm">TOTAL</div>
                         </div>
                       </td>
-                      <td class="text-bold text-right">
-                        {{ formatRpDouble(store.itemCetak?.total) }}
-                      </td>
+                      <td class="text-bold text-right">{{ formatRpDouble(store.itemCetak?.total) }}</td>
                     </tr>
                     <!-- <tr>
                       <td colspan="5">
@@ -614,6 +644,22 @@ function hitungSisa() {
   } else {
     return parseInt(store.itemCetak?.total) - parseInt(store.itemCetak?.bayar)
   }
+}
+function subtotalNota() {
+  const total = Number(store.itemCetak?.total || 0)
+  const ppn = Number(store.itemCetak?.ppn_nominal || 0)
+  return store.itemCetak?.subtotal === null || store.itemCetak?.subtotal === undefined
+    ? total - ppn
+    : Number(store.itemCetak.subtotal)
+}
+function ppnNominal() {
+  return Number(store.itemCetak?.ppn_nominal || 0)
+}
+function ppnPersen() {
+  return Number(store.itemCetak?.ppn_persen || 0)
+}
+function adaPpn() {
+  return ppnNominal() > 0
 }
 
 const printed = ref(false)

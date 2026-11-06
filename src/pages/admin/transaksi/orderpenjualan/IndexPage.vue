@@ -24,6 +24,7 @@
       @update-rincian="onUpdateRincian"
       @delete-rincian="onDeleteRincian" 
       @update-status="onUpdateStatus"
+      @setujui-draft="setujuiDraft"
     />
   </div>
 </template>
@@ -31,6 +32,7 @@
 <script setup>
 import { defineAsyncComponent, ref } from 'vue'
 import { useAdminOrderPenjualanStore } from 'src/stores/admin/transaksi/orderpenjualan/list'
+import { notifError } from 'src/modules/notifs'
 
 
 const ListPage = defineAsyncComponent(() => import('./comp/ListPage.vue'))
@@ -42,6 +44,18 @@ const openDialogOrder = ref(false)
 
 const storeList = useAdminOrderPenjualanStore()
 const { onUpdateRincian, onDeleteRincian, onUpdateStatus } = storeList
+
+const setujuiDraft = async (payload) => {
+  const hasil = await storeList.onUpdateStatus(payload)
+  if (!hasil?.order || !hasil?.penjualan) {
+    notifError('Draft penjualan belum berhasil dibuat. Silakan coba lagi.')
+    return
+  }
+
+  if (storeList.item?.id === hasil.order.id) {
+    storeList.item = { ...storeList.item, ...hasil.order }
+  }
+}
 </script>
 
 <style scoped></style>

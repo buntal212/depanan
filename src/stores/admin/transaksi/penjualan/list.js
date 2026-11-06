@@ -8,6 +8,7 @@ export const useListPenjualanStore = defineStore('list-penjualan-store', {
     loading: false,
     opendialogCetak: false,
     opendialogCetakkedua: false,
+    openDialogSuratJalan: false,
     items: [],
     meta: null,
     params: {
@@ -23,6 +24,7 @@ export const useListPenjualanStore = defineStore('list-penjualan-store', {
       to: date.formatDate(Date.now(), 'DD MMMM YYYY'),
     },
     itemCetak: [],
+    itemSuratJalan: null,
     flagOptions: [
       { label: 'Semua', value: 'semua' },
       { label: 'Lunas', value: '5' },

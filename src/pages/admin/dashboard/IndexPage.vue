@@ -112,6 +112,66 @@
       </div>
     </section>
 
+    <section class="row q-col-gutter-lg q-mb-lg">
+      <div class="col-12 col-lg-6">
+        <q-card flat bordered class="panel-card jatuh-tempo-card">
+          <q-card-section class="row items-center justify-between q-pb-sm">
+            <div>
+              <div class="text-subtitle1 text-weight-bold">Piutang Mendekati Jatuh Tempo</div>
+              <div class="text-caption text-grey-6">Sampai 7 hari ke depan, termasuk yang lewat tempo.</div>
+            </div>
+            <q-icon name="event" color="orange-4" size="28px" />
+          </q-card-section>
+          <q-separator dark />
+          <q-list v-if="store.piutangJatuhTempo.length" separator>
+            <q-item v-for="item in store.piutangJatuhTempo" :key="item.no_penjualan" dense>
+              <q-item-section>
+                <q-item-label class="text-weight-medium">{{ item.pihak }}</q-item-label>
+                <q-item-label caption>{{ item.no_penjualan }}</q-item-label>
+              </q-item-section>
+              <q-item-section side class="items-end">
+                <q-item-label class="text-weight-bold">{{ formatRupiah(item.sisa) }}</q-item-label>
+                <q-badge :color="statusTempo(item.jatuh_tempo).color" :label="statusTempo(item.jatuh_tempo).label" />
+              </q-item-section>
+            </q-item>
+          </q-list>
+          <q-card-section v-else class="text-center text-grey-6 q-py-lg">Tidak ada piutang yang mendekati jatuh tempo.</q-card-section>
+          <q-card-actions align="right">
+            <q-btn flat dense color="primary" label="Lihat Piutang" to="/admin/transaksi/pembayaran-piutang" />
+          </q-card-actions>
+        </q-card>
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <q-card flat bordered class="panel-card jatuh-tempo-card">
+          <q-card-section class="row items-center justify-between q-pb-sm">
+            <div>
+              <div class="text-subtitle1 text-weight-bold">Hutang Mendekati Jatuh Tempo</div>
+              <div class="text-caption text-grey-6">Sampai 7 hari ke depan, termasuk yang lewat tempo.</div>
+            </div>
+            <q-icon name="event_busy" color="red-4" size="28px" />
+          </q-card-section>
+          <q-separator dark />
+          <q-list v-if="store.hutangJatuhTempo.length" separator>
+            <q-item v-for="item in store.hutangJatuhTempo" :key="item.nomor" dense>
+              <q-item-section>
+                <q-item-label class="text-weight-medium">{{ item.pihak }}</q-item-label>
+                <q-item-label caption>{{ item.nomor }}</q-item-label>
+              </q-item-section>
+              <q-item-section side class="items-end">
+                <q-item-label class="text-weight-bold">{{ formatRupiah(item.sisa) }}</q-item-label>
+                <q-badge :color="statusTempo(item.jatuh_tempo).color" :label="statusTempo(item.jatuh_tempo).label" />
+              </q-item-section>
+            </q-item>
+          </q-list>
+          <q-card-section v-else class="text-center text-grey-6 q-py-lg">Tidak ada hutang yang mendekati jatuh tempo.</q-card-section>
+          <q-card-actions align="right">
+            <q-btn flat dense color="primary" label="Lihat Hutang" to="/admin/transaksi/pembayaran-hutang" />
+          </q-card-actions>
+        </q-card>
+      </div>
+    </section>
+
     <section class="row q-col-gutter-lg q-mt-sm">
       <div v-for="list in recentLists" :key="list.title" class="col-12 col-lg-6">
         <recent-list
@@ -140,12 +200,17 @@ const todayLabel = new Intl.DateTimeFormat('id-ID', {
   month: 'long',
   year: 'numeric',
 }).format(new Date())
+const rupiahFormatter = new Intl.NumberFormat('id-ID', {
+  style: 'currency',
+  currency: 'IDR',
+  minimumFractionDigits: 0,
+})
 
 const summaryCards = computed(() => [
   {
     label: 'Total pendapatan',
     value: store.formattedTotalPendapatan,
-    caption: 'Akumulasi periode aktif',
+    caption: 'Bulan ini · tanpa PPN & setelah retur',
     icon: 'payments',
     color: '#2563eb',
     background: '#dbeafe',
@@ -153,7 +218,7 @@ const summaryCards = computed(() => [
   {
     label: 'Transaksi',
     value: numberFormatter.format(store.summaryStats.totalPenjualan),
-    caption: 'Penjualan tercatat',
+    caption: 'Transaksi bulan ini',
     icon: 'receipt_long',
     color: '#059669',
     background: '#d1fae5',
@@ -177,6 +242,23 @@ const summaryCards = computed(() => [
 ])
 
 const loadDashboard = () => store.fetchDashboardData()
+
+function formatRupiah(nilai) {
+  return rupiahFormatter.format(Number(nilai || 0))
+}
+
+function statusTempo(tanggal) {
+  if (!tanggal) return { label: '-', color: 'grey-7' }
+
+  const hariIni = new Date()
+  hariIni.setHours(0, 0, 0, 0)
+  const jatuhTempo = new Date(`${String(tanggal).slice(0, 10)}T00:00:00`)
+  const selisihHari = Math.round((jatuhTempo - hariIni) / 86400000)
+
+  if (selisihHari < 0) return { label: `Lewat ${Math.abs(selisihHari)} hari`, color: 'negative' }
+  if (selisihHari === 0) return { label: 'Jatuh tempo hari ini', color: 'negative' }
+  return { label: `${selisihHari} hari lagi`, color: selisihHari <= 3 ? 'orange' : 'primary' }
+}
 
 const recentLists = computed(() => [
   {

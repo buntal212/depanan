@@ -32,7 +32,7 @@
           <div class="col-2 text-right">{{formatDouble(detail?.subtotal)}}</div>
           <div class="col-1 text-right">
             <div class="q-ml-sm">
-              <q-btn color="negative" :icon="uiwDelete" padding="sm" round dense flat size="9px" :loading="detail?.loading" :disable="detail?.loading" @click="del(detail)">
+              <q-btn v-if="!store.dariOrder" color="negative" :icon="uiwDelete" padding="sm" round dense flat size="9px" :loading="detail?.loading" :disable="detail?.loading" @click="del(detail)">
                 <q-tooltip>Delete Data</q-tooltip>
               </q-btn>
 
