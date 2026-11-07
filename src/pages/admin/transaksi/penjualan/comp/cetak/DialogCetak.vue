@@ -158,9 +158,19 @@
               </div>
               <div class="q-pt-xs" style="border-top-style: dashed; border-width: 1px"></div>
               <div class="row full-width">
-                <span class="col-auto">Subtotal </span>
+                <span class="col-auto">Subtotal Barang </span>
                 <q-space />
-                <span> {{ formatRpDouble(subtotalNota()) }}</span>
+                <span> {{ formatRpDouble(subtotalBarang()) }}</span>
+              </div>
+              <div v-if="adaDiskonNota()" class="row full-width">
+                <span class="col-auto">Diskon Nota </span>
+                <q-space />
+                <span> - {{ formatRpDouble(diskonNota()) }}</span>
+              </div>
+              <div v-if="adaDiskonNota() || adaPpn()" class="row full-width">
+                <span class="col-auto">DPP </span>
+                <q-space />
+                <span> {{ formatRpDouble(dppNota()) }}</span>
               </div>
               <div v-if="adaPpn()" class="row full-width">
                 <span class="col-auto">PPN ({{ formatDouble(ppnPersen()) }}%) </span>
@@ -168,7 +178,7 @@
                 <span> {{ formatRpDouble(ppnNominal()) }}</span>
               </div>
               <div class="row full-width text-bold">
-                <span class="col-auto">Total </span>
+                <span class="col-auto">Total Tagihan </span>
                 <q-space />
                 <span> {{ formatRpDouble(store.itemCetak?.total) }}</span>
               </div>
@@ -179,7 +189,7 @@
               </div>
               <div class="row full-width">
                 <span v-if="store.itemCetak?.flag === '5'" class="col-auto">Kembalian </span>
-                <span v-else class="col-auto">Kekurangan </span>
+                <span v-else class="col-auto">Sisa Piutang </span>
                 <q-space />
                 <span> {{ formatRpDouble(hitungSisa()) }}</span>
               </div>
@@ -457,12 +467,30 @@
                           <div class="flex-start">
                             <span hidden></span>
                           </div>
-                          <div class="text-bold flex-end q-pl-sm">SUBTOTAL</div>
+                          <div class="text-bold flex-end q-pl-sm">SUBTOTAL BARANG</div>
                         </div>
                       </td>
                       <td class="text-bold text-right">
-                        {{ formatRpDouble(subtotalNota()) }}
+                        {{ formatRpDouble(subtotalBarang()) }}
                       </td>
+                    </tr>
+                    <tr v-if="adaDiskonNota()">
+                      <td colspan="5">
+                        <div class="row justify-between">
+                          <div class="flex-start"><span hidden></span></div>
+                          <div class="text-bold flex-end q-pl-sm">DISKON NOTA</div>
+                        </div>
+                      </td>
+                      <td class="text-bold text-right">- {{ formatRpDouble(diskonNota()) }}</td>
+                    </tr>
+                    <tr v-if="adaDiskonNota() || adaPpn()">
+                      <td colspan="5">
+                        <div class="row justify-between">
+                          <div class="flex-start"><span hidden></span></div>
+                          <div class="text-bold flex-end q-pl-sm">DPP</div>
+                        </div>
+                      </td>
+                      <td class="text-bold text-right">{{ formatRpDouble(dppNota()) }}</td>
                     </tr>
                     <tr v-if="adaPpn()">
                       <td colspan="5">
@@ -479,24 +507,11 @@
                           <div class="flex-start">
                             Terbilang : {{ terbilangRupiah(store.itemCetak?.total) }} Rupiah,
                           </div>
-                          <div class="text-bold flex-end q-pl-sm">TOTAL</div>
+                          <div class="text-bold flex-end q-pl-sm">TOTAL TAGIHAN</div>
                         </div>
                       </td>
                       <td class="text-bold text-right">{{ formatRpDouble(store.itemCetak?.total) }}</td>
                     </tr>
-                    <!-- <tr>
-                      <td colspan="5">
-                        <div class="row justify-between">
-                          <div class="flex-start">
-                            <span hidden></span>
-                          </div>
-                          <div class="text-bold flex-end q-pl-sm">DISC</div>
-                        </div>
-                      </td>
-                      <td class="text-bold text-right">
-                        - {{ formatRpDouble(store.itemCetak?.total_diskon) }}
-                      </td>
-                    </tr> -->
                     <tr>
                       <td colspan="5">
                         <div class="row justify-between">
@@ -520,7 +535,7 @@
                             <div class="text-bold flex-end q-pl-sm">KEMBALIAN</div>
                           </template>
                           <template v-else>
-                            <div class="text-bold flex-end q-pl-sm">KEKURANGAN</div>
+                            <div class="text-bold flex-end q-pl-sm">SISA PIUTANG</div>
                           </template>
                         </div>
                       </td>
@@ -636,21 +651,39 @@ onMounted(async () => {
 })
 
 function hitungBayar() {
-  return parseInt(store.itemCetak?.bayar)
+  return Number(store.itemCetak?.bayar || 0)
 }
 function hitungSisa() {
+  const bayar = Number(store.itemCetak?.bayar || 0)
+  const total = Number(store.itemCetak?.total || 0)
   if (store.itemCetak?.flag === '5') {
-    return parseInt(store.itemCetak?.bayar) - parseInt(store.itemCetak?.total)
+    return Math.max(0, bayar - total)
   } else {
-    return parseInt(store.itemCetak?.total) - parseInt(store.itemCetak?.bayar)
+    return Math.max(0, total - bayar)
   }
 }
-function subtotalNota() {
+function subtotalBarang() {
+  if (Array.isArray(store.itemCetak?.detail) && store.itemCetak.detail.length > 0) {
+    return store.itemCetak.detail.reduce((sum, d) => sum + (parseFloat(d?.subtotal) || 0), 0)
+  }
   const total = Number(store.itemCetak?.total || 0)
-  const ppn = Number(store.itemCetak?.ppn_nominal || 0)
+  const ppn = ppnNominal()
+  const diskon = diskonNota()
   return store.itemCetak?.subtotal === null || store.itemCetak?.subtotal === undefined
-    ? total - ppn
-    : Number(store.itemCetak.subtotal)
+    ? total - ppn + diskon
+    : Number(store.itemCetak.subtotal) + diskon
+}
+function diskonNota() {
+  return Number(store.itemCetak?.diskon_kuitansi || 0)
+}
+function adaDiskonNota() {
+  return diskonNota() > 0
+}
+function dppNota() {
+  if (store.itemCetak?.subtotal !== null && store.itemCetak?.subtotal !== undefined) {
+    return Number(store.itemCetak.subtotal)
+  }
+  return Math.max(0, subtotalBarang() - diskonNota())
 }
 function ppnNominal() {
   return Number(store.itemCetak?.ppn_nominal || 0)

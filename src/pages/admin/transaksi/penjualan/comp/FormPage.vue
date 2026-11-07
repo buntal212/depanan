@@ -39,7 +39,7 @@
         ref="refSelectBarang"
         v-model="store.barang"
         url="v1/transaksi/penjualan/list-barang"
-        :option-label="opt=> opt?.barang?.namabarang+' - Seri '+ opt?.motif + ' - ' + (opt?.jumlah_k===0 ? '' : '(stok '+opt?.jumlah_k+ '  '+ opt?.satuan_k+' )') "
+        :option-label="opt => formatLabelBarang(opt)"
         :option-value="opt=> opt"
         label="Cari barang"
         :filter-min="3"
@@ -73,7 +73,7 @@
       <app-input-rp currency outlined v-model="store.form.isi" label="isi" :autofocus="false" readonly  />
     </div>
     <div class="col-auto" style="width: 10%;">
-      <app-input-rp currency outlined v-model="store.form.jumlah" :label="'(Stok'+ (store?.barang?.jumlah_k??0)+')'" :autofocus="false" readonly  />
+      <app-input-rp currency outlined v-model="store.form.jumlah" :label="'(Stok ' + (store?.barang?.jumlah_k ?? 0) + ' ' + (store?.barang?.satuan_k ?? '') + ')'" :autofocus="false" readonly  />
     </div>
     <div class="col-auto" style="width: 15%;">
       <app-input-rp v-if="store.form.jumlahB>0 && store.form.jumlahK<=0" currency v-model="store.form.hargaJualB" label="Harga Jual" outlined :autofocus="false" :readonly="store.dariOrder" @keyup.enter.stop="onEnterinput()"
@@ -108,6 +108,38 @@ const refJumlahB=ref(null)
 const strJumlah=ref('jumlahK')
 const strJumlahB=ref('jumlahB')
 const strDsikon=ref('diskon')
+
+function formatLabelBarang(opt) {
+  if (!opt) return ''
+  const namaBarang = opt?.barang?.namabarang ?? opt?.kdbarang ?? ''
+  const motif = opt?.motif ? ` - Seri ${opt.motif}` : ''
+
+  if (opt?.stok_display) {
+    return `${namaBarang}${motif} - (${opt.stok_display})`
+  }
+
+  const jumlahK = Number(opt?.jumlah_k ?? 0)
+  const isi = Number(opt?.isi ?? opt?.barang?.isi ?? 1) > 0 ? Number(opt?.isi ?? opt?.barang?.isi ?? 1) : 1
+  const satuanB = opt?.satuan_b ?? opt?.barang?.satuan_b ?? 'DUS'
+  const satuanK = opt?.satuan_k ?? opt?.barang?.satuan_k ?? 'PCS'
+
+  const jmlB = Math.floor(jumlahK / isi)
+  const sisaK = jumlahK % isi
+
+  let teksUtama = ''
+  if (jmlB > 0) {
+    teksUtama += `${jmlB} ${satuanB}`
+    if (sisaK > 0) {
+      teksUtama += ` lebih ${sisaK} ${satuanK}`
+    }
+  } else {
+    teksUtama += `${sisaK} ${satuanK}`
+  }
+
+  const teksStok = isi > 1 ? `Stok: ${teksUtama} (${jumlahK} ${satuanK})` : `Stok: ${teksUtama}`
+  return `${namaBarang}${motif} - (${teksStok})`
+}
+
 function selected(val){
   // console.log('ref', refSelectBarang.value?.refAuto);
   // console.log('store', store.barang);

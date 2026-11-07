@@ -19,21 +19,30 @@
                 <div class="row q-col-gutter-md justify-around">
                   <div :class="`col-${isMobile ? 12 : 6}`" class="row q-col-gutter-md items-center">
                     <div v-if="store?.item != null" class="col-12 q-py-md">
-                      <div class="row justify-between f-16">
+                      <div class="row justify-between items-start f-16">
                         <div class="col-auto text-weight-bold">
                           Total Nota Nomor : {{ store.formPembayaran.no_penjualan }}
                         </div>
-                        <div class="col-auto text-weight-bold text-right f-20">
-                          <div class="row justify-end">
-                            {{
-                              formatDouble(store?.item?.total + (store?.item?.total_diskon ?? 0))
-                            }}
+                        <div class="col-auto">
+                          <div
+                            v-if="totalDiskonItem > 0"
+                            class="row justify-between items-center q-gutter-x-md text-caption text-grey-4"
+                          >
+                            <span>Total Kotor Barang :</span>
+                            <span class="text-right">Rp {{ formatDouble(totalKotorBarang) }}</span>
                           </div>
-                          <div v-if="store?.item?.total_diskon > 0" class="row justify-end">
-                            {{ formatDouble(store?.item?.total_diskon) }}
+                          <div
+                            v-if="totalDiskonItem > 0"
+                            class="row justify-between items-center q-gutter-x-md text-caption text-amber-3"
+                          >
+                            <span>Diskon Item :</span>
+                            <span class="text-right">- Rp {{ formatDouble(totalDiskonItem) }}</span>
                           </div>
-                          <div v-if="store?.item?.total_diskon > 0" class="row justify-end">
-                            {{ formatDouble(store?.item?.total) }}
+                          <div
+                            class="row justify-between items-center q-gutter-x-md text-subtitle1 text-weight-bold text-white"
+                          >
+                            <span>Subtotal Barang :</span>
+                            <span class="text-right">Rp {{ formatDouble(subtotalBarang) }}</span>
                           </div>
                         </div>
                       </div>
@@ -125,26 +134,18 @@
                       </div>
                     </template>
 
-                    <!-- Diskon Nota & PPN -->
+                    <!-- Diskon Nota (Rp) -->
                     <div class="col-12 q-mb-sm">
                       <div class="row q-col-gutter-sm items-center">
-                        <div class="col-12 col-sm-7">
+                        <div class="col-12">
                           <app-input-rp
                             v-model="store.formPembayaran.diskon_kuitansi"
                             outlined
                             currency
                             label="Diskon Nota (Rp)"
+                            valid
                             :disable="store.loadingPembayaran"
-                            @update:model-value="onPerubahanKalkulasi"
-                          />
-                        </div>
-                        <div class="col-12 col-sm-5 flex items-center">
-                          <q-toggle
-                            v-model="store.formPembayaran.kena_ppn"
-                            :label="`Kenakan PPN (${tarifPpnPersen}%)`"
-                            color="primary"
-                            :disable="store.loadingPembayaran || tarifPpnPersen <= 0"
-                            @update:model-value="onPerubahanKalkulasi"
+                            @update:model-value="onUpdateDiskonNota"
                           />
                         </div>
                       </div>
@@ -153,98 +154,19 @@
                       <div class="q-mt-sm q-pa-sm bg-grey-10 text-grey-3 rounded-borders text-caption">
                         <div class="row justify-between q-py-xs">
                           <span>Subtotal Barang:</span>
-                          <span class="text-weight-medium">{{ formatDouble(kalkulasi.subtotalBarang) }}</span>
+                          <span class="text-weight-medium">{{ formatDouble(subtotalBarang) }}</span>
                         </div>
-                        <div v-if="kalkulasi.diskonNota > 0" class="row justify-between q-py-xs text-negative">
+                        <div v-if="diskonNota > 0" class="row justify-between q-py-xs text-amber-3">
                           <span>Diskon Nota:</span>
-                          <span>- {{ formatDouble(kalkulasi.diskonNota) }}</span>
-                        </div>
-                        <div v-if="kalkulasi.diskonNota > 0 || store.formPembayaran.kena_ppn" class="row justify-between q-py-xs">
-                          <span>DPP:</span>
-                          <span class="text-weight-medium">{{ formatDouble(kalkulasi.dpp) }}</span>
-                        </div>
-                        <div v-if="store.formPembayaran.kena_ppn" class="row justify-between q-py-xs">
-                          <span>PPN ({{ tarifPpnPersen }}%):</span>
-                          <span class="text-weight-medium">{{ formatDouble(kalkulasi.ppnNominal) }}</span>
+                          <span>- {{ formatDouble(diskonNota) }}</span>
                         </div>
                         <q-separator dark class="q-my-xs" />
                         <div class="row justify-between q-py-xs text-weight-bold text-subtitle2 text-white">
-                          <span>Total Tagihan:</span>
-                          <span class="text-amber-4">{{ formatDouble(kalkulasi.totalTagihan) }}</span>
+                          <span>Total Sementara:</span>
+                          <span class="text-amber-4">{{ formatDouble(totalSementara) }}</span>
                         </div>
                       </div>
                     </div>
-
-                    <template v-if="store.formPembayaran.flag == '5'">
-                      <app-input-rp
-                        ref="refBayar"
-                        class="col-6"
-                        v-model="store.formPembayaran.bayar"
-                        outlined
-                        currency
-                        label="Bayar"
-                        :rules="[
-                          (val) =>
-                            parseInt(olahUang(val)) >= parseInt(store.formPembayaran.total) ||
-                            'nominal pembayaran kurang',
-                        ]"
-                        @update:model-value="updateBayar"
-                        :disable="store.loadingPembayaran"
-                      />
-                      <div
-                        class="col-3"
-                        :class="
-                          parseInt(store.formPembayaran.total) >
-                            parseInt(olahUang(store.formPembayaran.bayar)) ||
-                          !parseInt(olahUang(store.formPembayaran?.bayar))
-                            ? 'text-negative'
-                            : ''
-                        "
-                      >
-                        {{ formatDouble(store.formPembayaran.kembali) }}
-                      </div>
-                      <div
-                        v-if="
-                          parseInt(store.formPembayaran.total) >
-                          parseInt(olahUang(store.formPembayaran.bayar))
-                        "
-                        class="col-3 text-negative text-center"
-                      >
-                        Kurang bayar
-                      </div>
-                    </template>
-                    <template v-if="['7','8'].includes(store.formPembayaran.flag) ">
-                      <app-input-rp
-                        ref="refBayar"
-                        class="col-6"
-                        v-model="store.formPembayaran.bayar"
-                        outlined
-                        currency
-                        label="Bayar"
-                        valid
-                        :rules="[
-                          (val) => {
-                            const b = parseInt(olahUang(val)) || 0
-                            const tot = parseInt(store.formPembayaran.total) || 0
-                            return (b >= 0 && (tot <= 0 || b < tot)) || 'Nominal DP harus < total tagihan'
-                          }
-                        ]"
-                        @update:model-value="updateBayar"
-                        :disable="store.loadingPembayaran"
-                      />
-                      <div class="col-3">
-                        {{ formatDouble(store.formPembayaran.kembali) }}
-                      </div>
-                      <div
-                        v-if="
-                          parseInt(store.formPembayaran.total) >
-                          parseInt(olahUang(store.formPembayaran.bayar))
-                        "
-                        class="col-3 text-center f-16"
-                      >
-                        Kurang bayar
-                      </div>
-                    </template>
 
                     <div class="col-12">
                       <q-separator class="q-my-md" />
@@ -265,6 +187,189 @@
           </q-card>
         </div>
       </div>
+
+      <!-- Dialog Konfirmasi PPN -->
+      <q-dialog v-model="openDialogKonfirmasiPpn" persistent>
+        <q-card style="min-width: 480px; max-width: 95vw;" class="q-pa-md bg-grey-10 text-white">
+          <q-card-section class="row items-center q-pb-none">
+            <div class="text-h6 text-weight-bold">Konfirmasi PPN & Pembayaran</div>
+            <q-space />
+            <q-btn icon="close" flat round dense v-close-popup :disable="store.loadingPembayaran" />
+          </q-card-section>
+
+          <q-separator dark class="q-my-sm" />
+
+          <q-card-section class="q-pa-sm">
+            <!-- Checkbox / Toggle PPN -->
+            <div class="q-pa-sm bg-grey-9 text-grey-2 rounded-borders q-mb-md">
+              <q-checkbox
+                v-model="store.formPembayaran.kena_ppn"
+                dark
+                :disable="!ppnConfigAktif || tarifPpnPersen <= 0"
+                :label="`Kenakan PPN (${tarifPpnPersen}%)`"
+                color="primary"
+                class="text-grey-2 text-weight-medium"
+              />
+              <div v-if="!ppnConfigAktif || tarifPpnPersen <= 0" class="text-caption text-negative q-ml-md">
+                * Konfigurasi PPN backend saat ini nonaktif.
+              </div>
+            </div>
+
+            <!-- Rincian Informasi Reaktif -->
+            <div class="q-pa-sm bg-grey-9 text-grey-2 rounded-borders text-body2">
+              <div class="row justify-between q-py-xs">
+                <span>Subtotal Barang:</span>
+                <span class="text-weight-bold">{{ formatDouble(subtotalBarang) }}</span>
+              </div>
+              <div class="row justify-between q-py-xs text-amber-3">
+                <span>Diskon Nota (read-only):</span>
+                <span>{{ diskonNota > 0 ? '- ' + formatDouble(diskonNota) : 'Rp 0' }}</span>
+              </div>
+              <div class="row justify-between q-py-xs">
+                <span>DPP (Dasar Pengenaan Pajak):</span>
+                <span class="text-weight-bold">{{ formatDouble(dpp) }}</span>
+              </div>
+              <div class="row justify-between q-py-xs" :class="store.formPembayaran.kena_ppn ? 'text-primary' : 'text-grey-5'">
+                <span>PPN ({{ store.formPembayaran.kena_ppn ? tarifPpnPersen : 0 }}%):</span>
+                <span class="text-weight-bold">{{ formatDouble(ppnNominal) }}</span>
+              </div>
+              <q-separator dark class="q-my-xs" />
+              <div class="row justify-between q-py-xs text-h6 text-weight-bolder text-white">
+                <span>Total Tagihan:</span>
+                <span class="text-amber-4">{{ formatDouble(totalTagihanFinal) }}</span>
+              </div>
+            </div>
+
+            <div class="q-mt-sm q-pa-sm bg-grey-9 text-grey-2 rounded-borders text-body2">
+              <div class="row justify-between q-py-xs">
+                <span>Jenis Pembayaran:</span>
+                <span class="text-weight-bold text-white">{{ labelJenisPembayaran }}</span>
+              </div>
+              <div v-if="['5', '7'].includes(store.formPembayaran.flag)" class="row justify-between q-py-xs">
+                <span>Cara Bayar:</span>
+                <span class="text-weight-bold text-uppercase text-white">{{ store.formPembayaran.cara_bayar || 'cash' }}</span>
+              </div>
+
+              <!-- Kasus Lunas (flag == '5') -->
+              <template v-if="store.formPembayaran.flag === '5'">
+                <div class="q-my-sm">
+                  <div class="row items-center q-col-gutter-sm">
+                    <div class="col-8">
+                      <app-input-rp
+                        ref="refBayar"
+                        v-model="store.formPembayaran.bayar"
+                        dark
+                        outlined
+                        currency
+                        label="Nominal Bayar"
+                        :rules="[
+                          (val) => {
+                            const b = Number(olahUang(val)) || 0
+                            return b >= totalTagihanFinal || `Kurang bayar (Min: Rp ${formatDouble(totalTagihanFinal)})`
+                          }
+                        ]"
+                        @update:model-value="updateBayar"
+                        @keyup.enter="simpanTransaksiFinal"
+                        :disable="store.loadingPembayaran"
+                      />
+                    </div>
+                    <div class="col-4">
+                      <q-btn
+                        color="amber-9"
+                        text-color="dark"
+                        class="full-width text-weight-bold"
+                        label="Bayar Pas"
+                        :disable="store.loadingPembayaran"
+                        @click="setBayarPas"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row justify-between items-center q-py-xs">
+                  <span>Kembalian:</span>
+                  <span
+                    class="text-weight-bold text-h6"
+                    :class="kembalianFinal >= 0 ? 'text-positive' : 'text-negative'"
+                  >
+                    Rp {{ formatDouble(Math.max(0, kembalianFinal)) }}
+                  </span>
+                </div>
+
+                <div v-if="nominalBayarFinal < totalTagihanFinal" class="text-caption text-negative text-center q-mt-xs text-weight-bold">
+                  ⚠️ Pembayaran kurang Rp {{ formatDouble(totalTagihanFinal - nominalBayarFinal) }}!
+                </div>
+              </template>
+
+              <!-- Kasus Down Payment / DP (flag == '7' atau '8') -->
+              <template v-else-if="['7', '8'].includes(store.formPembayaran.flag)">
+                <div class="q-my-sm">
+                  <app-input-rp
+                    ref="refBayar"
+                    v-model="store.formPembayaran.bayar"
+                    dark
+                    outlined
+                    currency
+                    valid
+                    label="Nominal Down Payment (DP)"
+                    :rules="[
+                      (val) => {
+                        const b = Number(olahUang(val)) || 0
+                        if (b < 0) return 'Nominal DP tidak boleh negatif'
+                        if (totalTagihanFinal > 0 && b >= totalTagihanFinal) return 'Nominal DP harus kurang dari total tagihan'
+                        return true
+                      }
+                    ]"
+                    @update:model-value="updateBayar"
+                    @keyup.enter="simpanTransaksiFinal"
+                    :disable="store.loadingPembayaran"
+                  />
+                </div>
+
+                <div class="row justify-between items-center q-py-xs">
+                  <span>Sisa Piutang:</span>
+                  <span class="text-weight-bold text-h6 text-amber-3">
+                    Rp {{ formatDouble(sisaPiutangFinal) }}
+                  </span>
+                </div>
+
+                <div v-if="totalTagihanFinal > 0 && nominalBayarFinal >= totalTagihanFinal" class="text-caption text-negative text-center q-mt-xs text-weight-bold">
+                  ⚠️ Nominal DP harus kurang dari total tagihan!
+                </div>
+                <div v-else-if="nominalBayarFinal < 0" class="text-caption text-negative text-center q-mt-xs text-weight-bold">
+                  ⚠️ Nominal DP tidak boleh negatif!
+                </div>
+              </template>
+
+              <!-- Kasus Tempo (flag == '2') -->
+              <template v-else-if="store.formPembayaran.flag === '2'">
+                <div class="row justify-between items-center q-py-xs">
+                  <span>Nominal Bayar:</span>
+                  <span class="text-weight-bold text-white">Rp 0 (Tempo)</span>
+                </div>
+                <div class="row justify-between items-center q-py-xs">
+                  <span>Sisa Piutang:</span>
+                  <span class="text-weight-bold text-h6 text-amber-3">
+                    Rp {{ formatDouble(sisaPiutangFinal) }}
+                  </span>
+                </div>
+              </template>
+            </div>
+          </q-card-section>
+
+          <q-card-actions align="right" class="q-pt-md">
+            <q-btn flat label="Kembali / Ubah" color="grey-5" v-close-popup :disable="store.loadingPembayaran" />
+            <q-btn
+              label="Simpan Transaksi"
+              color="primary"
+              :loading="store.loadingPembayaran"
+              :disable="tombolSimpanFinalDisabled"
+              @click="simpanTransaksiFinal"
+            />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+
       <DialogCetak v-model="store.opendialogCetak" />
     </q-card>
   </q-dialog>
@@ -275,7 +380,6 @@ import { api } from 'src/boot/axios'
 import { formatDouble, olahUang } from 'src/modules/formatter'
 import { notifError } from 'src/modules/notifs'
 import { useFromPenjualanStore } from 'src/stores/admin/transaksi/penjualan/form'
-import { useListPenjualanStore } from 'src/stores/admin/transaksi/penjualan/list'
 import { computed, defineAsyncComponent, ref, shallowRef, watch } from 'vue'
 
 const DialogCetak = shallowRef(defineAsyncComponent(() => import('./cetak/DialogCetak.vue')))
@@ -284,20 +388,21 @@ const isMobile = computed(() => {
   return $q.screen.lt.sm // Quasar screen size helper
 })
 const store = useFromPenjualanStore()
-const storelist = useListPenjualanStore()
 
 const optionCaraBayar = computed(() => [
   { label: 'Lunas', value: '5' },
   { label: 'Down Payment (DP)', value: '7' },
   { label: 'Tempo', value: '2' },
-  // { label: 'Hutang', value: '2' },
 ])
 const pembayaranOrderTerkunci = computed(() => Boolean(store?.item?.order_sumber?.sistem_bayar))
 const refPelanggan = ref(null)
 const refBayar = ref(null)
 
+const openDialogKonfirmasiPpn = ref(false)
+const ppnConfigAktif = ref(false)
 const tarifPpnPersen = ref(Number(store?.item?.ppn_persen || 0))
 
+// 1. Subtotal barang dari detail penjualan
 const subtotalBarang = computed(() => {
   if (Array.isArray(store?.item?.detail) && store.item.detail.length > 0) {
     return store.item.detail.reduce((acc, row) => acc + (Number(row.subtotal) || 0), 0)
@@ -305,120 +410,251 @@ const subtotalBarang = computed(() => {
   return Number(store?.item?.subtotal || 0)
 })
 
-const kalkulasi = computed(() => {
-  const subtotal = subtotalBarang.value
-  const diskonNotaRaw = olahUang(store.formPembayaran.diskon_kuitansi)
-  const diskonNota = Math.max(0, Number(diskonNotaRaw) || 0)
-  const dpp = Math.max(0, Math.round((subtotal - diskonNota) * 100) / 100)
-
-  let ppnNominal = 0
-  if (store.formPembayaran.kena_ppn && tarifPpnPersen.value > 0) {
-    ppnNominal = Math.round(dpp * tarifPpnPersen.value) / 100
+// Total diskon item dari rincian barang
+const totalDiskonItem = computed(() => {
+  if (Array.isArray(store?.item?.detail) && store.item.detail.length > 0) {
+    return store.item.detail.reduce((acc, row) => acc + (Number(row.diskon) || 0), 0)
   }
-
-  const totalTagihan = Math.round((dpp + ppnNominal) * 100) / 100
-
-  return {
-    subtotalBarang: subtotal,
-    diskonNota,
-    dpp,
-    ppnNominal,
-    totalTagihan,
-  }
+  return Number(store?.item?.total_diskon || 0)
 })
 
-function onPerubahanKalkulasi() {
-  const totBaru = kalkulasi.value.totalTagihan
-  const totalLama = Number(store.formPembayaran.total) || 0
-  store.formPembayaran.total = totBaru
+// Total kotor barang sebelum diskon item (murni tanpa PPN)
+const totalKotorBarang = computed(() => {
+  return Math.round((subtotalBarang.value + totalDiskonItem.value) * 100) / 100
+})
+
+// 2. Diskon Nota (Rp)
+const diskonNota = computed(() => {
+  const raw = olahUang(store.formPembayaran.diskon_kuitansi)
+  return Math.max(0, Number(raw) || 0)
+})
+
+// 3. Total Sementara untuk Dialog Pertama (HANYA Subtotal Barang - Diskon Nota, TANPA PPN)
+const totalSementara = computed(() => {
+  return Math.max(0, Math.round((subtotalBarang.value - diskonNota.value) * 100) / 100)
+})
+
+// 4. Perhitungan Khusus Dialog Konfirmasi Kedua (PPN & Final)
+const dpp = computed(() => {
+  return totalSementara.value
+})
+
+const ppnNominal = computed(() => {
+  if (store.formPembayaran.kena_ppn && tarifPpnPersen.value > 0 && ppnConfigAktif.value) {
+    return Math.round(dpp.value * tarifPpnPersen.value) / 100
+  }
+  return 0
+})
+
+const totalTagihanFinal = computed(() => {
+  return Math.round((dpp.value + ppnNominal.value) * 100) / 100
+})
+
+const labelJenisPembayaran = computed(() => {
+  const f = store.formPembayaran.flag
+  if (f === '5') return 'Lunas'
+  if (f === '7' || f === '8') return 'Down Payment (DP)'
+  if (f === '2') return 'Tempo'
+  return '-'
+})
+
+const nominalBayarFinal = computed(() => {
+  return Number(olahUang(store.formPembayaran.bayar)) || 0
+})
+
+const kembalianFinal = computed(() => {
+  return nominalBayarFinal.value - totalTagihanFinal.value
+})
+
+const sisaPiutangFinal = computed(() => {
+  if (store.formPembayaran.flag === '2') {
+    return totalTagihanFinal.value
+  }
+  return Math.max(0, totalTagihanFinal.value - nominalBayarFinal.value)
+})
+
+const tombolSimpanFinalDisabled = computed(() => {
+  if (store.loadingPembayaran) return true
+  const bayar = nominalBayarFinal.value
+  const total = totalTagihanFinal.value
 
   if (store.formPembayaran.flag === '5') {
-    const bayarSaatIni = Number(olahUang(store.formPembayaran.bayar)) || 0
-    if (bayarSaatIni === 0 || bayarSaatIni === totalLama) {
-      store.formPembayaran.bayar = totBaru
-      store.formPembayaran.kembali = 0
-    } else {
-      store.formPembayaran.kembali = Math.max(0, bayarSaatIni - totBaru)
-    }
-  } else if (store.formPembayaran.flag === '2') {
-    store.formPembayaran.bayar = 0
-    store.formPembayaran.kembali = 0
-  } else if (['7', '8'].includes(store.formPembayaran.flag)) {
-    store.formPembayaran.kembali = 0
+    return bayar < total
   }
+  if (['7', '8'].includes(store.formPembayaran.flag)) {
+    return bayar < 0 || (total > 0 && bayar >= total)
+  }
+  return false
+})
 
+function setBayarPas() {
+  store.formPembayaran.bayar = totalTagihanFinal.value
+  store.formPembayaran.kembali = 0
   setTimeout(() => {
-    refBayar.value?.appInput?.validate()
+    refBayar.value?.refInput?.validate?.()
   }, 50)
+}
+
+function onUpdateDiskonNota() {
+  const totSementara = totalSementara.value
+  store.formPembayaran.total = totSementara
+}
+
+async function muatPengaturanPpn() {
+  try {
+    const { data } = await api.get('/v1/settings/ppn')
+    const config = data?.result
+    ppnConfigAktif.value = Boolean(config?.aktif && Number(config?.persen) > 0)
+    tarifPpnPersen.value = Number(config?.persen || 0)
+
+    if (ppnConfigAktif.value) {
+      if (store.formPembayaran.kena_ppn === undefined || store.formPembayaran.kena_ppn === null) {
+        store.formPembayaran.kena_ppn = true
+      }
+    } else {
+      store.formPembayaran.kena_ppn = false
+    }
+  } catch (e) {
+    console.error('Gagal memuat pengaturan PPN', e)
+    if (Number(store?.item?.ppn_persen || 0) > 0) {
+      ppnConfigAktif.value = true
+      tarifPpnPersen.value = Number(store.item.ppn_persen)
+      store.formPembayaran.kena_ppn = true
+    } else {
+      ppnConfigAktif.value = false
+      tarifPpnPersen.value = 0
+      store.formPembayaran.kena_ppn = false
+    }
+  }
 }
 
 watch(
   () => store.openPembayaran,
   async (buka) => {
     if (buka) {
-      let tarif = Number(store?.item?.ppn_persen || 0)
-      if (tarif <= 0) {
-        try {
-          const { data } = await api.get('/v1/settings/ppn')
-          if (data?.result?.aktif) {
-            tarif = Number(data?.result?.persen || 0)
-          }
-        } catch (e) {
-          console.error('Gagal memuat pengaturan PPN', e)
+      openDialogKonfirmasiPpn.value = false
+      await muatPengaturanPpn()
+
+      const totSementara = totalSementara.value
+      store.formPembayaran.total = totSementara
+
+      if (store.formPembayaran.flag === '2') {
+        store.formPembayaran.bayar = 0
+        store.formPembayaran.kembali = 0
+      } else if (['7', '8'].includes(store.formPembayaran.flag)) {
+        if (store.formPembayaran.bayar === undefined || store.formPembayaran.bayar === null) {
+          store.formPembayaran.bayar = 0
         }
+        store.formPembayaran.kembali = 0
       }
-      tarifPpnPersen.value = tarif
-      onPerubahanKalkulasi()
     }
   },
   { immediate: true }
 )
 
-function validasi() {
-  let valid = false
+watch(
+  () => openDialogKonfirmasiPpn.value,
+  (buka) => {
+    if (buka) {
+      setTimeout(() => {
+        refBayar.value?.refInput?.focus?.()
+      }, 100)
+    }
+  }
+)
 
-  if (!store.formPembayaran.flag) return notifError('Pilihan Pembayaran Belum dipilih')
-  else if (!store?.item?.sales_id && store.formPembayaran.flag == '2') return notifError('Pembayaran Secara Kredit Harus Memilih Sales')
-  else if ((!store?.formPembayaran?.pelanggan_id && !store.formPembayaran.dataPelanggan?.nama) && ['2', '7', '8'].includes(store.formPembayaran.flag)) return notifError('Harus ada data pelanggan')
-
-  const diskonNota = kalkulasi.value.diskonNota
-  const subtotal = kalkulasi.value.subtotalBarang
-  if (diskonNota > subtotal) {
-    return notifError('Diskon nota tidak boleh melebihi subtotal barang')
+function validasiAwal() {
+  if (!store.formPembayaran.flag) {
+    notifError('Pilihan Pembayaran Belum dipilih')
+    return false
+  }
+  if (!store?.item?.sales_id && store.formPembayaran.flag == '2') {
+    notifError('Pembayaran Secara Kredit Harus Memilih Sales')
+    return false
+  }
+  if (
+    !store?.formPembayaran?.pelanggan_id &&
+    !store.formPembayaran.dataPelanggan?.nama &&
+    ['2', '7', '8'].includes(store.formPembayaran.flag)
+  ) {
+    notifError('Harus ada data pelanggan')
+    return false
   }
 
-  const bayar = Number(olahUang(store.formPembayaran.bayar)) || 0
-  const total = Number(store.formPembayaran.total) || 0
-
-  if (store.formPembayaran.flag === '5' && bayar < total) {
-    return notifError('Nominal pembayaran kurang')
+  const dNota = diskonNota.value
+  const subtotal = subtotalBarang.value
+  if (dNota > subtotal) {
+    notifError('Diskon nota tidak boleh melebihi subtotal barang')
+    return false
   }
 
-  if (['7', '8'].includes(store.formPembayaran.flag) && (bayar < 0 || (total > 0 && bayar >= total))) {
-    return notifError('Nominal DP harus kurang dari total tagihan')
-  }
-
-  valid = true
-  return valid
+  return true
 }
 
 function onSubmit() {
   console.log('submit form pembayaran', refPelanggan.value, store.formPembayaran)
 
-  if (validasi()) {
-    store
-      .simpanPembayaran()
-      .then((res) => {
-        if (res?.status == 200) {
-          store.opendialogCetak = true
-          store.openPembayaran = false
-          console.log('cetak', storelist.itemCetak)
-        }
-      })
-      .then(() => {
-        store.resetPembayaran()
-      })
+  if (validasiAwal()) {
+    if (store.formPembayaran.flag === '5') {
+      const bayarSaatIni = Number(olahUang(store.formPembayaran.bayar)) || 0
+      if (bayarSaatIni === 0) {
+        store.formPembayaran.bayar = totalTagihanFinal.value
+        store.formPembayaran.kembali = 0
+      }
+    } else if (store.formPembayaran.flag === '2') {
+      store.formPembayaran.bayar = 0
+      store.formPembayaran.kembali = 0
+    } else if (['7', '8'].includes(store.formPembayaran.flag)) {
+      if (store.formPembayaran.bayar === undefined || store.formPembayaran.bayar === null) {
+        store.formPembayaran.bayar = 0
+      }
+      store.formPembayaran.kembali = 0
+    }
+    openDialogKonfirmasiPpn.value = true
   }
+}
+
+function simpanTransaksiFinal() {
+  if (store.loadingPembayaran) return
+
+  const finalTotal = totalTagihanFinal.value
+  store.formPembayaran.total = finalTotal
+
+  const bayar = Number(olahUang(store.formPembayaran.bayar)) || 0
+
+  if (store.formPembayaran.flag === '5') {
+    if (bayar < finalTotal) {
+      notifError(`Nominal pembayaran kurang! Total tagihan final adalah ${formatDouble(finalTotal)}`)
+      return
+    }
+    store.formPembayaran.kembali = Math.max(0, bayar - finalTotal)
+  } else if (['7', '8'].includes(store.formPembayaran.flag)) {
+    if (bayar < 0) {
+      notifError('Nominal DP tidak boleh negatif')
+      return
+    }
+    if (finalTotal > 0 && bayar >= finalTotal) {
+      notifError(`Nominal DP (${formatDouble(bayar)}) harus kurang dari total tagihan final (${formatDouble(finalTotal)})`)
+      return
+    }
+    store.formPembayaran.kembali = 0
+  } else if (store.formPembayaran.flag === '2') {
+    store.formPembayaran.bayar = 0
+    store.formPembayaran.kembali = 0
+  }
+
+  store
+    .simpanPembayaran()
+    .then((res) => {
+      if (res?.status == 200) {
+        openDialogKonfirmasiPpn.value = false
+        store.openPembayaran = false
+        store.opendialogCetak = true
+      }
+    })
+    .catch((err) => {
+      console.error('Gagal simpan pembayaran', err)
+    })
 }
 
 function setNamaPelanggan() {
@@ -444,27 +680,22 @@ function selectCaraBayar(val) {
   } else if (['7', '8'].includes(val)) {
     store.formPembayaran.kembali = 0
     store.formPembayaran.cara_bayar = 'cash'
+    store.formPembayaran.bayar = 0
   } else {
     store.formPembayaran.cara_bayar = 'cash'
-    store.formPembayaran.bayar = store.formPembayaran.total
+    store.formPembayaran.bayar = 0
     store.formPembayaran.kembali = 0
   }
-  setTimeout(() => {
-    refBayar.value?.appInput?.validate()
-  }, 50)
 }
 
 function updateBayar(val) {
   const normalAngka = olahUang(val)
-  const total = Number(store.formPembayaran.total) || 0
+  const total = totalTagihanFinal.value
   const bayar = Number(normalAngka) || 0
   if (store.formPembayaran.flag === '5') {
     store.formPembayaran.kembali = Math.max(0, bayar - total)
   } else {
     store.formPembayaran.kembali = 0
   }
-  setTimeout(() => {
-    refBayar.value?.appInput?.validate()
-  }, 50)
 }
 </script>

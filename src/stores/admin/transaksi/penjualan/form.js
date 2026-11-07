@@ -137,10 +137,12 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
       const flag = sistemBayar === 'tempo' ? '2' : sistemBayar === 'dp' ? '7' : '5'
       const total = Number(penjualan?.total || 0)
       const diskonKuitansi = Number(penjualan?.diskon_kuitansi || 0)
-      const kenaPpn =
-        penjualan?.ppn_persen !== undefined && penjualan?.ppn_persen !== null
-          ? Number(penjualan?.ppn_persen) > 0 || Number(penjualan?.ppn_nominal || 0) > 0
-          : true
+      const isDraft = !penjualan?.flag
+      const kenaPpn = isDraft
+        ? true
+        : (penjualan?.ppn_persen !== undefined && penjualan?.ppn_persen !== null
+            ? Number(penjualan?.ppn_persen) > 0 || Number(penjualan?.ppn_nominal || 0) > 0
+            : true)
 
       this.item = penjualan || null
       this.noNota = penjualan?.no_penjualan || null

@@ -81,9 +81,9 @@
       <div class="col-4"></div>
       <div class="col-3 text-weight-bold">Total</div>
       <div class="col-2 text-weight-bold text-right">
-        {{ formatDouble(store?.item?.total_diskon) }}
+        {{ formatDouble(totalDiskonItem) }}
       </div>
-      <div class="col-2 text-weight-bold text-right">{{ formatDouble(store?.item?.total) }}</div>
+      <div class="col-2 text-weight-bold text-right">{{ formatDouble(subtotalBarang) }}</div>
     </div>
     <q-separator v-if="store?.item != null" />
   </div>
@@ -96,7 +96,7 @@ import { date } from 'quasar'
 import { formatDouble } from 'src/modules/formatter'
 import { useFromPenjualanStore } from 'src/stores/admin/transaksi/penjualan/form'
 import { useListPenjualanStore } from 'src/stores/admin/transaksi/penjualan/list'
-import { defineAsyncComponent, ref, shallowRef } from 'vue'
+import { computed, defineAsyncComponent, ref, shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
 
 const FormPage = shallowRef(defineAsyncComponent(() => import('./comp/FormPage.vue')))
@@ -109,6 +109,20 @@ const DialogPembayaranPage = shallowRef(
 )
 const DialogCetak = shallowRef(defineAsyncComponent(() => import('./comp/cetak/DialogCetak.vue')))
 const DialogTempo = shallowRef(defineAsyncComponent(() => import('./comp/DialogTempo.vue')))
+
+const subtotalBarang = computed(() => {
+  if (Array.isArray(store?.item?.detail) && store.item.detail.length > 0) {
+    return store.item.detail.reduce((acc, row) => acc + (Number(row.subtotal) || 0), 0)
+  }
+  return Number(store?.item?.subtotal || 0)
+})
+
+const totalDiskonItem = computed(() => {
+  if (Array.isArray(store?.item?.detail) && store.item.detail.length > 0) {
+    return store.item.detail.reduce((acc, row) => acc + (Number(row.diskon) || 0), 0)
+  }
+  return Number(store?.item?.total_diskon || 0)
+})
 
 const isList = ref(true)
 const route = useRoute()

@@ -295,6 +295,251 @@
                       </div>
                     </div>
                   </template>
+
+                  <q-separator />
+                  <!-- Ringkasan Pembayaran (Subtotal Barang, Diskon Nota, DPP, PPN, Total Tagihan Final) -->
+                  <div
+                    class="row justify-end q-pa-sm"
+                    :class="app?.dark ? 'bg-grey-10' : 'bg-grey-3'"
+                  >
+                    <div class="col-12 col-sm-8 col-md-5 col-lg-4">
+                      <div
+                        class="q-pa-sm rounded-borders text-body2"
+                        :class="app?.dark ? 'bg-grey-9 text-grey-2' : 'bg-white text-grey-9'"
+                      >
+                        <div
+                          class="text-subtitle2 text-weight-bold q-pb-xs"
+                          :class="app?.dark ? 'text-amber-4' : 'text-primary'"
+                        >
+                          Ringkasan Pembayaran
+                        </div>
+                        <q-separator :dark="app?.dark" class="q-my-xs" />
+
+                        <div class="row justify-between q-py-xs">
+                          <span>Subtotal Barang:</span>
+                          <span class="text-weight-bold">Rp {{ formatDouble(hitungSubtotalBarang(item)) }}</span>
+                        </div>
+
+                        <div
+                          class="row justify-between q-py-xs"
+                          :class="getDiskonNota(item) > 0 ? (app?.dark ? 'text-amber-3' : 'text-orange-9') : ''"
+                        >
+                          <span>Diskon Nota:</span>
+                          <span class="text-weight-bold">
+                            {{ getDiskonNota(item) > 0 ? '- Rp ' + formatDouble(getDiskonNota(item)) : 'Rp 0' }}
+                          </span>
+                        </div>
+
+                        <div class="row justify-between q-py-xs">
+                          <span>DPP (Dasar Pengenaan Pajak):</span>
+                          <span class="text-weight-bold">Rp {{ formatDouble(hitungDpp(item)) }}</span>
+                        </div>
+
+                        <div
+                          class="row justify-between q-py-xs"
+                          :class="getNominalPpn(item) > 0 ? 'text-primary' : (app?.dark ? 'text-grey-5' : 'text-grey-7')"
+                        >
+                          <span>PPN ({{ formatDouble(getPersenPpn(item)) }}%):</span>
+                          <span class="text-weight-bold">Rp {{ formatDouble(getNominalPpn(item)) }}</span>
+                        </div>
+
+                        <q-separator :dark="app?.dark" class="q-my-xs" />
+
+                        <div
+                          class="row justify-between q-py-xs text-subtitle1 text-weight-bolder"
+                          :class="app?.dark ? 'text-white' : 'text-black'"
+                        >
+                          <span>Total Tagihan Final:</span>
+                          <span :class="app?.dark ? 'text-amber-4' : 'text-primary'">
+                            Rp {{ formatDouble(item?.total) }}
+                          </span>
+                        </div>
+
+                        <template v-if="item?.flag !== null">
+                          <q-separator :dark="app?.dark" class="q-my-xs" />
+                          <div class="row justify-between q-py-xs text-caption">
+                            <span>Bayar:</span>
+                            <span class="text-weight-bold">Rp {{ formatDouble(item?.bayar) }}</span>
+                          </div>
+                          <div class="row justify-between q-py-xs text-caption">
+                            <span>{{ item?.flag === '5' ? 'Kembalian:' : 'Sisa Tagihan:' }}</span>
+                            <span class="text-weight-bold">Rp {{ formatDouble(hitungSisaBayar(item)) }}</span>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Section: Informasi Retur Penjualan (Hanya tampil jika ada retur) -->
+                  <template v-if="hasRetur(item)">
+                    <q-separator />
+                    <div
+                      class="row justify-end q-pa-sm"
+                      :class="app?.dark ? 'bg-grey-10' : 'bg-grey-3'"
+                    >
+                      <div class="col-12 col-sm-10 col-md-8 col-lg-7">
+                        <div
+                          class="q-pa-md rounded-borders text-body2 shadow-1"
+                          :class="app?.dark ? 'bg-grey-9 text-grey-2' : 'bg-white text-grey-9'"
+                        >
+                          <!-- Header Section Retur -->
+                          <div class="row items-center justify-between q-pb-sm">
+                            <div class="row items-center q-gutter-x-sm">
+                              <q-icon name="assignment_return" color="orange" size="sm" />
+                              <span
+                                class="text-subtitle2 text-weight-bold"
+                                :class="app?.dark ? 'text-orange-4' : 'text-deep-orange-9'"
+                              >
+                                Informasi Retur Penjualan
+                              </span>
+                            </div>
+                            <div>
+                              <q-badge
+                                :color="statusReturBadge(item).color"
+                                :text-color="statusReturBadge(item).textColor"
+                                class="q-py-xs q-px-sm text-weight-bold"
+                              >
+                                {{ statusReturBadge(item).label }}
+                              </q-badge>
+                            </div>
+                          </div>
+                          <q-separator :dark="app?.dark" class="q-mb-sm" />
+
+                          <!-- List Transaksi Retur -->
+                          <div
+                            v-for="(retur, rIdx) in getListRetur(item)"
+                            :key="retur?.id || rIdx"
+                            class="q-pa-sm q-mb-sm rounded-borders"
+                            :class="app?.dark ? 'bg-grey-10' : 'bg-grey-2'"
+                          >
+                            <div class="row justify-between items-center q-pb-xs">
+                              <div class="row items-center q-gutter-x-sm">
+                                <span class="text-weight-bold text-caption text-primary">#{{ retur?.no_retur }}</span>
+                                <span class="text-caption text-grey-5">
+                                  ({{ humanDate(retur?.tgl) }} {{ jamTnpDetik(retur?.tgl) }})
+                                </span>
+                              </div>
+                              <div class="flex items-center q-gutter-x-xs">
+                                <q-badge
+                                  :color="isReturFinal(retur) ? 'positive' : 'grey-7'"
+                                  class="text-caption text-weight-bold"
+                                >
+                                  {{ isReturFinal(retur) ? 'Selesai' : 'Draft' }}
+                                </q-badge>
+                              </div>
+                            </div>
+
+                            <!-- Rincian Barang yang diretur -->
+                            <div v-if="retur?.detail && retur.detail.length > 0" class="q-my-xs">
+                              <div
+                                class="row text-caption text-weight-bold q-py-xs rounded-borders"
+                                :class="app?.dark ? 'bg-grey-9 text-grey-3' : 'bg-grey-4 text-black'"
+                              >
+                                <div class="col-4">Barang & Motif</div>
+                                <div class="col-1 text-center">Satuan</div>
+                                <div class="col-1 text-right">Terjual</div>
+                                <div class="col-1 text-right">Diretur</div>
+                                <div class="col-1 text-right">Harga</div>
+                                <div class="col-1 text-right">Bruto</div>
+                                <div class="col-1 text-right">Diskon</div>
+                                <div class="col-2 text-right">Subtotal</div>
+                              </div>
+                              <div
+                                v-for="(rd, dIdx) in retur.detail"
+                                :key="rd?.id || dIdx"
+                                class="row items-center text-caption q-py-xs"
+                                :class="app?.dark ? (dIdx % 2 === 0 ? 'bg-grey-9 text-grey-2' : 'bg-grey-10 text-grey-3') : (dIdx % 2 === 0 ? 'bg-white text-grey-9' : 'bg-grey-2 text-grey-9')"
+                              >
+                                <div class="col-4">
+                                  <div class="text-weight-bold">{{ rd?.master_barang?.namabarang || rd?.kodebarang }}</div>
+                                  <div class="text-grey-5 text-italic">
+                                    Motif: {{ rd?.detail_penjualan?.motif || rd?.motif || '-' }}
+                                  </div>
+                                </div>
+                                <div class="col-1 text-center">{{ rd?.master_barang?.satuan_k || 'PCS' }}</div>
+                                <div class="col-1 text-right text-grey-5">
+                                  {{ rd?.detail_penjualan?.jumlah ? formatDouble(rd.detail_penjualan.jumlah) : '-' }}
+                                </div>
+                                <div class="col-1 text-right text-weight-bold" :class="app?.dark ? 'text-amber-4' : 'text-deep-orange-9'">
+                                  {{ formatDouble(rd?.jumlah) }}
+                                </div>
+                                <div class="col-1 text-right">{{ formatDouble(rd?.harga_jual) }}</div>
+                                <div class="col-1 text-right">{{ formatDouble((Number(rd?.harga_jual) || 0) * (Number(rd?.jumlah) || 0)) }}</div>
+                                <div class="col-1 text-right">{{ formatDouble(rd?.diskon) }}</div>
+                                <div class="col-2 text-right text-weight-bold">
+                                  Rp {{ formatDouble(rd?.total || rd?.subtotal) }}
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- Rincian Nominal Snapshot Retur -->
+                            <div class="row justify-end q-mt-xs">
+                              <div class="col-12 col-md-7 col-lg-6">
+                                <div
+                                  class="q-pa-xs rounded-borders text-caption"
+                                  style="border-top: 1px dashed rgba(128,128,128,0.3)"
+                                >
+                                  <div class="row justify-between q-py-xs">
+                                    <span class="text-grey-5">Subtotal Retur:</span>
+                                    <span class="text-weight-bold">Rp {{ formatDouble(retur?.subtotal || retur?.dpp || retur?.total) }}</span>
+                                  </div>
+                                  <div
+                                    class="row justify-between q-py-xs"
+                                    :class="Number(retur?.diskon_kuitansi) > 0 ? (app?.dark ? 'text-amber-3' : 'text-orange-9') : 'text-grey-5'"
+                                  >
+                                    <span>Diskon Nota Retur:</span>
+                                    <span v-if="retur?.diskon_kuitansi !== null && Number(retur?.diskon_kuitansi) > 0" class="text-weight-bold">
+                                      - Rp {{ formatDouble(retur?.diskon_kuitansi) }}
+                                    </span>
+                                    <span v-else class="text-caption text-italic">Rincian historis tidak tersedia</span>
+                                  </div>
+                                  <div class="row justify-between q-py-xs" :class="retur?.dpp !== null ? '' : 'text-grey-5'">
+                                    <span>DPP (Dasar Pengenaan Pajak):</span>
+                                    <span v-if="retur?.dpp !== null" class="text-weight-bold">Rp {{ formatDouble(retur?.dpp) }}</span>
+                                    <span v-else class="text-caption text-italic">Rincian historis tidak tersedia</span>
+                                  </div>
+                                  <div class="row justify-between q-py-xs" :class="Number(retur?.ppn_nominal) > 0 ? 'text-primary' : 'text-grey-5'">
+                                    <span>PPN Retur:</span>
+                                    <span v-if="retur?.ppn_nominal !== null && Number(retur?.ppn_nominal) > 0" class="text-weight-bold">
+                                      PPN ({{ formatDouble(retur?.ppn_persen) }}%): Rp {{ formatDouble(retur?.ppn_nominal) }}
+                                    </span>
+                                    <span v-else class="text-caption text-italic">Rincian historis tidak tersedia</span>
+                                  </div>
+                                  <q-separator :dark="app?.dark" class="q-my-xs" />
+                                  <div class="row justify-between items-center q-pt-xs text-caption text-weight-bold">
+                                    <span>Nilai Retur{{ isReturFinal(retur) ? '' : ' (Draft)' }}:</span>
+                                    <span :class="isReturFinal(retur) ? (app?.dark ? 'text-amber-4' : 'text-deep-orange-9') : 'text-grey-5'">
+                                      Rp {{ formatDouble(retur?.total) }}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Kumulatif Retur Selesai -->
+                          <q-separator :dark="app?.dark" class="q-my-sm" />
+                          <div class="row justify-between items-center text-body2 q-py-xs">
+                            <span class="text-weight-bold">Total Barang Diretur (Selesai):</span>
+                            <span class="text-weight-bold">{{ formatDouble(totalQtyReturSelesai(item)) }} PCS</span>
+                          </div>
+                          <div class="row justify-between items-center text-subtitle2 text-weight-bolder q-py-xs">
+                            <span :class="app?.dark ? 'text-white' : 'text-black'">Total Nilai Retur Kumulatif:</span>
+                            <span class="text-weight-bolder" :class="app?.dark ? 'text-amber-4' : 'text-deep-orange-9'">
+                              Rp {{ formatDouble(totalNilaiReturSelesai(item)) }}
+                            </span>
+                          </div>
+                          <div
+                            v-if="totalNilaiReturDraft(item) > 0"
+                            class="row justify-between items-center text-caption text-grey-5 q-py-xs"
+                          >
+                            <span>* Draft Retur (Belum Selesai, tidak dihitung kumulatif):</span>
+                            <span>Rp {{ formatDouble(totalNilaiReturDraft(item)) }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
                 </q-expansion-item>
                 <q-separator />
               </q-intersection>
@@ -430,6 +675,131 @@ const next = computed(() => {
 
   return page
 })
+
+function hitungSubtotalBarang(item) {
+  if (Array.isArray(item?.detail) && item.detail.length > 0) {
+    return item.detail.reduce((sum, d) => sum + (parseFloat(d?.subtotal) || 0), 0)
+  }
+  if (item?.subtotal !== null && item?.subtotal !== undefined) {
+    return Number(item.subtotal) + Number(item?.diskon_kuitansi || 0)
+  }
+  const total = Number(item?.total || 0)
+  const ppn = Number(item?.ppn_nominal || 0)
+  const diskonNota = Number(item?.diskon_kuitansi || 0)
+  return total - ppn + diskonNota
+}
+
+function getDiskonNota(item) {
+  return Number(item?.diskon_kuitansi || 0)
+}
+
+function hitungDpp(item) {
+  const subtotal = hitungSubtotalBarang(item)
+  const diskonNota = getDiskonNota(item)
+  return Math.max(0, subtotal - diskonNota)
+}
+
+function getPersenPpn(item) {
+  return Number(item?.ppn_persen || 0)
+}
+
+function getNominalPpn(item) {
+  return Number(item?.ppn_nominal || 0)
+}
+
+function hitungSisaBayar(item) {
+  const bayar = Number(item?.bayar || 0)
+  const total = Number(item?.total || 0)
+  if (item?.flag === '5') {
+    return Math.max(0, bayar - total)
+  }
+  return Math.max(0, total - bayar)
+}
+
+function getListRetur(item) {
+  if (Array.isArray(item?.header_retur)) return item.header_retur
+  if (Array.isArray(item?.headerRetur)) return item.headerRetur
+  return []
+}
+
+function hasRetur(item) {
+  return getListRetur(item).length > 0
+}
+
+function isReturFinal(retur) {
+  return String(retur?.status) === '1'
+}
+
+function totalQtyTerjual(item) {
+  if (Array.isArray(item?.detail) && item.detail.length > 0) {
+    return item.detail.reduce((sum, d) => sum + (parseFloat(d?.jumlah) || 0), 0)
+  }
+  if (Array.isArray(item?.detail_fifo) && item.detail_fifo.length > 0) {
+    return item.detail_fifo.reduce((sum, d) => sum + (parseFloat(d?.jumlah) || 0), 0)
+  }
+  return 0
+}
+
+function totalQtyReturSelesai(item) {
+  const list = getListRetur(item)
+  return list.reduce((total, retur) => {
+    if (!isReturFinal(retur)) return total
+    if (!Array.isArray(retur?.detail)) return total
+    return total + retur.detail.reduce((sum, rd) => sum + (parseFloat(rd?.jumlah) || 0), 0)
+  }, 0)
+}
+
+function totalNilaiReturSelesai(item) {
+  const list = getListRetur(item)
+  return list.reduce((sum, retur) => {
+    if (!isReturFinal(retur)) return sum
+    return sum + (parseFloat(retur?.total) || 0)
+  }, 0)
+}
+
+function totalNilaiReturDraft(item) {
+  const list = getListRetur(item)
+  return list.reduce((sum, retur) => {
+    if (isReturFinal(retur)) return sum
+    return sum + (parseFloat(retur?.total) || 0)
+  }, 0)
+}
+
+function statusReturBadge(item) {
+  const qtyJual = totalQtyTerjual(item)
+  const qtyRetur = totalQtyReturSelesai(item)
+  const hasDraft = getListRetur(item).some((r) => !isReturFinal(r))
+
+  if (qtyRetur > 0 && qtyJual > 0 && qtyRetur >= qtyJual) {
+    return {
+      label: hasDraft ? 'Retur Seluruhnya (+Draft)' : 'Retur Seluruhnya',
+      color: 'negative',
+      textColor: 'white',
+    }
+  }
+
+  if (qtyRetur > 0) {
+    return {
+      label: hasDraft ? 'Retur Sebagian (+Draft)' : 'Retur Sebagian',
+      color: 'deep-orange',
+      textColor: 'white',
+    }
+  }
+
+  if (hasDraft) {
+    return {
+      label: 'Draft Retur',
+      color: 'grey-8',
+      textColor: 'white',
+    }
+  }
+
+  return {
+    label: 'Retur',
+    color: 'orange',
+    textColor: 'white',
+  }
+}
 </script>
 <style lang="scss" scoped>
 .example-item {

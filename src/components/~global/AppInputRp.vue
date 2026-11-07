@@ -96,7 +96,7 @@ onMounted(() => {
 })
 
 function anotherValid(val) {
-  if (props.valid) {
+  if (props.valid || val === 0 || val === '0') {
     return true
   }
   if (props.validator === 'email') {
