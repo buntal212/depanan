@@ -8,14 +8,28 @@
             <span class="text-weight-bold text-red"> {{ formatRpDouble(totalall) }}</span>
           </span>
           <br />
-          <span
-            ><app-input
-              v-model="storeform.carinota"
-              outlined
-              dense
-              label="Cari Nota...."
-              @keyup="cariNota()"
-          /></span>
+          <div class="row q-col-gutter-sm items-center q-mt-xs">
+            <div class="col">
+              <app-input
+                v-model="storeform.carinota"
+                outlined
+                dense
+                label="Cari Nota...."
+                @keyup="cariNota()"
+              />
+            </div>
+            <div class="col-auto" v-if="storeform.carinota">
+              <q-btn
+                outline
+                color="primary"
+                icon="search"
+                label="Cek Riwayat Nota"
+                @click="bukaHistoriPembayaran(storeform.carinota.trim())"
+              >
+                <q-tooltip>Telusuri riwayat piutang & pelunasan nota ini (termasuk nota lunas)</q-tooltip>
+              </q-btn>
+            </div>
+          </div>
         </div>
         <q-separator />
       </q-card-section>
@@ -151,10 +165,26 @@
             <div class="col-12 col-sm-8">
               <q-card flat bordered class="history-info-card full-height">
                 <q-card-section class="q-pa-sm">
-                  <div class="row q-col-gutter-sm">
+                  <div class="row q-col-gutter-sm items-center">
                     <div class="col-12 col-sm-6">
                       <div class="text-caption text-grey-6">No. Penjualan</div>
-                      <div class="text-subtitle1 text-weight-bold">{{ storeform.riwayatNota.no_penjualan }}</div>
+                      <div class="text-subtitle1 text-weight-bold">
+                        {{ storeform.riwayatNota.no_penjualan }}
+                        <q-badge
+                          v-if="storeform.riwayatNota.is_lunas"
+                          color="positive"
+                          class="q-ml-xs text-weight-bold"
+                        >
+                          LUNAS
+                        </q-badge>
+                        <q-badge
+                          v-else
+                          color="negative"
+                          class="q-ml-xs text-weight-bold"
+                        >
+                          BELUM LUNAS
+                        </q-badge>
+                      </div>
                     </div>
                     <div class="col-12 col-sm-6">
                       <div class="text-caption text-grey-6">Pelanggan</div>
@@ -169,6 +199,9 @@
                 <q-card-section class="q-pa-sm">
                   <div class="text-caption text-grey-6">Tanggal Hutang</div>
                   <div class="text-subtitle1 text-weight-bold">{{ humanDate(storeform.riwayatNota.tgl_hutang) }}</div>
+                  <div v-if="storeform.riwayatNota.is_lunas && storeform.riwayatNota.tgl_lunas" class="text-caption text-positive">
+                    Lunas: {{ humanDate(storeform.riwayatNota.tgl_lunas) }}
+                  </div>
                 </q-card-section>
               </q-card>
             </div>
@@ -188,16 +221,69 @@
                 </q-card-section>
               </q-card>
             </div>
+            <div class="col-12 col-sm-4" v-if="Number(storeform.riwayatNota.total_retur_nota) > 0">
+              <q-card flat bordered class="history-money-card full-height">
+                <q-card-section class="q-pa-sm">
+                  <div class="text-caption text-grey-6">Total Retur Selesai</div>
+                  <div class="text-subtitle1 text-weight-bold text-orange-9">{{ formatRpDouble(storeform.riwayatNota.total_retur_nota) }}</div>
+                </q-card-section>
+              </q-card>
+            </div>
             <div class="col-12 col-sm-4">
               <q-card flat bordered class="history-money-card full-height">
                 <q-card-section class="q-pa-sm">
                   <div class="text-caption text-grey-6">Sisa Piutang</div>
-                  <div class="text-subtitle1 text-weight-bold text-negative">{{ formatRpDouble(storeform.riwayatNota.sisa_piutang_nota) }}</div>
+                  <div class="text-subtitle1 text-weight-bold" :class="Number(storeform.riwayatNota.sisa_piutang_nota) > 0 ? 'text-negative' : 'text-positive'">
+                    {{ formatRpDouble(storeform.riwayatNota.sisa_piutang_nota) }}
+                  </div>
+                </q-card-section>
+              </q-card>
+            </div>
+            <div class="col-12 col-sm-4" v-if="Number(storeform.riwayatNota.hak_pengembalian) > 0">
+              <q-card flat bordered class="history-money-card full-height bg-amber-1">
+                <q-card-section class="q-pa-sm">
+                  <div class="text-caption text-warning text-weight-bold">Hak Pengembalian Dana</div>
+                  <div class="text-subtitle1 text-weight-bold text-deep-orange-9">{{ formatRpDouble(storeform.riwayatNota.hak_pengembalian) }}</div>
                 </q-card-section>
               </q-card>
             </div>
           </div>
         </q-card-section>
+        <template v-if="storeform.riwayatNota.daftar_retur && storeform.riwayatNota.daftar_retur.length > 0">
+          <q-separator />
+          <q-card-section class="q-py-sm">
+            <div class="text-subtitle2 text-weight-bold">Rincian Retur Penjualan ({{ storeform.riwayatNota.daftar_retur.length }})</div>
+            <div class="text-caption text-grey-6">Daftar transaksi retur yang mengurangi piutang nota ini</div>
+          </q-card-section>
+          <q-markup-table flat dense wrap-cells>
+            <thead>
+              <tr>
+                <th class="text-left">Tanggal Retur</th>
+                <th class="text-left">No. Retur</th>
+                <th class="text-left">Status</th>
+                <th class="text-right">Subtotal</th>
+                <th class="text-right">Diskon Nota</th>
+                <th class="text-right">PPN</th>
+                <th class="text-right">Total Retur</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="retur in storeform.riwayatNota.daftar_retur" :key="retur.id">
+                <td>{{ humanDate(retur.tgl) }}</td>
+                <td class="text-weight-bold">{{ retur.no_retur }}</td>
+                <td>
+                  <q-badge :color="retur.status === '1' ? 'positive' : 'grey-7'">
+                    {{ retur.status === '1' ? 'Selesai' : 'Draft' }}
+                  </q-badge>
+                </td>
+                <td class="text-right">{{ formatRpDouble(retur.subtotal) }}</td>
+                <td class="text-right">{{ Number(retur.diskon_kuitansi) > 0 ? '- ' + formatRpDouble(retur.diskon_kuitansi) : 'Rp 0' }}</td>
+                <td class="text-right">{{ Number(retur.ppn_nominal) > 0 ? formatRpDouble(retur.ppn_nominal) : 'Rp 0' }}</td>
+                <td class="text-right text-weight-bold text-orange-9">{{ formatRpDouble(retur.total) }}</td>
+              </tr>
+            </tbody>
+          </q-markup-table>
+        </template>
         <q-separator />
         <q-card-section class="q-py-sm">
           <div class="text-subtitle2 text-weight-bold">Detail Pembayaran ({{ storeform.riwayatNota.rincian.length }})</div>

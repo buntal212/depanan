@@ -173,19 +173,37 @@
               <span class="text-weight-bold">Rp {{ formatDouble(previewSubtotalRetur) }}</span>
             </div>
 
-            <div class="row justify-between q-py-xs text-grey-5">
+            <div
+              class="row justify-between q-py-xs"
+              :class="previewDiskonNota > 0 ? (app?.dark ? 'text-amber-3' : 'text-orange-9') : 'text-grey-5'"
+            >
               <span>Diskon Nota Retur:</span>
-              <span class="text-caption text-italic">Rincian historis tidak tersedia</span>
+              <span v-if="hasSnapshotNota && previewDiskonNota > 0" class="text-weight-bold">
+                - Rp {{ formatDouble(previewDiskonNota) }}
+              </span>
+              <span v-else-if="hasSnapshotNota" class="text-weight-bold">
+                Rp 0
+              </span>
+              <span v-else class="text-caption text-italic">Rincian historis tidak tersedia</span>
             </div>
 
-            <div class="row justify-between q-py-xs text-grey-5">
+            <div class="row justify-between q-py-xs" :class="hasSnapshotNota ? '' : 'text-grey-5'">
               <span>DPP (Dasar Pengenaan Pajak):</span>
-              <span class="text-caption text-italic">Rincian historis tidak tersedia</span>
+              <span v-if="hasSnapshotNota" class="text-weight-bold">
+                Rp {{ formatDouble(previewDpp) }}
+              </span>
+              <span v-else class="text-caption text-italic">Rincian historis tidak tersedia</span>
             </div>
 
-            <div class="row justify-between q-py-xs text-grey-5">
-              <span>PPN Retur:</span>
-              <span class="text-caption text-italic">Rincian historis tidak tersedia</span>
+            <div
+              class="row justify-between q-py-xs"
+              :class="hasSnapshotNota && previewPpn > 0 ? 'text-primary' : 'text-grey-5'"
+            >
+              <span>PPN Retur ({{ formatDouble(previewPpnPersen) }}%):</span>
+              <span v-if="hasSnapshotNota" class="text-weight-bold">
+                Rp {{ formatDouble(previewPpn) }}
+              </span>
+              <span v-else class="text-caption text-italic">Rincian historis tidak tersedia</span>
             </div>
 
             <q-separator :dark="app?.dark" class="q-my-xs" />
@@ -313,8 +331,84 @@ const previewSubtotalRetur = computed(() => {
   return (store.item?.detail || []).reduce((sum, d) => sum + getSubtotalReturBaris(d), 0)
 })
 
+const hasSnapshotNota = computed(() => {
+  const item = store.item
+  if (!item) return false
+  return (
+    (item.ppn_persen !== null && item.ppn_persen !== undefined) ||
+    (item.ppn_nominal !== null && item.ppn_nominal !== undefined && Number(item.ppn_nominal) > 0) ||
+    (item.diskon_kuitansi !== null && item.diskon_kuitansi !== undefined && Number(item.diskon_kuitansi) > 0)
+  )
+})
+
+const previewDiskonNota = computed(() => {
+  if (!hasSnapshotNota.value) return 0
+  const notaSubtotal = (store.item?.detail || []).reduce((sum, d) => sum + (Number(d?.subtotal) || 0), 0)
+  const notaDiskon = Number(store.item?.diskon_kuitansi || 0)
+  const subtotalRetur = previewSubtotalRetur.value
+  if (notaSubtotal <= 0 || subtotalRetur <= 0 || notaDiskon <= 0) return 0
+
+  const totalTerjual = (store.item?.detail || []).reduce((sum, d) => sum + (Number(d?.jumlah) || 0), 0)
+  const totalSudahRetur = (store.item?.detail || []).reduce((sum, d) => sum + getSudahRetur(d), 0)
+  const isAll = (totalTerjual > 0 && totalSudahRetur + previewKuantitasRetur.value >= totalTerjual)
+
+  const prevDiskon = (store.item?.header_retur || []).reduce((sum, r) => {
+    return String(r?.status) === '1' ? sum + Number(r?.diskon_kuitansi || 0) : sum
+  }, 0)
+
+  if (isAll) {
+    return Math.max(0, Math.round((notaDiskon - prevDiskon) * 100) / 100)
+  }
+  const ratio = subtotalRetur / notaSubtotal
+  const sisaBoleh = Math.max(0, notaDiskon - prevDiskon)
+  return Math.min(sisaBoleh, Math.round(notaDiskon * ratio * 100) / 100)
+})
+
+const previewDpp = computed(() => {
+  if (!hasSnapshotNota.value) return previewSubtotalRetur.value
+  return Math.max(0, Math.round((previewSubtotalRetur.value - previewDiskonNota.value) * 100) / 100)
+})
+
+const previewPpnPersen = computed(() => {
+  return Number(store.item?.ppn_persen || 0)
+})
+
+const previewPpn = computed(() => {
+  if (!hasSnapshotNota.value) return 0
+  const persen = previewPpnPersen.value
+  if (persen <= 0) return 0
+  const notaPpn = Number(store.item?.ppn_nominal || 0)
+  const prevPpn = (store.item?.header_retur || []).reduce((sum, r) => {
+    return String(r?.status) === '1' ? sum + Number(r?.ppn_nominal || 0) : sum
+  }, 0)
+  const totalTerjual = (store.item?.detail || []).reduce((sum, d) => sum + (Number(d?.jumlah) || 0), 0)
+  const totalSudahRetur = (store.item?.detail || []).reduce((sum, d) => sum + getSudahRetur(d), 0)
+  const isAll = (totalTerjual > 0 && totalSudahRetur + previewKuantitasRetur.value >= totalTerjual)
+
+  if (isAll && notaPpn > 0) {
+    return Math.max(0, Math.round((notaPpn - prevPpn) * 100) / 100)
+  }
+  const sisaBoleh = Math.max(0, notaPpn - prevPpn)
+  const calculated = Math.round(previewDpp.value * (persen / 100) * 100) / 100
+  return notaPpn > 0 ? Math.min(sisaBoleh, calculated) : calculated
+})
+
 const previewTotalNilaiRetur = computed(() => {
-  return previewSubtotalRetur.value
+  if (!hasSnapshotNota.value) return previewSubtotalRetur.value
+  const notaTotal = Number(store.item?.total || 0)
+  const prevTotal = (store.item?.header_retur || []).reduce((sum, r) => {
+    return String(r?.status) === '1' ? sum + Number(r?.total || 0) : sum
+  }, 0)
+  const totalTerjual = (store.item?.detail || []).reduce((sum, d) => sum + (Number(d?.jumlah) || 0), 0)
+  const totalSudahRetur = (store.item?.detail || []).reduce((sum, d) => sum + getSudahRetur(d), 0)
+  const isAll = (totalTerjual > 0 && totalSudahRetur + previewKuantitasRetur.value >= totalTerjual)
+
+  if (isAll && notaTotal > 0) {
+    return Math.max(0, Math.round((notaTotal - prevTotal) * 100) / 100)
+  }
+  const sisaBoleh = Math.max(0, notaTotal - prevTotal)
+  const totalCalc = Math.round((previewDpp.value + previewPpn.value) * 100) / 100
+  return notaTotal > 0 ? Math.min(sisaBoleh, totalCalc) : totalCalc
 })
 
 const statusReturForm = computed(() => {

@@ -67,20 +67,30 @@ export const useAdminFormTransaksiPembayaranPiutangStore = defineStore(
       olahdatahutang(val) {
         const hasil = []
         val?.forEach((x) => {
-          //console.log('valxsss', x?.detail)
-          const totalpiutang = x?.detail.reduce((a, b) => parseFloat(a) + parseFloat(b.subtotal), 0)
-          const totalpiutangterbayar = x.cicilan.reduce(
-            (a, b) => parseFloat(a) + parseFloat(b.jumlah),
-            0,
-          )
-          // console.log('totalpiutangterbayar', totalpiutangterbayar)
-          const tglpenjualan = new Date(x?.tgl).toISOString().split('T')[0]
-          const dp = x?.bayar
-          const diskon = x?.total_diskon
-          const retur = x?.header_retur[0]?.subtotal ?? 0
+          const totalnota = x?.total !== undefined && x?.total !== null
+            ? parseFloat(x.total)
+            : (Array.isArray(x?.detail) ? x.detail.reduce((a, b) => parseFloat(a) + parseFloat(b?.subtotal || 0), 0) : 0)
+
+          const totalpiutangterbayar = Array.isArray(x?.cicilan)
+            ? x.cicilan.reduce((a, b) => parseFloat(a) + parseFloat(b?.jumlah || 0), 0)
+            : 0
+
+          const tglpenjualan = x?.tgl ? new Date(x.tgl).toISOString().split('T')[0] : ''
+          const dp = parseFloat(x?.bayar || 0)
+          const diskon = parseFloat(x?.total_diskon || 0)
+
+          const retur = Array.isArray(x?.header_retur)
+            ? x.header_retur.reduce((a, b) => {
+                const isFinal = b?.status === undefined || b?.status === null || String(b?.status) === '1'
+                return isFinal ? parseFloat(a) + parseFloat(b?.total || b?.subtotal || 0) : parseFloat(a)
+              }, 0)
+            : (String(x?.header_retur?.[0]?.status ?? '1') === '1'
+                ? (x?.header_retur?.[0]?.total ? parseFloat(x.header_retur[0].total) : (x?.header_retur?.[0]?.subtotal ? parseFloat(x.header_retur[0].subtotal) : 0))
+                : 0)
+
           const sisaPiutang = Math.max(
             0,
-            Math.round((totalpiutang - retur - dp - totalpiutangterbayar) * 100) / 100,
+            Math.round((totalnota - retur - dp - totalpiutangterbayar) * 100) / 100,
           )
           const datahutang = {
             id: x?.id,
@@ -91,14 +101,14 @@ export const useAdminFormTransaksiPembayaranPiutangStore = defineStore(
             tgljatuhtempo: x?.tempo,
             dp: dp,
             diskon: diskon,
-            totalnota: totalpiutang - retur,
+            totalnota: totalnota,
+            totalretur: retur,
             totalpiutang: sisaPiutang,
             totalterbayang: totalpiutangterbayar + dp,
             yangakandibayar: sisaPiutang,
             sisajumlahbelumditerimax: sisaPiutang,
           }
           hasil.push(datahutang)
-          // console.log('datahutangsa', datahutang)
         })
         const filteryanglunas = hasil.filter((item) => item.yangakandibayar >= 0.01)
         // console.log('totalpiutang', filteryanglunas)

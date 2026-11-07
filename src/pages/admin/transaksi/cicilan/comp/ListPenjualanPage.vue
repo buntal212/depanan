@@ -459,14 +459,13 @@ function detailRetur(item, detail) {
 function subtotal(item, detail) {
   let total = 0
   const subtotal = detail?.subtotal ?? 0
-  const diskon = detail?.diskon ?? 0
   if (item?.header_retur?.length > 0) {
     total = item?.header_retur
       ?.flatMap((m) => m?.detail)
       .filter((f) => f?.kodebarang === detail?.kodebarang)
       ?.reduce((total, item) => total + item?.subtotal, 0)
   }
-  return subtotal - diskon - total
+  return subtotal - total
 }
 // eslint-disable-next-line no-unused-vars
 const next = computed(() => {
