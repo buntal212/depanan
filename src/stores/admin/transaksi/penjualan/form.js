@@ -35,6 +35,8 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
       bayar: 0,
       total: 0,
       kembali: 0,
+      diskon_kuitansi: 0,
+      kena_ppn: true,
       dataPelanggan: {
         nama: '',
         tlp: '',
@@ -89,6 +91,8 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
         bayar: 0,
         total: 0,
         kembali: 0,
+        diskon_kuitansi: 0,
+        kena_ppn: true,
         dataPelanggan: {
           nama: '',
           tlp: '',
@@ -132,6 +136,11 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
       const sistemBayar = order?.sistem_bayar
       const flag = sistemBayar === 'tempo' ? '2' : sistemBayar === 'dp' ? '7' : '5'
       const total = Number(penjualan?.total || 0)
+      const diskonKuitansi = Number(penjualan?.diskon_kuitansi || 0)
+      const kenaPpn =
+        penjualan?.ppn_persen !== undefined && penjualan?.ppn_persen !== null
+          ? Number(penjualan?.ppn_persen) > 0 || Number(penjualan?.ppn_nominal || 0) > 0
+          : true
 
       this.item = penjualan || null
       this.noNota = penjualan?.no_penjualan || null
@@ -143,6 +152,8 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
         bayar: sistemBayar === 'dp' ? Number(order?.down_payment || 0) : sistemBayar === 'tempo' ? 0 : total,
         total,
         kembali: 0,
+        diskon_kuitansi: diskonKuitansi,
+        kena_ppn: kenaPpn,
         dataPelanggan: {
           nama: penjualan?.pelanggan?.nama || '',
           tlp: penjualan?.pelanggan?.telepon || '',
@@ -161,8 +172,19 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
         else if (key == 'harga_beli') form[key] = olahUang(this.form[key])
         else if (key == 'bayar') form[key] = olahUang(this.form[key])
         else if (key == 'jumlah') form[key] = olahUang(this.form[key])
+        else if (key == 'jumlahB') form[key] = olahUang(this.form[key])
+        else if (key == 'jumlahK') form[key] = olahUang(this.form[key])
+        else if (key == 'hargaJualB') form[key] = olahUang(this.form[key])
         else form[key] = this.form[key]
       })
+
+      const jB = parseFloat(form['jumlahB']) || 0
+      const jK = parseFloat(form['jumlahK']) || 0
+      form['satuan'] = jB > 0 ? 'SB' : 'SK'
+      form['jumlah_b'] = jB
+      form['jumlah_k'] = jK
+      form['harga_jual_b'] = form['hargaJualB']
+
       await api
         .post('/v1/transaksi/penjualan/simpan-detail', form)
         .then(({ data }) => {
@@ -231,11 +253,13 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
       const keys = Object.keys(this.formPembayaran)
       const form = {}
       keys.forEach((key) => {
-        if (key == 'bayar') form[key] = olahUang(this.formPembayaran[key])
+        if (key == 'bayar') form[key] = Number(olahUang(this.formPembayaran[key])) || 0
         else if (key == 'total') form[key] = olahUang(this.formPembayaran[key])
         else if (key == 'kembali') form[key] = olahUang(this.formPembayaran[key])
+        else if (key == 'diskon_kuitansi') form[key] = olahUang(this.formPembayaran[key])
         else form[key] = this.formPembayaran[key]
       })
+      form['kena_ppn'] = Boolean(this.formPembayaran.kena_ppn)
       // return
 
       return new Promise((resolve) => {

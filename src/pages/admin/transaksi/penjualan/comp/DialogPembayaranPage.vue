@@ -124,6 +124,57 @@
                         </div>
                       </div>
                     </template>
+
+                    <!-- Diskon Nota & PPN -->
+                    <div class="col-12 q-mb-sm">
+                      <div class="row q-col-gutter-sm items-center">
+                        <div class="col-12 col-sm-7">
+                          <app-input-rp
+                            v-model="store.formPembayaran.diskon_kuitansi"
+                            outlined
+                            currency
+                            label="Diskon Nota (Rp)"
+                            :disable="store.loadingPembayaran"
+                            @update:model-value="onPerubahanKalkulasi"
+                          />
+                        </div>
+                        <div class="col-12 col-sm-5 flex items-center">
+                          <q-toggle
+                            v-model="store.formPembayaran.kena_ppn"
+                            :label="`Kenakan PPN (${tarifPpnPersen}%)`"
+                            color="primary"
+                            :disable="store.loadingPembayaran || tarifPpnPersen <= 0"
+                            @update:model-value="onPerubahanKalkulasi"
+                          />
+                        </div>
+                      </div>
+
+                      <!-- Ringkasan Ringkas Tema Gelap -->
+                      <div class="q-mt-sm q-pa-sm bg-grey-10 text-grey-3 rounded-borders text-caption">
+                        <div class="row justify-between q-py-xs">
+                          <span>Subtotal Barang:</span>
+                          <span class="text-weight-medium">{{ formatDouble(kalkulasi.subtotalBarang) }}</span>
+                        </div>
+                        <div v-if="kalkulasi.diskonNota > 0" class="row justify-between q-py-xs text-negative">
+                          <span>Diskon Nota:</span>
+                          <span>- {{ formatDouble(kalkulasi.diskonNota) }}</span>
+                        </div>
+                        <div v-if="kalkulasi.diskonNota > 0 || store.formPembayaran.kena_ppn" class="row justify-between q-py-xs">
+                          <span>DPP:</span>
+                          <span class="text-weight-medium">{{ formatDouble(kalkulasi.dpp) }}</span>
+                        </div>
+                        <div v-if="store.formPembayaran.kena_ppn" class="row justify-between q-py-xs">
+                          <span>PPN ({{ tarifPpnPersen }}%):</span>
+                          <span class="text-weight-medium">{{ formatDouble(kalkulasi.ppnNominal) }}</span>
+                        </div>
+                        <q-separator dark class="q-my-xs" />
+                        <div class="row justify-between q-py-xs text-weight-bold text-subtitle2 text-white">
+                          <span>Total Tagihan:</span>
+                          <span class="text-amber-4">{{ formatDouble(kalkulasi.totalTagihan) }}</span>
+                        </div>
+                      </div>
+                    </div>
+
                     <template v-if="store.formPembayaran.flag == '5'">
                       <app-input-rp
                         ref="refBayar"
@@ -171,6 +222,13 @@
                         currency
                         label="Bayar"
                         valid
+                        :rules="[
+                          (val) => {
+                            const b = parseInt(olahUang(val)) || 0
+                            const tot = parseInt(store.formPembayaran.total) || 0
+                            return (b >= 0 && (tot <= 0 || b < tot)) || 'Nominal DP harus < total tagihan'
+                          }
+                        ]"
                         @update:model-value="updateBayar"
                         :disable="store.loadingPembayaran"
                       />
@@ -213,11 +271,12 @@
 </template>
 <script setup>
 import { useQuasar } from 'quasar'
+import { api } from 'src/boot/axios'
 import { formatDouble, olahUang } from 'src/modules/formatter'
+import { notifError } from 'src/modules/notifs'
 import { useFromPenjualanStore } from 'src/stores/admin/transaksi/penjualan/form'
 import { useListPenjualanStore } from 'src/stores/admin/transaksi/penjualan/list'
-import { computed, defineAsyncComponent, ref, shallowRef } from 'vue'
-import { notifError } from 'src/modules/notifs'
+import { computed, defineAsyncComponent, ref, shallowRef, watch } from 'vue'
 
 const DialogCetak = shallowRef(defineAsyncComponent(() => import('./cetak/DialogCetak.vue')))
 const $q = useQuasar()
@@ -225,8 +284,6 @@ const isMobile = computed(() => {
   return $q.screen.lt.sm // Quasar screen size helper
 })
 const store = useFromPenjualanStore()
-
-
 const storelist = useListPenjualanStore()
 
 const optionCaraBayar = computed(() => [
@@ -237,21 +294,118 @@ const optionCaraBayar = computed(() => [
 ])
 const pembayaranOrderTerkunci = computed(() => Boolean(store?.item?.order_sumber?.sistem_bayar))
 const refPelanggan = ref(null)
-function validasi(){
-  let valid=false
+const refBayar = ref(null)
 
-  if(!store.formPembayaran.flag) return notifError('Pilihan Pembayaran Belum dipilih')
-  else if (!store?.item?.sales_id && store.formPembayaran.flag == '2') return notifError('Pembayaran Secara Kredit Harus Memilih Sales')
-  else if ((!store?.formPembayaran?.pelanggan_id && !store.formPembayaran.dataPelanggan?.nama) && ['2','7','8'].includes(store.formPembayaran.flag)) return notifError('Harus ada data pelanggan')
+const tarifPpnPersen = ref(Number(store?.item?.ppn_persen || 0))
 
-  else valid = true
+const subtotalBarang = computed(() => {
+  if (Array.isArray(store?.item?.detail) && store.item.detail.length > 0) {
+    return store.item.detail.reduce((acc, row) => acc + (Number(row.subtotal) || 0), 0)
+  }
+  return Number(store?.item?.subtotal || 0)
+})
 
-    return valid
+const kalkulasi = computed(() => {
+  const subtotal = subtotalBarang.value
+  const diskonNotaRaw = olahUang(store.formPembayaran.diskon_kuitansi)
+  const diskonNota = Math.max(0, Number(diskonNotaRaw) || 0)
+  const dpp = Math.max(0, Math.round((subtotal - diskonNota) * 100) / 100)
+
+  let ppnNominal = 0
+  if (store.formPembayaran.kena_ppn && tarifPpnPersen.value > 0) {
+    ppnNominal = Math.round(dpp * tarifPpnPersen.value) / 100
+  }
+
+  const totalTagihan = Math.round((dpp + ppnNominal) * 100) / 100
+
+  return {
+    subtotalBarang: subtotal,
+    diskonNota,
+    dpp,
+    ppnNominal,
+    totalTagihan,
+  }
+})
+
+function onPerubahanKalkulasi() {
+  const totBaru = kalkulasi.value.totalTagihan
+  const totalLama = Number(store.formPembayaran.total) || 0
+  store.formPembayaran.total = totBaru
+
+  if (store.formPembayaran.flag === '5') {
+    const bayarSaatIni = Number(olahUang(store.formPembayaran.bayar)) || 0
+    if (bayarSaatIni === 0 || bayarSaatIni === totalLama) {
+      store.formPembayaran.bayar = totBaru
+      store.formPembayaran.kembali = 0
+    } else {
+      store.formPembayaran.kembali = Math.max(0, bayarSaatIni - totBaru)
+    }
+  } else if (store.formPembayaran.flag === '2') {
+    store.formPembayaran.bayar = 0
+    store.formPembayaran.kembali = 0
+  } else if (['7', '8'].includes(store.formPembayaran.flag)) {
+    store.formPembayaran.kembali = 0
+  }
+
+  setTimeout(() => {
+    refBayar.value?.appInput?.validate()
+  }, 50)
 }
+
+watch(
+  () => store.openPembayaran,
+  async (buka) => {
+    if (buka) {
+      let tarif = Number(store?.item?.ppn_persen || 0)
+      if (tarif <= 0) {
+        try {
+          const { data } = await api.get('/v1/settings/ppn')
+          if (data?.result?.aktif) {
+            tarif = Number(data?.result?.persen || 0)
+          }
+        } catch (e) {
+          console.error('Gagal memuat pengaturan PPN', e)
+        }
+      }
+      tarifPpnPersen.value = tarif
+      onPerubahanKalkulasi()
+    }
+  },
+  { immediate: true }
+)
+
+function validasi() {
+  let valid = false
+
+  if (!store.formPembayaran.flag) return notifError('Pilihan Pembayaran Belum dipilih')
+  else if (!store?.item?.sales_id && store.formPembayaran.flag == '2') return notifError('Pembayaran Secara Kredit Harus Memilih Sales')
+  else if ((!store?.formPembayaran?.pelanggan_id && !store.formPembayaran.dataPelanggan?.nama) && ['2', '7', '8'].includes(store.formPembayaran.flag)) return notifError('Harus ada data pelanggan')
+
+  const diskonNota = kalkulasi.value.diskonNota
+  const subtotal = kalkulasi.value.subtotalBarang
+  if (diskonNota > subtotal) {
+    return notifError('Diskon nota tidak boleh melebihi subtotal barang')
+  }
+
+  const bayar = Number(olahUang(store.formPembayaran.bayar)) || 0
+  const total = Number(store.formPembayaran.total) || 0
+
+  if (store.formPembayaran.flag === '5' && bayar < total) {
+    return notifError('Nominal pembayaran kurang')
+  }
+
+  if (['7', '8'].includes(store.formPembayaran.flag) && (bayar < 0 || (total > 0 && bayar >= total))) {
+    return notifError('Nominal DP harus kurang dari total tagihan')
+  }
+
+  valid = true
+  return valid
+}
+
 function onSubmit() {
   console.log('submit form pembayaran', refPelanggan.value, store.formPembayaran)
 
-  if(validasi()){
+  if (validasi()) {
     store
       .simpanPembayaran()
       .then((res) => {
@@ -264,42 +418,50 @@ function onSubmit() {
       .then(() => {
         store.resetPembayaran()
       })
-    }
-}
-function setNamaPelanggan() {
-  // console.log('set nama', val)
-  if(store.formPembayaran.pelanggan_id) store.formPembayaran.pelanggan_id=null
-
-}
-function setPelanggan() {
-  // console.log('set nama', val)
-  if(store.formPembayaran.dataPelanggan.nama) {
-    store.formPembayaran.dataPelanggan = {
-                                          nama: '',
-                                          tlp: '',
-                                          alamat: '',
-                                        }
   }
 }
+
+function setNamaPelanggan() {
+  if (store.formPembayaran.pelanggan_id) store.formPembayaran.pelanggan_id = null
+}
+
+function setPelanggan() {
+  if (store.formPembayaran.dataPelanggan.nama) {
+    store.formPembayaran.dataPelanggan = {
+      nama: '',
+      tlp: '',
+      alamat: '',
+    }
+  }
+}
+
 function selectCaraBayar(val) {
   console.log('cara bayar', val)
   if (val == '2') {
     store.formPembayaran.bayar = 0
     store.formPembayaran.kembali = 0
     store.formPembayaran.cara_bayar = ''
+  } else if (['7', '8'].includes(val)) {
+    store.formPembayaran.kembali = 0
+    store.formPembayaran.cara_bayar = 'cash'
   } else {
     store.formPembayaran.cara_bayar = 'cash'
+    store.formPembayaran.bayar = store.formPembayaran.total
+    store.formPembayaran.kembali = 0
   }
+  setTimeout(() => {
+    refBayar.value?.appInput?.validate()
+  }, 50)
 }
-const refBayar = ref(null)
+
 function updateBayar(val) {
-  // console.log('upda ba', val,refBayar.value?.appInput.validate());
-  const _removedZeros = val?.replace(/^0+/, '')
-  const normalAngka = olahUang(_removedZeros)
-  //untuk hapus o dipean angka pake ini yaa
-  if (normalAngka > 1) {
-    // store.formPembayaran.bayar = normalAngka
-    store.formPembayaran.kembali = parseInt(normalAngka) - store.formPembayaran.total
+  const normalAngka = olahUang(val)
+  const total = Number(store.formPembayaran.total) || 0
+  const bayar = Number(normalAngka) || 0
+  if (store.formPembayaran.flag === '5') {
+    store.formPembayaran.kembali = Math.max(0, bayar - total)
+  } else {
+    store.formPembayaran.kembali = 0
   }
   setTimeout(() => {
     refBayar.value?.appInput?.validate()

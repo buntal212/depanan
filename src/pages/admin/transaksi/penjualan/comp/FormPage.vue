@@ -94,6 +94,7 @@
 </template>
 <script setup>
 import { olahUang } from 'src/modules/utils'
+import { notifError } from 'src/modules/notifs'
 import { useFromPenjualanStore } from 'src/stores/admin/transaksi/penjualan/form'
 import { defineAsyncComponent, ref, shallowRef } from 'vue'
 
@@ -147,12 +148,41 @@ function setJumlah(){
   store.setForm('jumlah',jumlah)
 }
 function validasi(){
-  const jumlah=refJumlah.value?.appInput?.validate()
-  const barang=refSelectBarang.value?.refAuto?.validate()
-  console.log('jumlah',jumlah, 'barang', barang);
-  if(jumlah && barang) return true
-  else return false
+  const barangValid = refSelectBarang.value?.refAuto?.validate()
+  if (!store.form.kodebarang || !barangValid) {
+    notifError('Pilih barang terlebih dahulu.')
+    return false
+  }
 
+  const jumB = parseFloat(olahUang(store.form.jumlahB)) || 0
+  const jumK = parseFloat(olahUang(store.form.jumlahK)) || 0
+
+  if (jumB > 0 && jumK > 0) {
+    notifError('Pilih salah satu satuan: Jumlah (SB) atau Jumlah (SK), tidak boleh diisi bersamaan.')
+    return false
+  }
+
+  if (jumB <= 0 && jumK <= 0) {
+    notifError('Jumlah kuantitas pembelian harus lebih dari 0.')
+    return false
+  }
+
+  const hargaAktif = jumB > 0
+    ? (parseFloat(olahUang(store.form.hargaJualB)) || 0)
+    : (parseFloat(olahUang(store.form.harga_jual)) || 0)
+  const disc = parseFloat(olahUang(store.form.diskon)) || 0
+
+  if (disc < 0) {
+    notifError('Diskon tidak boleh kurang dari 0.')
+    return false
+  }
+
+  if (hargaAktif > 0 && disc > hargaAktif) {
+    notifError('Diskon per satuan tidak boleh melebihi harga satuan.')
+    return false
+  }
+
+  return true
 }
 function onInput(){
   // console.log('on input', val);
