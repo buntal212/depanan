@@ -141,7 +141,7 @@
                         <th style="width: 5%">NO</th>
                         <th style="width: 18%">KODE BARANG</th>
                         <th style="width: 35%">NAMA BARANG</th>
-                        <th style="width: 14%">MOTIF</th>
+                        <th style="width: 14%">SERI</th>
                         <th style="width: 10%">JUMLAH</th>
                         <th style="width: 10%">SATUAN</th>
                         <th style="width: 8%">CEK</th>

@@ -2,10 +2,52 @@
   <div class="q-pa-md full-width">
     <div class="row q-col-gutter-md items-end no-print">
       <div class="col-12 col-sm-3">
-        <q-input v-model="store.params.tglawal" type="date" label="Dari" outlined dense />
+        <q-input
+          v-model="store.params.tglawal"
+          label="Dari"
+          outlined
+          dense
+          readonly
+          @click="bukaTanggalAwal"
+          @focus="bukaTanggalAwal"
+        >
+          <template #append>
+            <q-icon name="event" color="primary" class="cursor-pointer" @click.stop="bukaTanggalAwal">
+              <q-popup-proxy ref="popupTanggalAwal" cover transition-show="scale" transition-hide="scale">
+                <q-date
+                  v-model="store.params.tglawal"
+                  mask="YYYY-MM-DD"
+                  color="primary"
+                  @update:model-value="tutupTanggalAwal"
+                />
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
       </div>
       <div class="col-12 col-sm-3">
-        <q-input v-model="store.params.tglakhir" type="date" label="Sampai" outlined dense />
+        <q-input
+          v-model="store.params.tglakhir"
+          label="Sampai"
+          outlined
+          dense
+          readonly
+          @click="bukaTanggalAkhir"
+          @focus="bukaTanggalAkhir"
+        >
+          <template #append>
+            <q-icon name="event" color="primary" class="cursor-pointer" @click.stop="bukaTanggalAkhir">
+              <q-popup-proxy ref="popupTanggalAkhir" cover transition-show="scale" transition-hide="scale">
+                <q-date
+                  v-model="store.params.tglakhir"
+                  mask="YYYY-MM-DD"
+                  color="primary"
+                  @update:model-value="tutupTanggalAkhir"
+                />
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
       </div>
       <div class="col-12 col-sm-2">
         <q-input
@@ -60,6 +102,7 @@
             <th>Tanggal Keluar</th>
             <th>No. Penjualan</th>
             <th>Barang</th>
+            <th>Brand</th>
             <th>Pelanggan</th>
             <th>Sales</th>
             <th class="text-right">Jumlah Keluar</th>
@@ -75,15 +118,16 @@
                 {{ item.kodebarang }}<span v-if="item.motif !== '-'"> · {{ item.motif }}</span>
               </div>
             </td>
+            <td>{{ item.merk || '-' }}</td>
             <td>{{ item.pelanggan }}</td>
             <td>{{ item.sales }}</td>
             <td class="text-right">{{ formatJumlah(item) }}</td>
           </tr>
           <tr v-if="!store.loading && store.items.length === 0">
-            <td colspan="6" class="text-center text-grey-7">Tidak ada barang keluar pada periode ini.</td>
+            <td colspan="7" class="text-center text-grey-7">Tidak ada barang keluar pada periode ini.</td>
           </tr>
           <tr v-if="store.items.length" class="text-weight-bold bg-grey-2">
-            <td colspan="5">Total Barang Keluar</td>
+            <td colspan="6">Total Barang Keluar</td>
             <td class="text-right">{{ formatTotalSemua }}</td>
           </tr>
         </tbody>
@@ -95,9 +139,11 @@
 <script setup>
 import { useLaporanBarangKeluarStore } from 'src/stores/admin/laporan/barang_keluar/list'
 import { date } from 'quasar'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 const store = useLaporanBarangKeluarStore()
+const popupTanggalAwal = ref(null)
+const popupTanggalAkhir = ref(null)
 
 const formatTotalSemua = computed(() => {
   const total = store.items.reduce(
@@ -120,6 +166,22 @@ const totalNota = computed(
 onMounted(async () => {
   await Promise.all([store.getMerks(), store.getData()])
 })
+
+function bukaTanggalAwal() {
+  popupTanggalAwal.value?.show()
+}
+
+function tutupTanggalAwal() {
+  popupTanggalAwal.value?.hide()
+}
+
+function bukaTanggalAkhir() {
+  popupTanggalAkhir.value?.show()
+}
+
+function tutupTanggalAkhir() {
+  popupTanggalAkhir.value?.hide()
+}
 
 function formatTanggal(value) {
   return value ? date.formatDate(value, 'DD MMMM YYYY') : '-'
