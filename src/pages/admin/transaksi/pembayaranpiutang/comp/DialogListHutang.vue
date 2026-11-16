@@ -1,11 +1,17 @@
 <template>
-  <q-dialog v-model="storeform.basic" transition-show="rotate" transition-hide="rotate">
+  <q-dialog
+    v-model="storeform.basic"
+    transition-show="rotate"
+    transition-hide="rotate"
+  >
     <q-card style="width: 100vw">
       <q-card-section>
         <div class="text-h6 q-mb-sm">
           <span class="text-weight-bold text-yellow-8">
             {{ pelanggans?.nama }}
-            <span class="text-weight-bold text-red"> {{ formatRpDouble(totalall) }}</span>
+            <span class="text-weight-bold text-red">
+              {{ formatRpDouble(totalall) }}</span
+            >
           </span>
           <br />
           <div class="row q-col-gutter-sm items-center q-mt-xs">
@@ -26,7 +32,10 @@
                 label="Cek Riwayat Nota"
                 @click="bukaHistoriPembayaran(storeform.carinota.trim())"
               >
-                <q-tooltip>Telusuri riwayat piutang & pelunasan nota ini (termasuk nota lunas)</q-tooltip>
+                <q-tooltip
+                  >Telusuri riwayat piutang & pelunasan nota ini (termasuk nota
+                  lunas)</q-tooltip
+                >
               </q-btn>
             </div>
           </div>
@@ -40,13 +49,20 @@
         </div>
         <div
           align="center"
-          v-if="storeform.loadingcaripiutang === false && storeform.loadingcaripiutang.length === 0"
+          v-if="
+            storeform.loadingcaripiutang === false &&
+            storeform.loadingcaripiutang.length === 0
+          "
         >
           Belum Ada Data Yang Ditampilkan...!!!
         </div>
         <div v-else>
           <q-list v-for="(item, n) in storeform.items" :key="n" separator>
-            <q-form ref="refForm" class="column full-height full-width" @submit="onSubmit(item)">
+            <q-form
+              ref="refForm"
+              class="column full-height full-width"
+              @submit="onSubmit(item)"
+            >
               <transition-group name="list">
                 <q-item class="list-move" :key="item.nopenjualan">
                   <q-item-section class="q-pl-xs q-pr-xs">
@@ -150,13 +166,26 @@
           <div class="text-h6">Rincian Pembayaran Piutang</div>
           <div class="text-caption">Histori pembayaran per No. Penjualan</div>
         </div>
-        <q-btn flat round dense icon="close" v-close-popup aria-label="Tutup dialog" />
+        <q-btn
+          flat
+          round
+          dense
+          icon="close"
+          v-close-popup
+          aria-label="Tutup dialog"
+        />
       </q-card-section>
       <q-separator />
-      <q-card-section v-if="storeform.loadingRiwayat" class="text-center q-py-xl">
+      <q-card-section
+        v-if="storeform.loadingRiwayat"
+        class="text-center q-py-xl"
+      >
         <q-spinner-dots color="primary" size="36px" />
       </q-card-section>
-      <q-card-section v-else-if="!storeform.riwayatNota" class="text-center text-grey q-py-xl">
+      <q-card-section
+        v-else-if="!storeform.riwayatNota"
+        class="text-center text-grey q-py-xl"
+      >
         Belum ada pembayaran untuk nota ini.
       </q-card-section>
       <template v-else>
@@ -188,7 +217,9 @@
                     </div>
                     <div class="col-12 col-sm-6">
                       <div class="text-caption text-grey-6">Pelanggan</div>
-                      <div class="text-subtitle1 text-weight-bold">{{ storeform.riwayatNota.nama_pelanggan || '-' }}</div>
+                      <div class="text-subtitle1 text-weight-bold">{{
+                        storeform.riwayatNota.nama_pelanggan || '-'
+                      }}</div>
                     </div>
                   </div>
                 </q-card-section>
@@ -198,8 +229,16 @@
               <q-card flat bordered class="history-info-card full-height">
                 <q-card-section class="q-pa-sm">
                   <div class="text-caption text-grey-6">Tanggal Hutang</div>
-                  <div class="text-subtitle1 text-weight-bold">{{ humanDate(storeform.riwayatNota.tgl_hutang) }}</div>
-                  <div v-if="storeform.riwayatNota.is_lunas && storeform.riwayatNota.tgl_lunas" class="text-caption text-positive">
+                  <div class="text-subtitle1 text-weight-bold">{{
+                    humanDate(storeform.riwayatNota.tgl_hutang)
+                  }}</div>
+                  <div
+                    v-if="
+                      storeform.riwayatNota.is_lunas &&
+                      storeform.riwayatNota.tgl_lunas
+                    "
+                    class="text-caption text-positive"
+                  >
                     Lunas: {{ humanDate(storeform.riwayatNota.tgl_lunas) }}
                   </div>
                 </q-card-section>
@@ -209,7 +248,9 @@
               <q-card flat bordered class="history-money-card full-height">
                 <q-card-section class="q-pa-sm">
                   <div class="text-caption text-grey-6">Total Nota</div>
-                  <div class="text-subtitle1 text-weight-bold">{{ formatRpDouble(storeform.riwayatNota.total_nota) }}</div>
+                  <div class="text-subtitle1 text-weight-bold">{{
+                    formatRpDouble(storeform.riwayatNota.total_nota)
+                  }}</div>
                 </q-card-section>
               </q-card>
             </div>
@@ -217,15 +258,24 @@
               <q-card flat bordered class="history-money-card full-height">
                 <q-card-section class="q-pa-sm">
                   <div class="text-caption text-grey-6">Total Dibayar</div>
-                  <div class="text-subtitle1 text-weight-bold text-positive">{{ formatRpDouble(storeform.riwayatNota.total_dibayar_nota) }}</div>
+                  <div class="text-subtitle1 text-weight-bold text-positive">{{
+                    formatRpDouble(storeform.riwayatNota.total_dibayar_nota)
+                  }}</div>
                 </q-card-section>
               </q-card>
             </div>
-            <div class="col-12 col-sm-4" v-if="Number(storeform.riwayatNota.total_retur_nota) > 0">
+            <div
+              class="col-12 col-sm-4"
+              v-if="Number(storeform.riwayatNota.total_retur_nota) > 0"
+            >
               <q-card flat bordered class="history-money-card full-height">
                 <q-card-section class="q-pa-sm">
-                  <div class="text-caption text-grey-6">Total Retur Selesai</div>
-                  <div class="text-subtitle1 text-weight-bold text-orange-9">{{ formatRpDouble(storeform.riwayatNota.total_retur_nota) }}</div>
+                  <div class="text-caption text-grey-6"
+                    >Total Retur Selesai</div
+                  >
+                  <div class="text-subtitle1 text-weight-bold text-orange-9">{{
+                    formatRpDouble(storeform.riwayatNota.total_retur_nota)
+                  }}</div>
                 </q-card-section>
               </q-card>
             </div>
@@ -233,27 +283,61 @@
               <q-card flat bordered class="history-money-card full-height">
                 <q-card-section class="q-pa-sm">
                   <div class="text-caption text-grey-6">Sisa Piutang</div>
-                  <div class="text-subtitle1 text-weight-bold" :class="Number(storeform.riwayatNota.sisa_piutang_nota) > 0 ? 'text-negative' : 'text-positive'">
-                    {{ formatRpDouble(storeform.riwayatNota.sisa_piutang_nota) }}
+                  <div
+                    class="text-subtitle1 text-weight-bold"
+                    :class="
+                      Number(storeform.riwayatNota.sisa_piutang_nota) > 0
+                        ? 'text-negative'
+                        : 'text-positive'
+                    "
+                  >
+                    {{
+                      formatRpDouble(storeform.riwayatNota.sisa_piutang_nota)
+                    }}
                   </div>
                 </q-card-section>
               </q-card>
             </div>
-            <div class="col-12 col-sm-4" v-if="Number(storeform.riwayatNota.hak_pengembalian) > 0">
-              <q-card flat bordered class="history-money-card full-height bg-amber-1">
+            <div
+              class="col-12 col-sm-4"
+              v-if="Number(storeform.riwayatNota.hak_pengembalian) > 0"
+            >
+              <q-card
+                flat
+                bordered
+                class="history-money-card full-height bg-amber-1"
+              >
                 <q-card-section class="q-pa-sm">
-                  <div class="text-caption text-warning text-weight-bold">Hak Pengembalian Dana</div>
-                  <div class="text-subtitle1 text-weight-bold text-deep-orange-9">{{ formatRpDouble(storeform.riwayatNota.hak_pengembalian) }}</div>
+                  <div class="text-caption text-warning text-weight-bold"
+                    >Hak Pengembalian Dana</div
+                  >
+                  <div
+                    class="text-subtitle1 text-weight-bold text-deep-orange-9"
+                    >{{
+                      formatRpDouble(storeform.riwayatNota.hak_pengembalian)
+                    }}</div
+                  >
                 </q-card-section>
               </q-card>
             </div>
           </div>
         </q-card-section>
-        <template v-if="storeform.riwayatNota.daftar_retur && storeform.riwayatNota.daftar_retur.length > 0">
+        <template
+          v-if="
+            storeform.riwayatNota.daftar_retur &&
+            storeform.riwayatNota.daftar_retur.length > 0
+          "
+        >
           <q-separator />
           <q-card-section class="q-py-sm">
-            <div class="text-subtitle2 text-weight-bold">Rincian Retur Penjualan ({{ storeform.riwayatNota.daftar_retur.length }})</div>
-            <div class="text-caption text-grey-6">Daftar transaksi retur yang mengurangi piutang nota ini</div>
+            <div class="text-subtitle2 text-weight-bold"
+              >Rincian Retur Penjualan ({{
+                storeform.riwayatNota.daftar_retur.length
+              }})</div
+            >
+            <div class="text-caption text-grey-6"
+              >Daftar transaksi retur yang mengurangi piutang nota ini</div
+            >
           </q-card-section>
           <q-markup-table flat dense wrap-cells>
             <thead>
@@ -268,36 +352,68 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="retur in storeform.riwayatNota.daftar_retur" :key="retur.id">
+              <tr
+                v-for="retur in storeform.riwayatNota.daftar_retur"
+                :key="retur.id"
+              >
                 <td>{{ humanDate(retur.tgl) }}</td>
                 <td class="text-weight-bold">{{ retur.no_retur }}</td>
                 <td>
-                  <q-badge :color="retur.status === '1' ? 'positive' : 'grey-7'">
+                  <q-badge
+                    :color="retur.status === '1' ? 'positive' : 'grey-7'"
+                  >
                     {{ retur.status === '1' ? 'Selesai' : 'Draft' }}
                   </q-badge>
                 </td>
                 <td class="text-right">{{ formatRpDouble(retur.subtotal) }}</td>
-                <td class="text-right">{{ Number(retur.diskon_kuitansi) > 0 ? '- ' + formatRpDouble(retur.diskon_kuitansi) : 'Rp 0' }}</td>
-                <td class="text-right">{{ Number(retur.ppn_nominal) > 0 ? formatRpDouble(retur.ppn_nominal) : 'Rp 0' }}</td>
-                <td class="text-right text-weight-bold text-orange-9">{{ formatRpDouble(retur.total) }}</td>
+                <td class="text-right">{{
+                  Number(retur.diskon_kuitansi) > 0
+                    ? '- ' + formatRpDouble(retur.diskon_kuitansi)
+                    : 'Rp 0'
+                }}</td>
+                <td class="text-right">{{
+                  Number(retur.ppn_nominal) > 0
+                    ? formatRpDouble(retur.ppn_nominal)
+                    : 'Rp 0'
+                }}</td>
+                <td class="text-right text-weight-bold text-orange-9">{{
+                  formatRpDouble(retur.total)
+                }}</td>
               </tr>
             </tbody>
           </q-markup-table>
         </template>
         <q-separator />
         <q-card-section class="q-py-sm">
-          <div class="text-subtitle2 text-weight-bold">Detail Pembayaran ({{ storeform.riwayatNota.rincian.length }})</div>
-          <div class="text-caption text-grey-6">Daftar pembayaran yang telah tercatat untuk nota ini</div>
+          <div class="text-subtitle2 text-weight-bold"
+            >Detail Pembayaran ({{ storeform.riwayatNota.rincian.length }})</div
+          >
+          <div class="text-caption text-grey-6"
+            >Daftar pembayaran yang telah tercatat untuk nota ini</div
+          >
         </q-card-section>
         <q-markup-table flat dense wrap-cells>
           <thead>
             <tr>
-              <th class="text-left">Tanggal Bayar</th><th class="text-left">No. Pembayaran</th><th class="text-left">Cara Bayar</th><th class="text-left">Keterangan</th><th class="text-right">Nominal Bayar</th>
+              <th class="text-left">Tanggal Bayar</th
+              ><th class="text-left">No. Pembayaran</th
+              ><th class="text-left">Cara Bayar</th
+              ><th class="text-left">Keterangan</th
+              ><th class="text-right">Nominal Bayar</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="rincian in storeform.riwayatNota.rincian" :key="rincian.id">
-              <td>{{ humanDate(rincian.tgl_bayar) }}</td><td>{{ rincian.nopembayaran || '-' }}</td><td>{{ rincian.cara_bayar || '-' }}</td><td>{{ rincian.keterangan || '-' }}</td><td class="text-right text-weight-bold">{{ formatRpDouble(rincian.jumlah) }}</td>
+            <tr
+              v-for="rincian in storeform.riwayatNota.rincian"
+              :key="rincian.id"
+            >
+              <td>{{ humanDate(rincian.tgl_bayar) }}</td
+              ><td>{{ rincian.nopembayaran || '-' }}</td
+              ><td>{{ rincian.cara_bayar || '-' }}</td
+              ><td>{{ rincian.keterangan || '-' }}</td
+              ><td class="text-right text-weight-bold">{{
+                formatRpDouble(rincian.jumlah)
+              }}</td>
             </tr>
           </tbody>
         </q-markup-table>
@@ -316,30 +432,37 @@ const storeform = useAdminFormTransaksiPembayaranPiutangStore()
 const props = defineProps({
   pelanggan: {
     type: Array,
-    default: () => [],
-  },
+    default: () => []
+  }
 })
 
 const pelanggans = computed(() => {
   // console.log('sasa', props.pelanggan)
-  const wew = props.pelanggan.find((f) => f?.id === storeform.form.pelanggan_id)
+  const wew = props.pelanggan.find(f => f?.id === storeform.form.pelanggan_id)
   return wew
 })
 
 const totalall = computed(() => {
-  const total = storeform.items.reduce((a, b) => a + parseFloat(b?.yangakandibayar ?? 0), 0)
+  const total = storeform.items.reduce(
+    (a, b) => a + parseFloat(b?.yangakandibayar ?? 0),
+    0
+  )
   return total
 })
 
 function cariNota() {
-  storeform.items = storeform.items.filter((f) => f.nopenjualan.includes(storeform.carinota))
+  storeform.items = storeform.items.filter(f =>
+    f.nopenjualan.includes(storeform.carinota)
+  )
 }
 
 async function bukaHistoriPembayaran(noPenjualan) {
   try {
     await storeform.getRiwayatNota(noPenjualan)
   } catch (error) {
-    notifError(error?.response?.data?.message || 'Gagal memuat rincian pembayaran nota.')
+    notifError(
+      error?.response?.data?.message || 'Gagal memuat rincian pembayaran nota.'
+    )
   }
 }
 
@@ -350,7 +473,7 @@ function onSubmit(item) {
   if (storeform.form.total > sisahutang) {
     notifError(
       'Jumlah Pembayaran Tidak Boleh Lebih Dari Sisa Piutang, Sisa Piutang Adalah ' +
-        formatRpDouble(sisahutang),
+        formatRpDouble(sisahutang)
     )
   } else {
     // console.log('sisahutang', sisahutang, storeform.form.total)

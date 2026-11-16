@@ -5,13 +5,13 @@
       <!-- Decrease -->
       <q-btn
         @click="decrease"
-         :disable="jumlahTotal >= maxPcs"
-          flat
-          size="md"
-          padding="sm"
-        >
+        :disable="jumlahTotal >= maxPcs"
+        flat
+        size="md"
+        padding="sm"
+      >
         <q-icon name="remove" size="20px"></q-icon>
-         <!-- <div style="font-size: 20px;"> - </div> -->
+        <!-- <div style="font-size: 20px;"> - </div> -->
       </q-btn>
 
       <!-- Input -->
@@ -76,7 +76,7 @@ const props = defineProps({
   isiPerDus: { type: [Number, String], default: 1 },
   satuanBesar: { type: String, default: 'Dus' },
   satuanKecil: { type: String, default: 'Pcs' },
-  defaultUnit: { type: String, default: 'Pcs' },
+  defaultUnit: { type: String, default: 'Pcs' }
 })
 
 const emit = defineEmits(['update:modelValue', 'update:inputMode'])
@@ -89,11 +89,11 @@ const internalValue = ref(props.modelValue)
 
 const jumlahTotal = computed({
   get: () => internalValue.value,
-  set: (val) => {
+  set: val => {
     hasInteracted.value = true
     const nilai = Math.max(0, Math.min(props.maxPcs, parseInt(val) || 0))
     internalValue.value = nilai
-  },
+  }
 })
 
 const displayValue = computed(() => {
@@ -128,7 +128,7 @@ function handleSatuanBesar() {
   if (props.maxPcs < isi.value) {
     $q.notify({
       type: 'warning',
-      message: `Stok belum cukup untuk ${props.satuanBesar}`,
+      message: `Stok belum cukup untuk ${props.satuanBesar}`
     })
     return
   }
@@ -155,11 +155,14 @@ watch(inputMode, () => {
   }
 })
 
-watch(() => props.modelValue, (val) => {
-  internalValue.value = val
-})
+watch(
+  () => props.modelValue,
+  val => {
+    internalValue.value = val
+  }
+)
 
-watch(internalValue, (val) => {
+watch(internalValue, val => {
   if (val !== props.modelValue) {
     emit('update:modelValue', val)
   }

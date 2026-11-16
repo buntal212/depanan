@@ -3,7 +3,9 @@
     <div class="col full-height">
       <q-card flat bordered square class="full-height" style="overflow: hidden">
         <q-form ref="formRef" @submit="onSubmit(data?.flaging)">
-          <q-card-section class="q-px-md q-py-xs bg-yellow-8 text-black col-auto full-width">
+          <q-card-section
+            class="q-px-md q-py-xs bg-yellow-8 text-black col-auto full-width"
+          >
             <div class="row items-center justify-between">
               <div class="f-12 text-weight-bold">
                 <app-btn-back size="sm" @click="emits('back')" />
@@ -14,7 +16,11 @@
           <q-card-section style="max-height: 50vh" class="scroll">
             <div class="row q-gutter-sm">
               <div class="col-5">
-                <app-input v-model="store.form.noorder" label="No. Orderan" disable />
+                <app-input
+                  v-model="store.form.noorder"
+                  label="No. Orderan"
+                  disable
+                />
               </div>
               <div class="col-5">
                 <app-select
@@ -27,7 +33,10 @@
                   onfocus="this.select()"
                 />
               </div>
-              <div class="col-1" v-if="data?.flaging === undefined || data?.flaging === null">
+              <div
+                class="col-1"
+                v-if="data?.flaging === undefined || data?.flaging === null"
+              >
                 <q-btn
                   round
                   dense
@@ -38,7 +47,9 @@
                   @click="kuncitrans('1')"
                   :loading="store.lock"
                 >
-                  <q-tooltip class="bg-grey text-white"> KUNCI TRANSAKSI </q-tooltip>
+                  <q-tooltip class="bg-grey text-white">
+                    KUNCI TRANSAKSI
+                  </q-tooltip>
                 </q-btn>
               </div>
               <div class="row" v-else>
@@ -54,7 +65,9 @@
                     @click="kuncitrans()"
                     :loading="store.lock"
                   >
-                    <q-tooltip class="bg-grey text-white"> BUKA KUNCI TRANSAKSI </q-tooltip>
+                    <q-tooltip class="bg-grey text-white">
+                      BUKA KUNCI TRANSAKSI
+                    </q-tooltip>
                   </q-btn>
                 </div>
                 <div class="q-pl-xs">
@@ -76,7 +89,7 @@
                   url="v1/master/select/master-barang-filter"
                   :filter-min="1"
                   :limit="25"
-                  @update:model-value="(val) => isiform(val)"
+                  @update:model-value="val => isiform(val)"
                   :valid="store.form.namabarang !== null"
                   clearable
                 />
@@ -153,7 +166,9 @@
 
               <div class="col-12">
                 <q-separator class="q-my-md" />
-                <div v-if="data?.flaging === undefined || data?.flaging === null">
+                <div
+                  v-if="data?.flaging === undefined || data?.flaging === null"
+                >
                   <app-btn
                     :loading="store.loading"
                     type="submit"
@@ -182,7 +197,9 @@ import { useAdminMasterSupplierStore } from 'src/stores/admin/master/supplier/li
 import { useAdminFormTransaksiOrderBarangStore } from 'src/stores/admin/transaksi/orderbarang/form'
 import { defineAsyncComponent, onMounted, ref } from 'vue'
 
-const DialogCetakdata = defineAsyncComponent(() => import('./cetak/DialogCetak.vue'))
+const DialogCetakdata = defineAsyncComponent(
+  () => import('./cetak/DialogCetak.vue')
+)
 
 const storesupllier = useAdminMasterSupplierStore()
 const store = useAdminFormTransaksiOrderBarangStore()
@@ -192,8 +209,8 @@ const emits = defineEmits(['back'])
 const props = defineProps({
   data: {
     type: Object,
-    default: null,
-  },
+    default: null
+  }
 })
 
 const formRef = ref(null)

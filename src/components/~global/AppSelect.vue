@@ -7,7 +7,7 @@
     :outlined="outlined"
     hide-bottom-space
     no-error-icon
-    :input-debounce="!filterred?500:0"
+    :input-debounce="!filterred ? 500 : 0"
     emit-value
     map-options
     use-input
@@ -22,15 +22,13 @@
     behavior="menu"
     transition-show="jump-up"
     transition-hide="jump-down"
-    :bottom-slots="hint !== null "
+    :bottom-slots="hint !== null"
     @filter="filterFn"
     @new-value="createValue"
   >
     <template #no-option>
       <q-item>
-        <q-item-section class="text-grey">
-          No results
-        </q-item-section>
+        <q-item-section class="text-grey"> No results </q-item-section>
       </q-item>
     </template>
     <template v-if="hint" #hint>
@@ -60,16 +58,15 @@ const optionx = ref([])
 
 watch(
   () => props.options,
-  (options) => {
+  options => {
     optionx.value = Array.isArray(options) ? [...options] : []
   },
-  { immediate: true, deep: true },
+  { immediate: true, deep: true }
 )
 
-
-function filterFn (val, update) {
+function filterFn(val, update) {
   // console.log('filter', val);
-  
+
   if (val === '') {
     update(() => {
       optionx.value = props?.options
@@ -82,25 +79,25 @@ function filterFn (val, update) {
 
   update(() => {
     const needle = val?.toLowerCase()
-    const newOption = props?.options?.filter(v => v[refAuto.value.optionLabel]?.toLowerCase().indexOf(needle) > -1)
+    const newOption = props?.options?.filter(
+      v => v[refAuto.value.optionLabel]?.toLowerCase().indexOf(needle) > -1
+    )
     // console.log('options', props?.options);
     // console.log('needle', needle);
     // console.log('optionx', newOption);
-    
+
     optionx.value = [...newOption]
-    
   })
-      
 }
 
-function anotherValid (val) {
+function anotherValid(val) {
   if (props.valid) {
     return true
   }
   return (val !== null && val !== '') || 'Harap diisi'
 }
 
-function createValue (val, done) {
+function createValue(val, done) {
   if (!props.filterred) {
     emits('onEnter', val)
     done(val)
@@ -114,5 +111,4 @@ function createValue (val, done) {
     min-height: 39px !important;
   }
 }
-
 </style>

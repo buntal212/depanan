@@ -5,7 +5,9 @@
       <q-card>
         <q-card-section>
           <div class="row justify-center">
-            <div class="col-auto"><qrcode-vue :value="qrValue" :size="200" level="H" /></div>
+            <div class="col-auto"
+              ><qrcode-vue :value="qrValue" :size="200" level="H"
+            /></div>
             <q-separator class="q-mx-md" vertical />
             <div class="col-auto">
               <div class="text-h6">Scan QR Code</div>

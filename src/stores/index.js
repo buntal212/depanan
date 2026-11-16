@@ -14,7 +14,6 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 export default defineStore((/* { ssrContext } */) => {
   const pinia = createPinia()
   pinia.use(piniaPluginPersistedstate)
-  
 
   // You can add Pinia plugins here
   // pinia.use(SomePiniaPlugin)

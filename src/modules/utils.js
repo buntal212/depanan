@@ -1,32 +1,32 @@
 import { date, Loading, QSpinnerCube } from 'quasar'
 
-const waitLoad = (cond) => {
+const waitLoad = cond => {
   if (cond === 'show') {
     Loading.show({
       message: 'Harap bersabar. Menunggu...',
       boxClass: 'bg-dark text-white',
       spinner: QSpinnerCube,
       // spinnerColor: 'yellow',
-      spinnerSize: 30,
+      spinnerSize: 30
     })
   } else {
     Loading.hide()
   }
 }
 
-const dateDbFormat = (val) => {
+const dateDbFormat = val => {
   return date.formatDate(val, 'YYYY-MM-DD')
 }
-const dateBOD = (val) => {
+const dateBOD = val => {
   return date.formatDate(val, 'YYYYMMDD')
 }
-const dateLIS = (val) => {
+const dateLIS = val => {
   return date.formatDate(val, 'YYYYMMDDHHmmss')
 }
-const dateUnix = (val) => {
+const dateUnix = val => {
   return date.formatDate(val, 'X')
 }
-const humanDate = (val) => {
+const humanDate = val => {
   return date.formatDate(val, 'DD MMMM YYYY')
 }
 
@@ -45,9 +45,11 @@ const timeDiff = (start, end) => {
     hours = hours + 24
   }
 
-  return (hours <= 9 ? '0' : '') + hours + ':' + (minutes <= 9 ? '0' : '') + minutes
+  return (
+    (hours <= 9 ? '0' : '') + hours + ':' + (minutes <= 9 ? '0' : '') + minutes
+  )
 }
-const diffDate = (val) => {
+const diffDate = val => {
   const date1 = new Date()
   const date2 = val
   const unit = 'years'
@@ -64,7 +66,7 @@ const calcDate = (val1, val2, type) => {
   return diff
 }
 
-const formatRp = (value) => {
+const formatRp = value => {
   if (value !== null) {
     return Number(value)
       .toFixed(0)
@@ -107,7 +109,7 @@ const formatDoubleKoma = (value, dg) => {
   }
 }
 
-const formattanpaRp = (value) => {
+const formattanpaRp = value => {
   if (value !== null && value !== '') {
     return (
       Number(value)
@@ -121,37 +123,37 @@ const formattanpaRp = (value) => {
     )
   }
 }
-const dateFullFormat = (val) => {
+const dateFullFormat = val => {
   return date.formatDate(val, 'DD MMMM YYYY')
 }
-const dateHalfFormat = (val) => {
+const dateHalfFormat = val => {
   return date.formatDate(val, 'DD MM YYYY')
 }
-const dateCppt = (val) => {
+const dateCppt = val => {
   return val ? date.formatDate(val, 'DD/MM/YYYY') : null
 }
-const dateFilter = (val) => {
+const dateFilter = val => {
   return val ? date.formatDate(val, 'YYYY-MM-DD') : null
 }
-const dateFull = (val) => {
+const dateFull = val => {
   return date.formatDate(val, 'DD MMMM YYYY HH:mm:ss')
 }
-const tglJamFormat = (val) => {
+const tglJamFormat = val => {
   return date.formatDate(val, 'YYYY-MM-DD HH:mm:ss')
 }
-const formatJam = (val) => {
+const formatJam = val => {
   return date.formatDate(val, 'HH:mm:ss')
 }
-const jamTnpDetik = (val) => {
+const jamTnpDetik = val => {
   return date.formatDate(val, 'HH:mm')
 }
-const dateOnly = (val) => {
+const dateOnly = val => {
   return date.formatDate(val, 'DD')
 }
-const monthOnly = (val) => {
+const monthOnly = val => {
   return date.formatDate(val, 'MMMM')
 }
-const dayName = (val) => {
+const dayName = val => {
   return date.formatDate(val, 'dddd')
 }
 
@@ -165,7 +167,7 @@ function titleCase(str) {
   // Directly return the joined string
   return splitStr.join(' ')
 }
-const olahUang = (val) => {
+const olahUang = val => {
   // console.log('olah uang type', typeof val)
   if (typeof val === 'string') {
     let data = ''
@@ -180,7 +182,7 @@ const olahUang = (val) => {
   }
 }
 
-const getNewLine = (text) => {
+const getNewLine = text => {
   return text?.replace(/\n/g, '<br/>')
 }
 
@@ -198,7 +200,7 @@ function terbilangRupiah(nilai) {
     'Delapan',
     'Sembilan',
     'Sepuluh',
-    'Sebelas',
+    'Sebelas'
   ]
   let bagi = 0
   let penyimpanan = ''
@@ -213,26 +215,32 @@ function terbilangRupiah(nilai) {
     penyimpanan = ' Seratus' + terbilangRupiah(nilai - 100)
   } else if (nilai < 1000) {
     bagi = Math.floor(nilai / 100)
-    penyimpanan = terbilangRupiah(bagi) + ' Ratus' + terbilangRupiah(nilai % 100)
+    penyimpanan =
+      terbilangRupiah(bagi) + ' Ratus' + terbilangRupiah(nilai % 100)
   } else if (nilai < 2000) {
     penyimpanan = ' Seribu' + terbilangRupiah(nilai - 1000)
   } else if (nilai < 1000000) {
     bagi = Math.floor(nilai / 1000)
-    penyimpanan = terbilangRupiah(bagi) + ' Ribu' + terbilangRupiah(nilai % 1000)
+    penyimpanan =
+      terbilangRupiah(bagi) + ' Ribu' + terbilangRupiah(nilai % 1000)
   } else if (nilai < 1000000000) {
     bagi = Math.floor(nilai / 1000000)
-    penyimpanan = terbilangRupiah(bagi) + ' Juta' + terbilangRupiah(nilai % 1000000)
+    penyimpanan =
+      terbilangRupiah(bagi) + ' Juta' + terbilangRupiah(nilai % 1000000)
   } else if (nilai < 1000000000000) {
     bagi = Math.floor(nilai / 1000000000)
-    penyimpanan = terbilangRupiah(bagi) + ' Miliar' + terbilangRupiah(nilai % 1000000000)
+    penyimpanan =
+      terbilangRupiah(bagi) + ' Miliar' + terbilangRupiah(nilai % 1000000000)
   } else if (nilai < 1000000000000000) {
     bagi = Math.floor(nilai / 1000000000000)
     penyimpanan =
-      terbilangRupiah(nilai / 1000000000000) + ' Triliun' + terbilangRupiah(nilai % 1000000000000)
+      terbilangRupiah(nilai / 1000000000000) +
+      ' Triliun' +
+      terbilangRupiah(nilai % 1000000000000)
   }
   return penyimpanan
 }
-const formatDenganRp = (value) => {
+const formatDenganRp = value => {
   if (value !== null && value !== '') {
     const numValue = Number(value)
     const formattedValue = Math.abs(numValue)
@@ -276,5 +284,5 @@ export {
   getNewLine,
   terbilangRupiah,
   waitLoad,
-  formatDenganRp,
+  formatDenganRp
 }

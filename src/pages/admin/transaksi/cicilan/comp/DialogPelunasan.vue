@@ -12,13 +12,22 @@
       <q-card-section class="row items-center q-pb-none">
         <div class="text-h6">Pelunasan Down Payment</div>
         <q-space />
-        <q-btn icon="close" flat round dense v-close-popup @click="store.isOpenDP = false" />
+        <q-btn
+          icon="close"
+          flat
+          round
+          dense
+          v-close-popup
+          @click="store.isOpenDP = false"
+        />
       </q-card-section>
 
       <q-card-section class="q-pt-none">
         <div class="row q-mt-sm justify-between">
           <div class="col-4">Total Nota</div>
-          <div class="col-3 text-right">{{ formatDouble(totalHutang()) || 0 }}</div>
+          <div class="col-3 text-right">{{
+            formatDouble(totalHutang()) || 0
+          }}</div>
         </div>
         <div class="row q-mt-sm justify-between">
           <div class="col-4">Pembayranan Down Payment</div>
@@ -102,7 +111,8 @@ function totalHutang() {
 }
 function totalRetur() {
   const item = store.item
-  const retur = item?.header_retur?.reduce((a, b) => a + parseFloat(b?.total ?? 0), 0) ?? 0
+  const retur =
+    item?.header_retur?.reduce((a, b) => a + parseFloat(b?.total ?? 0), 0) ?? 0
 
   return retur
 }

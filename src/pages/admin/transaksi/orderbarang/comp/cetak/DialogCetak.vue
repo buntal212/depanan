@@ -20,7 +20,12 @@
                   <div class="q-pr-md" v-if="profil.fotoProfil">
                     <q-img
                       :src="profil.fotoProfil"
-                      style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover"
+                      style="
+                        width: 100px;
+                        height: 100px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                      "
                       spinner-color="primary"
                     />
                   </div>
@@ -32,8 +37,12 @@
                       {{ profil.profilData?.alamat || '-' }}
                     </div>
                     <div>
-                      <span class="q-pr-sm">Telp : {{ profil.profilData?.telepon || '-' }}</span>
-                      <span>Email : {{ profil.profilData?.email || '-' }} </span>
+                      <span class="q-pr-sm"
+                        >Telp : {{ profil.profilData?.telepon || '-' }}</span
+                      >
+                      <span
+                        >Email : {{ profil.profilData?.email || '-' }}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -63,7 +72,10 @@
             </div>
             <div class="full-width justify-center">
               <q-separator />
-              <div class="text-center text-bold q-pt-sm" style="font-size: medium">
+              <div
+                class="text-center text-bold q-pt-sm"
+                style="font-size: medium"
+              >
                 NOTA ORDER BARANG
               </div>
               <div class="q-px-md q-pt-sm">
@@ -81,15 +93,22 @@
                     <tr v-for="(item, n) in store.item?.rinci" :key="n">
                       <td class="text-center">{{ n + 1 }}</td>
                       <td>{{ item.mbarang?.namabarang }}</td>
-                      <td class="text-center">{{ item.jumlahpo }} {{ item.satuan_b }}</td>
-                      <td class="text-right">{{ formatRpDouble(item.hargapo) }}</td>
-                      <td class="text-right">{{ formatRpDouble(item.total) }}</td>
+                      <td class="text-center"
+                        >{{ item.jumlahpo }} {{ item.satuan_b }}</td
+                      >
+                      <td class="text-right">{{
+                        formatRpDouble(item.hargapo)
+                      }}</td>
+                      <td class="text-right">{{
+                        formatRpDouble(item.total)
+                      }}</td>
                     </tr>
                     <tr>
                       <td colspan="4">
                         <div class="row justify-between">
                           <div class="flex-start">
-                            Terbilang : {{ terbilangRupiah(store.item?.total) }} Rupiah,
+                            Terbilang :
+                            {{ terbilangRupiah(store.item?.total) }} Rupiah,
                           </div>
                           <div class="text-bold flex-end q-pl-sm">TOTAL</div>
                         </div>
@@ -110,7 +129,9 @@
                 <div>{{ store.item?.suplier?.nama }}</div>
               </div>
               <div class="col flex-end content-center text-center">
-                <div>Probolinggo, {{ dateFullFormat(store.item?.tglorder) }}</div>
+                <div
+                  >Probolinggo, {{ dateFullFormat(store.item?.tglorder) }}</div
+                >
                 <div>{{ profil.profilData?.namatoko || 'Nama Toko' }}</div>
                 <div style="height: 50px"></div>
                 <div>{{ profil.profilData.pemilik }}</div>
@@ -123,8 +144,17 @@
           <q-card-section class="q-pa-none bg-black text-white">
             <div class="q-pa-md row justify-end items-end">
               <div class="items-end">
-                <q-btn v-print="printObj" unelevated color="dark" round size="sm" icon="print">
-                  <q-tooltip class="primary" :offset="[10, 10]"> Print </q-tooltip>
+                <q-btn
+                  v-print="printObj"
+                  unelevated
+                  color="dark"
+                  round
+                  size="sm"
+                  icon="print"
+                >
+                  <q-tooltip class="primary" :offset="[10, 10]">
+                    Print
+                  </q-tooltip>
                 </q-btn>
               </div>
             </div>
@@ -136,7 +166,11 @@
 </template>
 
 <script setup>
-import { dateDbFormat, dateFullFormat, formatRpDouble } from 'src/modules/formatter'
+import {
+  dateDbFormat,
+  dateFullFormat,
+  formatRpDouble
+} from 'src/modules/formatter'
 import { terbilangRupiah } from 'src/modules/utils'
 import { useProfilStore } from 'src/stores/admin/profil'
 import { useAdminFormTransaksiOrderBarangStore } from 'src/stores/admin/transaksi/orderbarang/form'
@@ -169,7 +203,7 @@ const printObj = {
   closeCallback() {
     printed.value = false
     console.log('closePrint')
-  },
+  }
 }
 </script>
 

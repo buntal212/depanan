@@ -25,7 +25,13 @@
             class="print-container q-pa-md row justify-center"
           >
             <div
-              style="width: 24cm; background-color: white; color: black; padding: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"
+              style="
+                width: 24cm;
+                background-color: white;
+                color: black;
+                padding: 10px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+              "
             >
               <div class="print-header">
                 <div class="row full-width justify-between">
@@ -34,7 +40,12 @@
                       <div class="q-pr-md" v-if="profil.fotoProfil">
                         <q-img
                           :src="profil.fotoProfil"
-                          style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover"
+                          style="
+                            width: 100px;
+                            height: 100px;
+                            border-radius: 50%;
+                            object-fit: cover;
+                          "
                           spinner-color="primary"
                         />
                       </div>
@@ -46,16 +57,25 @@
                           {{ profil.profilData?.alamat || '-' }}
                         </div>
                         <div>
-                          <span class="q-pr-sm">Telp : {{ profil.profilData?.telepon || '-' }}</span>
+                          <span class="q-pr-sm"
+                            >Telp :
+                            {{ profil.profilData?.telepon || '-' }}</span
+                          >
                         </div>
                         <div>
-                          <span>Email : {{ profil.profilData?.email || '-' }} </span>
+                          <span
+                            >Email : {{ profil.profilData?.email || '-' }}
+                          </span>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col flex-end q-pl-xl q-py-xs content-center text-center">
-                    <span class="text-bold" style="font-size: large">SURAT JALAN</span>
+                  <div
+                    class="col flex-end q-pl-xl q-py-xs content-center text-center"
+                  >
+                    <span class="text-bold" style="font-size: large"
+                      >SURAT JALAN</span
+                    >
                   </div>
                 </div>
               </div>
@@ -80,11 +100,15 @@
                   <div class="col flex-end q-pl-xl q-py-xs">
                     <div class="row full-width">
                       <span class="col-4">Nomor SJ</span>
-                      <span class="col-8">: SJ-{{ item?.no_penjualan || '-' }}</span>
+                      <span class="col-8"
+                        >: SJ-{{ item?.no_penjualan || '-' }}</span
+                      >
                     </div>
                     <div class="row full-width">
                       <span class="col-4">Ref. Penjualan</span>
-                      <span class="col-8">: {{ item?.no_penjualan || '-' }}</span>
+                      <span class="col-8"
+                        >: {{ item?.no_penjualan || '-' }}</span
+                      >
                     </div>
                     <div v-if="item?.noorder" class="row full-width">
                       <span class="col-4">No. Order</span>
@@ -92,11 +116,16 @@
                     </div>
                     <div class="row full-width">
                       <span class="col-4">Sales</span>
-                      <span class="col-8">: {{ item?.sales?.nama || '-' }}</span>
+                      <span class="col-8"
+                        >: {{ item?.sales?.nama || '-' }}</span
+                      >
                     </div>
                     <div class="row full-width">
                       <span class="col-4">Tanggal Kirim</span>
-                      <span class="col-8">: {{ dateFullFormat(item?.tgl_kirim || item?.tgl) }}</span>
+                      <span class="col-8"
+                        >:
+                        {{ dateFullFormat(item?.tgl_kirim || item?.tgl) }}</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -118,9 +147,17 @@
                     <tbody>
                       <tr v-for="(detail, n) in item?.detail" :key="n">
                         <td class="text-center">{{ n + 1 }}</td>
-                        <td>{{ detail?.kodebarang || detail?.master_barang?.kodebarang || '-' }}</td>
+                        <td>{{
+                          detail?.kodebarang ||
+                          detail?.master_barang?.kodebarang ||
+                          '-'
+                        }}</td>
                         <td>
-                          {{ detail?.master_barang?.namabarang || detail?.namabarang || '-' }}
+                          {{
+                            detail?.master_barang?.namabarang ||
+                            detail?.namabarang ||
+                            '-'
+                          }}
                         </td>
                         <td class="text-center">{{ detail?.motif || '-' }}</td>
                         <td class="text-right">{{ jumlahTampil(detail) }}</td>
@@ -128,13 +165,19 @@
                         <td class="text-center">[ &nbsp; ]</td>
                       </tr>
                       <tr v-if="!item?.detail?.length">
-                        <td colspan="7" class="text-center text-grey-7">Tidak ada rincian barang.</td>
+                        <td colspan="7" class="text-center text-grey-7"
+                          >Tidak ada rincian barang.</td
+                        >
                       </tr>
                     </tbody>
                     <tfoot>
                       <tr>
-                        <td colspan="4" class="text-bold text-right q-pr-sm">TOTAL BARANG</td>
-                        <td class="text-bold text-right">{{ totalQtySemua(item) }}</td>
+                        <td colspan="4" class="text-bold text-right q-pr-sm"
+                          >TOTAL BARANG</td
+                        >
+                        <td class="text-bold text-right">{{
+                          totalQtySemua(item)
+                        }}</td>
                         <td colspan="2" class="text-bold text-left q-pl-sm">
                           {{ item?.detail?.length || 0 }} Macam Item
                         </td>
@@ -156,10 +199,15 @@
                     <div>( .................................... )</div>
                   </div>
                   <div class="col flex-end content-center text-center">
-                    <div>Probolinggo, {{ dateFullFormat(item?.tgl_kirim || item?.tgl) }}</div>
+                    <div
+                      >Probolinggo,
+                      {{ dateFullFormat(item?.tgl_kirim || item?.tgl) }}</div
+                    >
                     <div>{{ profil.profilData?.namatoko || 'Nama Toko' }}</div>
                     <div style="height: 40px"></div>
-                    <div>{{ profil.profilData?.pemilik || 'Bagian Pengiriman' }}</div>
+                    <div>{{
+                      profil.profilData?.pemilik || 'Bagian Pengiriman'
+                    }}</div>
                   </div>
                 </div>
 
@@ -168,7 +216,10 @@
                   class="row full-width justify-between items-center q-pt-xs q-px-sm"
                   style="font-size: x-small"
                 >
-                  <span>* Catatan: Barang telah diterima dalam kondisi baik dan lengkap. Komplain barang diterima maksimal 1x24 jam.</span>
+                  <span
+                    >* Catatan: Barang telah diterima dalam kondisi baik dan
+                    lengkap. Komplain barang diterima maksimal 1x24 jam.</span
+                  >
                   <span>created by CV UdumbaraInformatika</span>
                 </div>
               </div>
@@ -208,8 +259,8 @@ import { computed, onMounted, ref } from 'vue'
 defineProps({
   modelValue: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 })
 
 const emits = defineEmits(['update:modelValue'])
@@ -274,7 +325,7 @@ const printReg = computed(() => ({
   closeCallback() {
     printed.value = false
     console.log('closePrint')
-  },
+  }
 }))
 </script>
 

@@ -15,7 +15,7 @@
                       style="min-width: 350px"
                       :debounce="300"
                       @update:model-value="
-                        (e) => {
+                        e => {
                           infiniteScroll.reset()
                           store.getList()
                         }
@@ -93,9 +93,27 @@
                   <q-item-section avatar>
                     <q-avatar>
                       <q-img
-                        v-if="item.image || item.gambar || item.rincians?.[0]?.gambar"
-                        :src="getImageUrl(item.image || item.gambar || item.rincians?.[0]?.gambar)"
-                        @click="imgClick(getImageUrl(item.image || item.gambar || item.rincians?.[0]?.gambar))"
+                        v-if="
+                          item.image ||
+                          item.gambar ||
+                          item.rincians?.[0]?.gambar
+                        "
+                        :src="
+                          getImageUrl(
+                            item.image ||
+                              item.gambar ||
+                              item.rincians?.[0]?.gambar
+                          )
+                        "
+                        @click="
+                          imgClick(
+                            getImageUrl(
+                              item.image ||
+                                item.gambar ||
+                                item.rincians?.[0]?.gambar
+                            )
+                          )
+                        "
                       />
                     </q-avatar>
                   </q-item-section>
@@ -112,7 +130,9 @@
                     <q-item-label caption lines="2">
                       <span class="text-weight-bold"
                         >Kategori: {{ item?.kategori }}
-                        <template v-if="item?.jeniskeramik">({{ item?.jeniskeramik }}) </template>
+                        <template v-if="item?.jeniskeramik"
+                          >({{ item?.jeniskeramik }})
+                        </template>
                       </span>
                       |
                       <q-badge
@@ -125,34 +145,52 @@
                                   item?.stok_kecil > item?.minim_stok,
                                 'text-red q-px-sm q-py-xs rounded':
                                   store.params.minim_stok === 1 ||
-                                  item?.stok_kecil <= item?.minim_stok,
+                                  item?.stok_kecil <= item?.minim_stok
                               }
                             : {
                                 'bg-yellow-10 q-px-sm q-py-xs rounded':
                                   item?.stok_kecil > item?.minim_stok,
                                 'bg-red-9 q-px-sm q-py-xs rounded':
                                   store.params.minim_stok === 1 ||
-                                  item?.stok_kecil <= item?.minim_stok,
+                                  item?.stok_kecil <= item?.minim_stok
                               }
                         "
                         >Stok Sekarang :
                         <span
-                          v-if="Math.floor(item.stok_kecil / (item?.isi > 0 ? item?.isi : 1)) >= 0"
+                          v-if="
+                            Math.floor(
+                              item.stok_kecil / (item?.isi > 0 ? item?.isi : 1)
+                            ) >= 0
+                          "
                         >
-                          {{ Math.floor(item.stok_kecil / (item?.isi > 0 ? item?.isi : 1)) }}
+                          {{
+                            Math.floor(
+                              item.stok_kecil / (item?.isi > 0 ? item?.isi : 1)
+                            )
+                          }}
                           {{ item?.satuan_b }}
                         </span>
                         <span
                           class="q-px-xs"
                           v-if="
-                            Math.floor(item.stok_kecil / (item?.isi > 0 ? item?.isi : 1)) > 0 &&
-                            item?.stok_kecil % (item?.isi > 0 ? item?.isi : 1) > 0
+                            Math.floor(
+                              item.stok_kecil / (item?.isi > 0 ? item?.isi : 1)
+                            ) > 0 &&
+                            item?.stok_kecil % (item?.isi > 0 ? item?.isi : 1) >
+                              0
                           "
                         >
                           lebih
                         </span>
-                        <span v-if="item?.stok_kecil % (item?.isi > 0 ? item?.isi : 1) > 0">
-                          {{ item?.stok_kecil % (item?.isi > 0 ? item?.isi : 1) }}
+                        <span
+                          v-if="
+                            item?.stok_kecil % (item?.isi > 0 ? item?.isi : 1) >
+                            0
+                          "
+                        >
+                          {{
+                            item?.stok_kecil % (item?.isi > 0 ? item?.isi : 1)
+                          }}
                           {{ item?.satuan_k }}
                         </span>
                       </q-badge>
@@ -167,14 +205,14 @@
                                     item?.stok_kecil > item?.minim_stok,
                                   'text-red q-px-sm q-py-xs rounded':
                                     store.params.minim_stok === 1 ||
-                                    item?.stok_kecil <= item?.minim_stok,
+                                    item?.stok_kecil <= item?.minim_stok
                                 }
                               : {
                                   'bg-yellow-10 q-px-sm q-py-xs rounded':
                                     item?.stok_kecil > item?.minim_stok,
                                   'bg-red-9 q-px-sm q-py-xs rounded':
                                     store.params.minim_stok === 1 ||
-                                    item?.stok_kecil <= item?.minim_stok,
+                                    item?.stok_kecil <= item?.minim_stok
                                 }
                           "
                         >
@@ -198,8 +236,12 @@
                     </div>
                   </q-item-section>
                   <q-item-section v-else side top>
-                    <q-item-label caption>{{ humanDate(item?.created_at) }}</q-item-label>
-                    <q-item-label caption>{{ jamTnpDetik(item?.created_at) }}</q-item-label>
+                    <q-item-label caption>{{
+                      humanDate(item?.created_at)
+                    }}</q-item-label>
+                    <q-item-label caption>{{
+                      jamTnpDetik(item?.created_at)
+                    }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator inset="item" />
@@ -228,11 +270,19 @@ import { date, useQuasar } from 'quasar'
 import { humanDate, jamTnpDetik } from 'src/modules/utils'
 // import { useAdminFormMasterBarangStore } from 'src/stores/admin/master/barang/form'
 import { useAdminMasterBarangStore } from 'src/stores/admin/master/barang/list'
-import { computed, defineAsyncComponent, onBeforeMount, ref, shallowRef } from 'vue'
+import {
+  computed,
+  defineAsyncComponent,
+  onBeforeMount,
+  ref,
+  shallowRef
+} from 'vue'
 import { pathImg } from 'src/boot/axios'
 import DialogImage from './DialogImage.vue'
 import { useAppStore } from 'src/stores/app'
-const DialogKartu = shallowRef(defineAsyncComponent(() => import('./DialogKartu.vue')))
+const DialogKartu = shallowRef(
+  defineAsyncComponent(() => import('./DialogKartu.vue'))
+)
 
 // const search = ref(null)
 const store = useAdminMasterBarangStore()
@@ -259,8 +309,13 @@ onBeforeMount(() => {
   // ])
 })
 // Fungsi untuk mendapatkan URL gambar
-const getImageUrl = (image) => {
-  if (image && typeof image === 'object' && !(image instanceof File) && !(image instanceof Blob)) {
+const getImageUrl = image => {
+  if (
+    image &&
+    typeof image === 'object' &&
+    !(image instanceof File) &&
+    !(image instanceof Blob)
+  ) {
     image = image.gambar || image.image || image.path || image.url
   }
 
@@ -272,24 +327,26 @@ const getImageUrl = (image) => {
   if (/^https?:\/\//i.test(image)) return image
 
   const cleanPath = String(image).replace(/^\/+/, '')
-  return cleanPath.startsWith('storage/') ? `${pathImg.replace(/storage\/$/, '')}/${cleanPath}` : `${pathImg}${cleanPath}`
+  return cleanPath.startsWith('storage/')
+    ? `${pathImg.replace(/storage\/$/, '')}/${cleanPath}`
+    : `${pathImg}${cleanPath}`
 }
-const imgClick = (val) => {
+const imgClick = val => {
   console.log('img', val)
   // store.image = val
   // store.setExpand()
   dialogImage.value.openDialog(val)
 }
 
-const edit = (item) => {
+const edit = item => {
   console.log('ediitx', item.rincians)
   emits('edit', item)
 }
-const del = (item) => {
+const del = item => {
   $q.dialog({
     title: 'Peringatan',
     message: 'Apakah Data ini akan dihapus?',
-    cancel: true,
+    cancel: true
     // persistent: true
   })
     .onOk(() => {
@@ -315,14 +372,14 @@ const next = computed(() => {
   return page
 })
 
-const filter = (val) => {
+const filter = val => {
   store.params.minim_stok = val.value
   label.value = val.label
   infiniteScroll.value.reset()
   store.getList()
 }
 
-const kartuStok = (item) => {
+const kartuStok = item => {
   store.kartuStok = item
   store.selectedKodebarang = item?.kodebarang
   store.kartuStok.transaksi = store.cariTotalArray(item?.transaksi)

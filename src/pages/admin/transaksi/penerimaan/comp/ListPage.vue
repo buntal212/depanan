@@ -15,7 +15,7 @@
                       style="min-width: 250px"
                       :debounce="300"
                       @update:model-value="
-                        (e) => {
+                        e => {
                           infiniteScroll.reset()
                           storePenerimaanH.getList()
                         }
@@ -28,12 +28,12 @@
                       outlined
                       :debounce="300"
                       @set-model="
-                        (val) => {
+                        val => {
                           storePenerimaanH.dateDisplay.from = val
                         }
                       "
                       @db-model="
-                        (val) => {
+                        val => {
                           storePenerimaanH.params.from = val
                         }
                       "
@@ -45,12 +45,12 @@
                       outlined
                       :debounce="300"
                       @set-model="
-                        (val) => {
+                        val => {
                           storePenerimaanH.dateDisplay.to = val
                         }
                       "
                       @db-model="
-                        (val) => {
+                        val => {
                           storePenerimaanH.params.to = val
                         }
                       "
@@ -83,7 +83,10 @@
             <q-infinite-scroll
               @load="storePenerimaanH.loadMore"
               ref="infiniteScroll"
-              :disable="storePenerimaanH?.isError || storePenerimaanH?.meta?.next_page_url === null"
+              :disable="
+                storePenerimaanH?.isError ||
+                storePenerimaanH?.meta?.next_page_url === null
+              "
               :scroll-target="scrollTarget"
               :offset="150"
               :initial-index="storePenerimaanH.params.page"
@@ -111,20 +114,32 @@
                         >No. Penerimaan : {{ item?.nopenerimaan }}</span
                       >
                       <span class="text-weight-bold">
-                        || Supplier : {{ item?.suplier }} || No. Faktur : {{ item?.nofaktur }}</span
+                        || Supplier : {{ item?.suplier }} || No. Faktur :
+                        {{ item?.nofaktur }}</span
                       >
                     </q-item-label>
                     <q-item-label caption lines="2">
                       <span class="text-weight-bold"
-                        ><q-badge rounded outline :color="app?.dark ? 'grey' : 'grey-9'">
+                        ><q-badge
+                          rounded
+                          outline
+                          :color="app?.dark ? 'grey' : 'grey-9'"
+                        >
                           No. Order : {{ item?.noorder }}
                         </q-badge></span
                       >
-                      <span class="text-weight-bold" v-if="item?.jenis_pembayaran === 'Cash'">
+                      <span
+                        class="text-weight-bold"
+                        v-if="item?.jenis_pembayaran === 'Cash'"
+                      >
                         || Jenis Pembayaran : {{ item?.jenis_pembayaran }}</span
                       >
-                      <span class="text-weight-bold" v-if="item?.jenis_pembayaran !== 'Cash'">
-                        || Jenis Pembayaran : {{ item?.jenis_pembayaran }} || Tgl Jatuh Tempo :
+                      <span
+                        class="text-weight-bold"
+                        v-if="item?.jenis_pembayaran !== 'Cash'"
+                      >
+                        || Jenis Pembayaran : {{ item?.jenis_pembayaran }} ||
+                        Tgl Jatuh Tempo :
                         {{ humanDate(item?.tgljatuhtempo) }} ({{
                           item?.jumlahharitempo
                         }}
@@ -134,7 +149,8 @@
                         class="text-weight-bold"
                         :class="app?.dark ? 'text-yellow-3' : 'text-orange-9'"
                       >
-                        || TOTAL BARANG DATANG : {{ formatRpDouble(item?.total) }}</span
+                        || TOTAL BARANG DATANG :
+                        {{ formatRpDouble(item?.total) }}</span
                       >
                     </q-item-label>
                   </q-item-section>
@@ -151,22 +167,31 @@
                         round
                         dense
                         :loading="storePenerimaanH.loadingdeleteall"
-                        @click="hapusall(item?.id, item?.nopenerimaan, item?.noorder)"
+                        @click="
+                          hapusall(item?.id, item?.nopenerimaan, item?.noorder)
+                        "
                       >
                         <q-tooltip>Hapus Data</q-tooltip>
                       </q-btn>
                     </div>
                   </q-item-section>
                   <q-item-section v-else side top>
-                    <q-item-label caption>{{ humanDate(item?.tgl) }}</q-item-label>
-                    <q-item-label caption>{{ jamTnpDetik(item?.tgl) }}</q-item-label>
+                    <q-item-label caption>{{
+                      humanDate(item?.tgl)
+                    }}</q-item-label>
+                    <q-item-label caption>{{
+                      jamTnpDetik(item?.tgl)
+                    }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator inset="item" />
               </q-intersection>
 
               <template v-slot:loading>
-                <div v-if="!storePenerimaanH.isError" class="text-center q-my-md">
+                <div
+                  v-if="!storePenerimaanH.isError"
+                  class="text-center q-my-md"
+                >
                   <q-spinner-dots color="yellow-9" size="40px" />
                 </div>
               </template>
@@ -212,7 +237,7 @@ const lists = computed(() => {
   })
 })
 
-const lihatdetail = (item) => {
+const lihatdetail = item => {
   emits('edit', item)
 }
 
@@ -264,7 +289,7 @@ function hapusall(id, nopenerimaan, noorder) {
     title: 'Peringatan',
     message: 'Apakah Data ini akan dihapus?',
     cancel: true,
-    persistent: true,
+    persistent: true
   })
     .onOk(() => {
       // console.log('OK')

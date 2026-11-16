@@ -29,7 +29,9 @@
           </tr>
           <tr class="bg-grey-9">
             <td class="text-bold text-center">Laba Kotor</td>
-            <td class="text-bold text-right">{{ formattanpaRp(store.items?.laba_kotor) }}</td>
+            <td class="text-bold text-right">{{
+              formattanpaRp(store.items?.laba_kotor)
+            }}</td>
           </tr>
           <tr class="bg-yellow-9">
             <td class="text-bold">Beban Operasioanl</td>

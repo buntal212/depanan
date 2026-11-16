@@ -27,11 +27,11 @@ export const useAdminFormTransaksiPembayaranHutangStore = defineStore(
         nofaktur: '',
         noorderan: '',
         total: 0,
-        tgl: date.formatDate(Date.now(), 'YYYY-MM-DD'),
+        tgl: date.formatDate(Date.now(), 'YYYY-MM-DD')
       },
       dateDisplay: {
-        tgl: date.formatDate(Date.now(), 'DD MMMM YYYY'),
-      },
+        tgl: date.formatDate(Date.now(), 'DD MMMM YYYY')
+      }
     }),
 
     actions: {
@@ -41,7 +41,10 @@ export const useAdminFormTransaksiPembayaranHutangStore = defineStore(
         this.loadingcarihutang = true
         const params = { params: { kdsupplier: this.form.kdsuplier } }
         try {
-          const { data } = await api.get('/v1/transaksi/pembayaranhutang/list-hutang', params)
+          const { data } = await api.get(
+            '/v1/transaksi/pembayaranhutang/list-hutang',
+            params
+          )
           const hasil = data
           this.olahdatahutang(hasil)
           console.log('hasil', hasil)
@@ -56,9 +59,12 @@ export const useAdminFormTransaksiPembayaranHutangStore = defineStore(
         this.loadingRiwayat = true
         this.riwayatHutang = null
         try {
-          const { data } = await api.get('/v1/transaksi/pembayaranhutang/riwayat-hutang', {
-            params: { nopenerimaan: noPenerimaan },
-          })
+          const { data } = await api.get(
+            '/v1/transaksi/pembayaranhutang/riwayat-hutang',
+            {
+              params: { nopenerimaan: noPenerimaan }
+            }
+          )
           this.riwayatHutang = data.data || null
           this.dialogRiwayat = true
         } finally {
@@ -69,14 +75,19 @@ export const useAdminFormTransaksiPembayaranHutangStore = defineStore(
       olahdatahutang(val) {
         console.log('val', val)
         const hasil = []
-        val?.forEach((x) => {
-          const totalhutang = x.rinci.reduce((a, b) => parseFloat(a) + parseFloat(b.subtotal), 0)
+        val?.forEach(x => {
+          const totalhutang = x.rinci.reduce(
+            (a, b) => parseFloat(a) + parseFloat(b.subtotal),
+            0
+          )
           const totalhutangterbayar = x.rincianpembayaranhutang.reduce(
             (a, b) => parseFloat(a) + parseFloat(b.totalbayar),
-            0,
+            0
           )
           console.log('totalhutang', totalhutang)
-          const tglpenerimaan = new Date(x?.created_at).toISOString().split('T')[0]
+          const tglpenerimaan = new Date(x?.created_at)
+            .toISOString()
+            .split('T')[0]
           const datahutang = {
             id: x?.id,
             nopenerimaan: x?.nopenerimaan,
@@ -90,13 +101,13 @@ export const useAdminFormTransaksiPembayaranHutangStore = defineStore(
             totalhutang: totalhutang,
             totalterbayang: totalhutangterbayar,
             yangakandibayar: totalhutang - totalhutangterbayar,
-            sisajumlahbelumditerimax: totalhutang - totalhutangterbayar,
+            sisajumlahbelumditerimax: totalhutang - totalhutangterbayar
           }
           hasil.push(datahutang)
         })
-        const filteryanglunas = hasil.filter((item) => item.yangakandibayar > 0)
+        const filteryanglunas = hasil.filter(item => item.yangakandibayar > 0)
         const urut = filteryanglunas.sort(
-          (a, b) => new Date(a.tglpenerimaan) - new Date(b.tglpenerimaan),
+          (a, b) => new Date(a.tglpenerimaan) - new Date(b.tglpenerimaan)
         )
         this.items = urut
         console.log('datahutangxx', this.items)
@@ -104,10 +115,15 @@ export const useAdminFormTransaksiPembayaranHutangStore = defineStore(
       async simpan() {
         this.loadingsimpan = true
         try {
-          const { data } = await api.post('/v1/transaksi/pembayaranhutang/simpan', this.form)
+          const { data } = await api.post(
+            '/v1/transaksi/pembayaranhutang/simpan',
+            this.form
+          )
           this.form.nopembayaran = data?.data[0]?.notrans
           const nopenerimaan = data?.nopenerimaan
-          const arr = this.items.filter((item) => item.nopenerimaan !== nopenerimaan)
+          const arr = this.items.filter(
+            item => item.nopenerimaan !== nopenerimaan
+          )
           this.items = arr
           const list = useAdminListTransaksiPembayaranHutangStore()
           list.olahdata(data?.data)
@@ -119,13 +135,13 @@ export const useAdminFormTransaksiPembayaranHutangStore = defineStore(
           console.log(error)
           this.loadingsimpan = false
         }
-      },
-    },
-  },
+      }
+    }
+  }
 )
 
 if (import.meta.hot) {
   import.meta.hot.accept(
-    acceptHMRUpdate(useAdminFormTransaksiPembayaranHutangStore, import.meta.hot),
+    acceptHMRUpdate(useAdminFormTransaksiPembayaranHutangStore, import.meta.hot)
   )
 }

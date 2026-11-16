@@ -15,7 +15,9 @@
               <q-item-label caption lines="1">
                 <div class="row">
                   <div class="col-6">Rp. {{ formatDouble(item.jumlah) }}</div>
-                  <div class="col-6 text-right">Tanggal Input {{ humanDate(item.tgl_bayar) }}</div>
+                  <div class="col-6 text-right"
+                    >Tanggal Input {{ humanDate(item.tgl_bayar) }}</div
+                  >
                 </div>
               </q-item-label>
             </q-item-section>

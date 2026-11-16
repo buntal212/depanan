@@ -19,7 +19,7 @@
           map-options
           @filter="filterFnmedia"
           @update:model-value="
-            (val) => {
+            val => {
               settings(val)
             }
           "
@@ -29,7 +29,8 @@
               ><q-item-section avatar>
                 <q-item-label>
                   <span class="text-bold"
-                    >{{ scope.opt.label }} ( {{ scope.opt.menus?.label }} )</span
+                    >{{ scope.opt.label }} (
+                    {{ scope.opt.menus?.label }} )</span
                   >
                 </q-item-label>
               </q-item-section>
@@ -37,7 +38,9 @@
           </template>
           <template #no-option>
             <q-item>
-              <q-item-section class="text-grey"> Data Tidak Ditemukan.... </q-item-section>
+              <q-item-section class="text-grey">
+                Data Tidak Ditemukan....
+              </q-item-section>
             </q-item>
           </template>
         </q-select>
@@ -63,8 +66,8 @@ const store = useAdminFormMasterPegawaiStore()
 const props = defineProps({
   submenu: {
     type: Array,
-    default: () => [],
-  },
+    default: () => []
+  }
 })
 const options = ref([props.submenu])
 
@@ -79,14 +82,14 @@ function filterFnmedia(val, update) {
     const needle = val.toLowerCase()
 
     options.value = props.submenu.filter(
-      (v) => v.label.toString().toLowerCase().indexOf(needle) > -1,
+      v => v.label.toString().toLowerCase().indexOf(needle) > -1
     )
   })
 }
 
 function settings(val) {
   console.log('val', val)
-  const menuse = props.submenu.find((x) => x.id === val)
+  const menuse = props.submenu.find(x => x.id === val)
   console.log('menuse', menuse?.menu_id)
   store.payload.menu = menuse.menu_id
 }

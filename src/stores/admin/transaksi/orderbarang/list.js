@@ -15,24 +15,24 @@ export const useAdminListTransaksiOrderBarangStore = defineStore(
       fixed: false,
       itemorderan: [],
       cariorderan: {
-        noorder: null,
+        noorder: null
       },
       params: {
         q: null,
         page: 0,
         per_page: 15,
         from: date.formatDate(Date.now(), 'YYYY-MM-01'),
-        to: date.formatDate(Date.now(), 'YYYY-MM-DD'),
+        to: date.formatDate(Date.now(), 'YYYY-MM-DD')
       },
       getorderan: {
-        noorder: null,
+        noorder: null
       },
       getorderhasil: [],
       opendialogCetak: false,
       dateDisplay: {
         from: date.formatDate(Date.now(), '01 MMMM YYYY'),
-        to: date.formatDate(Date.now(), 'DD MMMM YYYY'),
-      },
+        to: date.formatDate(Date.now(), 'DD MMMM YYYY')
+      }
     }),
     // persist: true,
     // getters: {
@@ -47,10 +47,13 @@ export const useAdminListTransaksiOrderBarangStore = defineStore(
         this.isError = false
         this.loading = true
         const params = {
-          params: this.params,
+          params: this.params
         }
         try {
-          const { data } = await api.get('/v1/transaksi/orderpembelian/getlistorder', params)
+          const { data } = await api.get(
+            '/v1/transaksi/orderpembelian/getlistorder',
+            params
+          )
           // console.log('get master barang', data)
           this.meta = data
           this.olahdata(data?.data, 1)
@@ -67,12 +70,12 @@ export const useAdminListTransaksiOrderBarangStore = defineStore(
         this.isError = false
         this.params.page = index
         const params = {
-          params: this.params,
+          params: this.params
         }
 
         // console.log('load more', index)
 
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           api
             .get('/v1/transaksi/orderpembelian/getlistorder', params)
             .then(({ data }) => {
@@ -94,9 +97,9 @@ export const useAdminListTransaksiOrderBarangStore = defineStore(
         this.getorderan.noorder = val
 
         const params = {
-          params: this.getorderan,
+          params: this.getorderan
         }
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           api
             .get('/v1/transaksi/orderpembelian/getallbynoorder', params)
             .then(({ data }) => {
@@ -115,8 +118,11 @@ export const useAdminListTransaksiOrderBarangStore = defineStore(
       },
       olahdata(val, flaging) {
         console.log('asli', val)
-        val?.forEach((x) => {
-          const total = x.rinci.reduce((a, b) => parseFloat(a) + parseFloat(b.subtotal), 0)
+        val?.forEach(x => {
+          const total = x.rinci.reduce(
+            (a, b) => parseFloat(a) + parseFloat(b.subtotal),
+            0
+          )
           const hasil = {
             id: x?.id,
             noorder: x?.noorder,
@@ -125,9 +131,9 @@ export const useAdminListTransaksiOrderBarangStore = defineStore(
             flaging: x?.flaging,
             suplier: x?.suplier,
             total: total,
-            rinci: x?.rinci,
+            rinci: x?.rinci
           }
-          const index = this.items.findIndex((q) => q.id === x?.id)
+          const index = this.items.findIndex(q => q.id === x?.id)
           console.log('index', index)
           console.log('hasil', hasil)
           // this.items[index] = hasil
@@ -136,7 +142,9 @@ export const useAdminListTransaksiOrderBarangStore = defineStore(
             if (flaging === 1) {
               this.items[index] = hasil
             } else {
-              this.items = this.items.filter((item) => val.some((x) => x.id === item.id))
+              this.items = this.items.filter(item =>
+                val.some(x => x.id === item.id)
+              )
             }
           } else {
             this.items.unshift(hasil)
@@ -176,13 +184,18 @@ export const useAdminListTransaksiOrderBarangStore = defineStore(
 
         try {
           this.loadingdialogorder = true
-          const { data } = await api.get('/v1/transaksi/orderpembelian/getlistorderfixheder')
+          const { data } = await api.get(
+            '/v1/transaksi/orderpembelian/getlistorderfixheder'
+          )
           if (data.length === 0) {
             this.itemorderan = []
           } else {
             const hasilglobal = []
-            data?.forEach((x) => {
-              const total = x.rinci.reduce((a, b) => parseFloat(a) + parseFloat(b.subtotal), 0)
+            data?.forEach(x => {
+              const total = x.rinci.reduce(
+                (a, b) => parseFloat(a) + parseFloat(b.subtotal),
+                0
+              )
               const hasil = {
                 id: x?.id,
                 noorder: x?.noorder,
@@ -191,12 +204,12 @@ export const useAdminListTransaksiOrderBarangStore = defineStore(
                 flaging: x?.flaging,
                 suplier: x?.suplier,
                 total: total,
-                rinci: x?.rinci,
+                rinci: x?.rinci
               }
               hasilglobal.push(hasil)
               this.itemorderan = hasilglobal
             })
-            this.itemorderan.forEach((y) => {
+            this.itemorderan.forEach(y => {
               console.log('rincian', y)
             })
             this.loadingdialogorder = false
@@ -207,11 +220,13 @@ export const useAdminListTransaksiOrderBarangStore = defineStore(
           this.isError = true
           this.loadingdialogorder = false
         }
-      },
-    },
-  },
+      }
+    }
+  }
 )
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useAdminListTransaksiOrderBarangStore, import.meta.hot))
+  import.meta.hot.accept(
+    acceptHMRUpdate(useAdminListTransaksiOrderBarangStore, import.meta.hot)
+  )
 }

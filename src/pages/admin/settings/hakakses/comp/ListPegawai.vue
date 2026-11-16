@@ -2,7 +2,9 @@
   <div class="fit column absolute">
     <div class="col full-height">
       <q-card flat bordered square class="full-height" style="overflow: hidden">
-        <q-card-section class="q-px-md q-py-xs bg-primary text-white col-auto full-width">
+        <q-card-section
+          class="q-px-md q-py-xs bg-primary text-white col-auto full-width"
+        >
           <div class="row items-center justify-between">
             <div class="f-12 text-weight-bold">Data Pegawai</div>
           </div>
@@ -17,46 +19,62 @@
                       <q-item-label>{{ item?.nama }}</q-item-label>
                     </div>
                     <div class="col-2">
-                      <q-item-label class="text-weight-medium"> Username </q-item-label>
+                      <q-item-label class="text-weight-medium">
+                        Username
+                      </q-item-label>
                     </div>
                     <div class="col-1">
                       <q-item-label class="text-weight-medium"> :</q-item-label>
                     </div>
                     <div class="col-4">
-                      <q-item-label class="text-weight-medium"> {{ item?.username }}</q-item-label>
+                      <q-item-label class="text-weight-medium">
+                        {{ item?.username }}</q-item-label
+                      >
                     </div>
                   </div>
                   <div class="row full-width q-gutter-xs">
                     <div class="col-2">
-                      <q-item-label class="text-weight-medium"> E-mail </q-item-label>
+                      <q-item-label class="text-weight-medium">
+                        E-mail
+                      </q-item-label>
                     </div>
                     <div class="col-1">
                       <q-item-label class="text-weight-medium"> :</q-item-label>
                     </div>
                     <div class="col-4">
-                      <q-item-label class="text-weight-medium"> {{ item?.email }}</q-item-label>
+                      <q-item-label class="text-weight-medium">
+                        {{ item?.email }}</q-item-label
+                      >
                     </div>
                   </div>
                   <div class="row full-width q-gutter-xs">
                     <div class="col-2">
-                      <q-item-label class="text-weight-medium"> Alamat </q-item-label>
+                      <q-item-label class="text-weight-medium">
+                        Alamat
+                      </q-item-label>
                     </div>
                     <div class="col-1">
                       <q-item-label class="text-weight-medium"> :</q-item-label>
                     </div>
                     <div class="col-4">
-                      <q-item-label class="text-weight-medium"> {{ item?.alamat }}</q-item-label>
+                      <q-item-label class="text-weight-medium">
+                        {{ item?.alamat }}</q-item-label
+                      >
                     </div>
                   </div>
                   <div class="row full-width q-gutter-xs">
                     <div class="col-2">
-                      <q-item-label class="text-weight-medium"> Jabatan </q-item-label>
+                      <q-item-label class="text-weight-medium">
+                        Jabatan
+                      </q-item-label>
                     </div>
                     <div class="col-1">
                       <q-item-label class="text-weight-medium"> :</q-item-label>
                     </div>
                     <div class="col-4">
-                      <q-item-label class="text-weight-medium"> {{ item?.jabatan }}</q-item-label>
+                      <q-item-label class="text-weight-medium">
+                        {{ item?.jabatan }}</q-item-label
+                      >
                     </div>
                   </div>
                   <q-separator class="q-mt-sm" />
@@ -100,16 +118,16 @@ const emits = defineEmits(['lihat', 'tambah'])
 const props = defineProps({
   data: {
     type: Object,
-    default: null,
+    default: null
   },
   flaging: {
     type: String,
-    default: '',
+    default: ''
   },
   submenu: {
     type: Array,
-    default: () => [],
-  },
+    default: () => []
+  }
 })
 
 const lists = computed(() => {

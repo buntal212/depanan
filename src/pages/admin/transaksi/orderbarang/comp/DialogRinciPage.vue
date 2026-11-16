@@ -5,7 +5,12 @@
         <div class="row">
           <div class="col-10 text-h6">Masukkan Rincian Barang</div>
           <div class="col-2" align="right">
-            <app-btn icon="close" tooltip="Close" color="primary" v-close-popup />
+            <app-btn
+              icon="close"
+              tooltip="Close"
+              color="primary"
+              v-close-popup
+            />
           </div>
         </div>
       </q-card-section>
@@ -25,7 +30,7 @@
                 url="v1/master/select/master-barang-filter"
                 :filter-min="1"
                 :limit="25"
-                @update:model-value="(val) => isiform(val)"
+                @update:model-value="val => isiform(val)"
                 clearable
               />
             </div>
@@ -142,8 +147,8 @@ function isiform(val) {
 const props = defineProps({
   data: {
     type: Object,
-    default: null,
-  },
+    default: null
+  }
 })
 
 function onSubmit() {

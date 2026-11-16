@@ -26,8 +26,8 @@ const emits = defineEmits(['back'])
 const props = defineProps({
   data: {
     type: Object,
-    default: null,
-  },
+    default: null
+  }
 })
 onMounted(() => {
   // console.log('penerimaan', props?.data)

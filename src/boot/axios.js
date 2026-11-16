@@ -8,7 +8,7 @@ const base = SERV
 
 // console.log('boot', base);
 // base = storage.getApp('app-store') ? storage.getApp('app-store').ipserver : ''
-const readJsonStorage = (key) => {
+const readJsonStorage = key => {
   const value = localStorage.getItem(key)
   if (!value) return null
 
@@ -25,7 +25,7 @@ const token = readJsonStorage('token')
 const api = axios.create({
   baseURL: base + '/api',
   // Jangan biarkan halaman menunggu selamanya jika API sedang mati/lambat.
-  timeout: 10000,
+  timeout: 10000
 })
 
 // function setBase(url) {
@@ -40,12 +40,12 @@ if (token) api.defaults.headers.common.Authorization = `Bearer ${token}`
 // }
 
 api.interceptors.response.use(
-  (response) => {
+  response => {
     // Update last active time on successful requests
     localStorage.setItem('activeTime', new Date().toString())
     return response
   },
-  async (error) => {
+  async error => {
     // Handle 401 Unauthorized errors
     if (error.response?.status === 401) {
       const app = useAppStore()
@@ -67,10 +67,10 @@ api.interceptors.response.use(
       return Promise.reject(new Error('Session expired. Please login again.'))
     }
     return Promise.reject(error)
-  },
+  }
 )
 
-const setToken = (token) => {
+const setToken = token => {
   api.defaults.headers.common['Authorization'] = `Bearer ${token}`
 }
 const deleteToken = () => delete api.defaults.headers.common['Authorization']

@@ -12,7 +12,7 @@ import {
   GridComponent,
   TooltipComponent,
   LegendComponent,
-  TitleComponent,
+  TitleComponent
 } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { computed } from 'vue'
@@ -27,17 +27,17 @@ use([
   GridComponent,
   TooltipComponent,
   LegendComponent,
-  TitleComponent,
+  TitleComponent
 ])
 
 const props = defineProps({
   title: {
     type: String,
-    default: 'ECharts Demo',
+    default: 'ECharts Demo'
   },
   xAxisData: {
     type: Array,
-    default: () => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    default: () => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
   },
   series: {
     type: Array,
@@ -45,23 +45,30 @@ const props = defineProps({
       {
         name: 'Data 1',
         type: 'bar',
-        data: [40, 20, 12, 39, 10, 40],
-      },
-    ],
+        data: [40, 20, 12, 39, 10, 40]
+      }
+    ]
   },
   horizontal: {
     type: Boolean,
-    default: false,
+    default: false
   },
   dark: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 })
 
 const $q = useQuasar()
 
-const palette = ['#38bdf8', '#34d399', '#fbbf24', '#fb7185', '#a78bfa', '#22d3ee']
+const palette = [
+  '#38bdf8',
+  '#34d399',
+  '#fbbf24',
+  '#fb7185',
+  '#a78bfa',
+  '#22d3ee'
+]
 
 // Determine if we're using a pie chart
 const isPieChart = computed(() => {
@@ -73,7 +80,9 @@ const chartOption = computed(() => {
   const isDark = props.dark || $q.dark.isActive
   const textColor = isDark ? '#e5e7eb' : '#334155'
   const mutedColor = isDark ? '#94a3b8' : '#64748b'
-  const gridColor = isDark ? 'rgba(148, 163, 184, 0.16)' : 'rgba(100, 116, 139, 0.16)'
+  const gridColor = isDark
+    ? 'rgba(148, 163, 184, 0.16)'
+    : 'rgba(100, 116, 139, 0.16)'
 
   // Base configuration
   const baseConfig = {
@@ -85,32 +94,32 @@ const chartOption = computed(() => {
       textStyle: {
         color: textColor,
         fontSize: 17,
-        fontWeight: 700,
-      },
+        fontWeight: 700
+      }
     },
     tooltip: {
       trigger: isPieChart.value ? 'item' : 'axis',
       backgroundColor: isDark ? '#172033' : '#ffffff',
       borderColor: isDark ? '#334155' : '#e2e8f0',
-      textStyle: { color: textColor },
+      textStyle: { color: textColor }
     },
     legend: {
       top: '34px',
-      textStyle: { color: mutedColor },
-    },
+      textStyle: { color: mutedColor }
+    }
   }
 
   // For pie charts
   if (isPieChart.value) {
     return {
       ...baseConfig,
-      series: props.series.map((item) => ({
+      series: props.series.map(item => ({
         ...item,
         label: {
           color: textColor,
-          ...item.label,
-        },
-      })),
+          ...item.label
+        }
+      }))
     }
   }
 
@@ -122,7 +131,7 @@ const chartOption = computed(() => {
         left: '3%',
         right: '4%',
         bottom: '3%',
-        containLabel: true,
+        containLabel: true
       },
       yAxis: {
         type: 'category',
@@ -131,20 +140,20 @@ const chartOption = computed(() => {
           color: mutedColor,
           width: 120,
           overflow: 'truncate',
-          interval: 0,
+          interval: 0
         },
         axisLine: { lineStyle: { color: gridColor } },
-        axisTick: { show: false },
+        axisTick: { show: false }
       },
       xAxis: {
         type: 'value',
         axisLabel: { color: mutedColor },
-        splitLine: { lineStyle: { color: gridColor } },
+        splitLine: { lineStyle: { color: gridColor } }
       },
-      series: props.series.map((item) => ({
+      series: props.series.map(item => ({
         ...item,
-        type: 'bar',
-      })),
+        type: 'bar'
+      }))
     }
   }
 
@@ -155,21 +164,21 @@ const chartOption = computed(() => {
       left: '3%',
       right: '4%',
       bottom: '3%',
-      containLabel: true,
+      containLabel: true
     },
     xAxis: {
       type: 'category',
       data: props.xAxisData,
       axisLabel: { color: mutedColor },
       axisLine: { lineStyle: { color: gridColor } },
-      axisTick: { show: false },
+      axisTick: { show: false }
     },
     yAxis: {
       type: 'value',
       axisLabel: { color: mutedColor },
-      splitLine: { lineStyle: { color: gridColor } },
+      splitLine: { lineStyle: { color: gridColor } }
     },
-    series: props.series,
+    series: props.series
   }
 })
 </script>

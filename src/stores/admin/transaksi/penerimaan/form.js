@@ -23,7 +23,7 @@ export const useAdminFormTransaksiPenerimaanBarangStore = defineStore(
         id: '',
         kunci: null,
         tgl: date.formatDate(Date.now(), 'YYYY-MM-DD'),
-        tgljthtempo: date.formatDate(Date.now(), 'YYYY-MM-DD'),
+        tgljthtempo: date.formatDate(Date.now(), 'YYYY-MM-DD')
       },
       rinci: [],
       loading: false,
@@ -34,9 +34,9 @@ export const useAdminFormTransaksiPenerimaanBarangStore = defineStore(
       dataprops: [],
       dateDisplay: {
         tgl: date.formatDate(Date.now(), 'DD MMMM YYYY'),
-        tgljthtempo: date.formatDate(Date.now(), 'DD MMMM YYYY'),
+        tgljthtempo: date.formatDate(Date.now(), 'DD MMMM YYYY')
       },
-      tgl: date.formatDate(Date.now(), 'YYYY-MM-DD'),
+      tgl: date.formatDate(Date.now(), 'YYYY-MM-DD')
     }),
     // persist: true,
     // getters: {
@@ -79,10 +79,13 @@ export const useAdminFormTransaksiPenerimaanBarangStore = defineStore(
               arr.olahdata(data?.result)
 
               const hasil = data?.result[0]
-              const total = hasil?.rinci.reduce((a, b) => parseFloat(a) + parseFloat(b.subtotal), 0)
+              const total = hasil?.rinci.reduce(
+                (a, b) => parseFloat(a) + parseFloat(b.subtotal),
+                0
+              )
               const totalfix = hasil?.rinci.reduce(
                 (a, b) => parseFloat(a) + parseFloat(b.subtotalfix),
-                0,
+                0
               )
 
               hasil.total = total
@@ -97,7 +100,7 @@ export const useAdminFormTransaksiPenerimaanBarangStore = defineStore(
               this.rinci = hasil?.orderheder?.rinci
               resolve(data)
             })
-            .catch((err) => {
+            .catch(err => {
               // console.log('sasasx', err)
               this.loading = false
               const msg = err?.response?.data?.message
@@ -110,7 +113,7 @@ export const useAdminFormTransaksiPenerimaanBarangStore = defineStore(
       initReset(data) {
         if (data) {
           // console.log('fafafa', data)
-          return new Promise((resolve) => {
+          return new Promise(resolve => {
             for (const key in this.form) {
               this.form[key] = data[key]
             }
@@ -127,7 +130,10 @@ export const useAdminFormTransaksiPenerimaanBarangStore = defineStore(
       async deleteData(id, nopenerimaan, noorder, kdbarang) {
         const payload = { id, nopenerimaan, noorder, kdbarang }
         try {
-          const resp = await api.post('v1/transaksi/penerimaan/hapusrincian', payload)
+          const resp = await api.post(
+            'v1/transaksi/penerimaan/hapusrincian',
+            payload
+          )
           // console.log(resp)
           if (resp.status === 200) {
             // console.log('sasasa', resp?.data?.result)
@@ -136,10 +142,13 @@ export const useAdminFormTransaksiPenerimaanBarangStore = defineStore(
 
             const hasil = resp?.data?.result[0]
             // console.log('ccc', hasil)
-            const total = hasil?.rinci.reduce((a, b) => parseFloat(a) + parseFloat(b.subtotal), 0)
+            const total = hasil?.rinci.reduce(
+              (a, b) => parseFloat(a) + parseFloat(b.subtotal),
+              0
+            )
             const totalfix = hasil?.rinci.reduce(
               (a, b) => parseFloat(a) + parseFloat(b.subtotalfix),
-              0,
+              0
             )
 
             hasil.total = total
@@ -166,10 +175,13 @@ export const useAdminFormTransaksiPenerimaanBarangStore = defineStore(
               arr.olahdata(data?.result)
 
               const hasil = data?.result[0]
-              const total = hasil?.rinci.reduce((a, b) => parseFloat(a) + parseFloat(b.subtotal), 0)
+              const total = hasil?.rinci.reduce(
+                (a, b) => parseFloat(a) + parseFloat(b.subtotal),
+                0
+              )
               const totalfix = hasil?.rinci.reduce(
                 (a, b) => parseFloat(a) + parseFloat(b.subtotalfix),
-                0,
+                0
               )
               hasil.total = total
               hasil.totalfix = totalfix
@@ -178,7 +190,7 @@ export const useAdminFormTransaksiPenerimaanBarangStore = defineStore(
               notifSuccess('Data berhasil Ditambahkan ke stok...!!!')
               resolve(data)
             })
-            .catch((err) => {
+            .catch(err => {
               // console.log('sasasx', err)
               this.loadingstok = false
               const msg = err?.response?.data?.message
@@ -186,13 +198,13 @@ export const useAdminFormTransaksiPenerimaanBarangStore = defineStore(
               reject(err?.data)
             })
         })
-      },
-    },
-  },
+      }
+    }
+  }
 )
 
 if (import.meta.hot) {
   import.meta.hot.accept(
-    acceptHMRUpdate(useAdminFormTransaksiPenerimaanBarangStore, import.meta.hot),
+    acceptHMRUpdate(useAdminFormTransaksiPenerimaanBarangStore, import.meta.hot)
   )
 }

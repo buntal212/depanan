@@ -1,5 +1,13 @@
 <template>
-  <q-btn class="text-black" color="white" icon="print" size="sm" padding="sm" round dense>
+  <q-btn
+    class="text-black"
+    color="white"
+    icon="print"
+    size="sm"
+    padding="sm"
+    round
+    dense
+  >
     <q-tooltip>Cetak Data</q-tooltip>
   </q-btn>
 </template>

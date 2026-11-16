@@ -15,7 +15,10 @@
         <q-form class="full-height" @submit="onSubmit">
           <q-card-section class="full-height q-pa-lg scroll">
             <div class="row q-col-gutter-md justify-around">
-              <div :class="`col-${isMobile ? 12 : 10}`" class="row q-col-gutter-md justify-center">
+              <div
+                :class="`col-${isMobile ? 12 : 10}`"
+                class="row q-col-gutter-md justify-center"
+              >
                 <div class="full-width q-gutter-md">
                   <app-input-date
                     :model="store.dateDisplay.tgl"
@@ -23,12 +26,12 @@
                     label="Tanggal"
                     outlined
                     @set-model="
-                      (val) => {
+                      val => {
                         store.dateDisplay.tgl = val
                       }
                     "
                     @db-model="
-                      (val) => {
+                      val => {
                         store.form.tgl = val
                       }
                     "
@@ -51,7 +54,12 @@
                       label="Pilih Barang (Klik Tombol Tambah)"
                       :valid="{ required: false }"
                     />
-                    <app-input class="col-2" readonly v-model="store.form.motif" label="Seri" />
+                    <app-input
+                      class="col-2"
+                      readonly
+                      v-model="store.form.motif"
+                      label="Seri"
+                    />
                   </div>
 
                   <app-input
@@ -125,8 +133,8 @@ const store = useFormTransaksiPenyesuaianStore()
 const props = defineProps({
   data: {
     type: Object,
-    default: null,
-  },
+    default: null
+  }
 })
 
 function pilihbarang() {
@@ -139,11 +147,15 @@ onMounted(() => {
 
 function onSubmit() {
   console.log('submit form', store.form)
-  if (store.form.tgl === null || store.form.kdbarang === null || store.form.stok_id === null) {
+  if (
+    store.form.tgl === null ||
+    store.form.kdbarang === null ||
+    store.form.stok_id === null
+  ) {
     $q.notify({
       message: 'Form Tidak Boleh Ada Yang Kosong',
       color: 'negative',
-      icon: 'icon-mat-warning',
+      icon: 'icon-mat-warning'
     })
     return
   }
@@ -151,7 +163,7 @@ function onSubmit() {
     $q.notify({
       message: 'Jumlah Tidak Boleh 0',
       color: 'negative',
-      icon: 'icon-mat-warning',
+      icon: 'icon-mat-warning'
     })
     return
   }

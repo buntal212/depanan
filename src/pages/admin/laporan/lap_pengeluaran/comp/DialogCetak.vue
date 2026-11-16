@@ -28,8 +28,17 @@
           <q-card-section class="q-pa-none bg-black text-white">
             <div class="q-pa-md row justify-end items-end">
               <div class="items-end">
-                <q-btn v-print="printObj" unelevated color="dark" round size="sm" icon="print">
-                  <q-tooltip class="primary" :offset="[10, 10]"> Print </q-tooltip>
+                <q-btn
+                  v-print="printObj"
+                  unelevated
+                  color="dark"
+                  round
+                  size="sm"
+                  icon="print"
+                >
+                  <q-tooltip class="primary" :offset="[10, 10]">
+                    Print
+                  </q-tooltip>
                 </q-btn>
               </div>
             </div>
@@ -53,7 +62,10 @@ const printed = ref(false)
 const printObj = {
   id: 'printMe',
   popTitle:
-    'Printed from ' + profil.profilData?.namatoko + ' app' + ' ----- by CV.Udumbara Informatika',
+    'Printed from ' +
+    profil.profilData?.namatoko +
+    ' app' +
+    ' ----- by CV.Udumbara Informatika',
   beforeOpenCallback() {
     printed.value = true
     const style = document.createElement('style')
@@ -84,7 +96,7 @@ const printObj = {
   closeCallback() {
     printed.value = false
     console.log('closePrint')
-  },
+  }
 }
 </script>
 

@@ -15,7 +15,7 @@
                       style="min-width: 250px"
                       :debounce="300"
                       @update:model-value="
-                        (e) => {
+                        e => {
                           infiniteScroll.reset()
                           store.getList()
                         }
@@ -65,9 +65,13 @@
                     }}</q-avatar>
                   </q-item-section>
                   <q-item-section>
-                    <q-item-label lines="1">{{ humanDate(item?.tgl) }}</q-item-label>
+                    <q-item-label lines="1">{{
+                      humanDate(item?.tgl)
+                    }}</q-item-label>
                     <q-item-label caption lines="2">
-                      <span class="text-weight-bold">{{ item?.keterangan }}</span>
+                      <span class="text-weight-bold">{{
+                        item?.keterangan
+                      }}</span>
                     </q-item-label>
                   </q-item-section>
                   <q-item-section v-if="hoveredId === item?.id" side>
@@ -77,8 +81,12 @@
                     </div>
                   </q-item-section>
                   <q-item-section v-else side top>
-                    <q-item-label caption>{{ humanDate(item?.created_at) }}</q-item-label>
-                    <q-item-label caption>{{ jamTnpDetik(item?.created_at) }}</q-item-label>
+                    <q-item-label caption>{{
+                      humanDate(item?.created_at)
+                    }}</q-item-label>
+                    <q-item-label caption>{{
+                      jamTnpDetik(item?.created_at)
+                    }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator inset="item" />
@@ -116,14 +124,14 @@ const $q = useQuasar()
 onBeforeMount(() => {
   Promise.all([store.getList(null)])
 })
-const edit = (item) => {
+const edit = item => {
   emits('edit', item)
 }
-const del = (item) => {
+const del = item => {
   $q.dialog({
     title: 'Peringatan',
     message: 'Apakah Data ini akan dihapus?',
-    cancel: true,
+    cancel: true
     // persistent: true
   })
     .onOk(() => {

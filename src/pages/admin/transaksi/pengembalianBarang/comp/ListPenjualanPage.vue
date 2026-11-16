@@ -1,6 +1,6 @@
 <template>
   <div class="column fit">
-    <div  class="col full-height">
+    <div class="col full-height">
       <div class="full-height q-pa-sm">
         <q-list class="rounded-borders full-height column">
           <div class="row items-center q-mb-sm">
@@ -14,12 +14,12 @@
                 outlined
                 :debounce="300"
                 @set-model="
-                  (val) => {
+                  val => {
                     list.dateDisplay.from = val
                   }
                 "
                 @db-model="
-                  (val) => {
+                  val => {
                     list.params.from = val
                     reload()
                   }
@@ -32,12 +32,12 @@
                 outlined
                 :debounce="300"
                 @set-model="
-                  (val) => {
+                  val => {
                     list.dateDisplay.to = val
                   }
                 "
                 @db-model="
-                  (val) => {
+                  val => {
                     list.params.to = val
                     reload()
                   }
@@ -68,143 +68,188 @@
                 @click="$emit('list')"
               />
             </div>
-        </div>
+          </div>
 
-        <div class="row items-center q-pb-sm text-weight-bold">
-          <div class="col-3">No Penjualan</div>
-          <div class="col-2">Total</div>
-          <div class="col-2">Total Diskon</div>
-          <div class="col-2">Total Retur</div>
-          <div class="col-auto">Status</div>
-          <div class="col"></div>
-        </div>
-        <div ref="scrollTarget" id="scrltrgt" class="col full-height"  style="height: 600px; overflow-y: auto;">
-          <q-infinite-scroll
-            @load="loadMore"
-            ref="infiniteScroll"
-            :disable="list.loading || list.isError || !list.meta?.next_page_url"
-            :offset="150"
-            debounce="500"
-            :initial-index="list.params.page"
-            scroll-target="#scrtrgt"
+          <div class="row items-center q-pb-sm text-weight-bold">
+            <div class="col-3">No Penjualan</div>
+            <div class="col-2">Total</div>
+            <div class="col-2">Total Diskon</div>
+            <div class="col-2">Total Retur</div>
+            <div class="col-auto">Status</div>
+            <div class="col"></div>
+          </div>
+          <div
+            ref="scrollTarget"
+            id="scrltrgt"
+            class="col full-height"
+            style="height: 600px; overflow-y: auto"
           >
-            <q-intersection v-for="(item, i) in list.items" :key="i" transition="fade" class="example-item">
-              <q-expansion-item
-                v-model="item.expand"
-                clickable
-                v-ripple
-                @mouseover="hoveredId = item?.id"
-                @mouseleave="hoveredId = null"
-                :class="{ 'bg-grey-8 text-white': hoveredId === item?.id }"
+            <q-infinite-scroll
+              @load="loadMore"
+              ref="infiniteScroll"
+              :disable="
+                list.loading || list.isError || !list.meta?.next_page_url
+              "
+              :offset="150"
+              debounce="500"
+              :initial-index="list.params.page"
+              scroll-target="#scrtrgt"
+            >
+              <q-intersection
+                v-for="(item, i) in list.items"
+                :key="i"
+                transition="fade"
+                class="example-item"
               >
-                <template #header>
-                  <q-item-section>
-                    <q-item-label lines="1">
-                      <div class="row">
-                        <div class="col-3">{{ item?.no_penjualan }}</div>
-                        <div class="col-2">{{ formatDouble(item?.total) }}</div>
-                        <div class="col-2">{{ formatDouble(item?.total_diskon) }}</div>
-                        <div class="col-2">
-                          {{
-                            formatDouble(
-                              item?.header_retur?.reduce((sum, r) => sum + r.total, 0) || 0,
-                            )
-                          }}
+                <q-expansion-item
+                  v-model="item.expand"
+                  clickable
+                  v-ripple
+                  @mouseover="hoveredId = item?.id"
+                  @mouseleave="hoveredId = null"
+                  :class="{ 'bg-grey-8 text-white': hoveredId === item?.id }"
+                >
+                  <template #header>
+                    <q-item-section>
+                      <q-item-label lines="1">
+                        <div class="row">
+                          <div class="col-3">{{ item?.no_penjualan }}</div>
+                          <div class="col-2">{{
+                            formatDouble(item?.total)
+                          }}</div>
+                          <div class="col-2">{{
+                            formatDouble(item?.total_diskon)
+                          }}</div>
+                          <div class="col-2">
+                            {{
+                              formatDouble(
+                                item?.header_retur?.reduce(
+                                  (sum, r) => sum + r.total,
+                                  0
+                                ) || 0
+                              )
+                            }}
+                          </div>
+                          <div class="col-auto">{{
+                            statusFlag(item?.flag)
+                          }}</div>
                         </div>
-                        <div class="col-auto">{{ statusFlag(item?.flag) }}</div>
+                      </q-item-label>
+                      <q-item-label lines="1">
+                        <div class="row">
+                          <div class="col-3">{{
+                            item?.pelanggan?.nama ?? item?.keterangan?.nama
+                          }}</div>
+                          <div class="col-5 q-ml-sm">{{
+                            item?.pelanggan?.alamat ?? item?.keterangan?.alamat
+                          }}</div>
+                        </div>
+                      </q-item-label>
+                    </q-item-section>
+                    <q-item-section v-if="hoveredId === item?.id" side>
+                      <div class="flex q-gutter-sm">
+                        <app-btn
+                          v-if="['2', '3', '5'].includes(item?.flag)"
+                          icon="archive"
+                          color="orange"
+                          tooltip="Pengembalian Barang"
+                          @click="$emit('form', item)"
+                        />
                       </div>
-                    </q-item-label>
-                    <q-item-label  lines="1">
-                      <div class="row">
-                        <div class="col-3">{{ item?.pelanggan?.nama??item?.keterangan?.nama }}</div>
-                        <div class="col-5 q-ml-sm">{{ item?.pelanggan?.alamat??item?.keterangan?.alamat }}</div>
-                      </div>
-                    </q-item-label>
-                  </q-item-section>
-                  <q-item-section v-if="hoveredId === item?.id" side>
-                    <div class="flex q-gutter-sm">
-                      <app-btn
-                        v-if="['2', '3', '5'].includes(item?.flag)"
-                        icon="archive"
-                        color="orange"
-                        tooltip="Pengembalian Barang"
-                        @click="$emit('form', item)"
-                      />
-                    </div>
-                  </q-item-section>
-                  <q-item-section v-else side top>
-                    <q-item-label caption>{{ humanDate(item?.tgl) }}</q-item-label>
-                    <q-item-label caption>{{ jamTnpDetik(item?.tgl) }}</q-item-label>
-                  </q-item-section>
-                </template>
+                    </q-item-section>
+                    <q-item-section v-else side top>
+                      <q-item-label caption>{{
+                        humanDate(item?.tgl)
+                      }}</q-item-label>
+                      <q-item-label caption>{{
+                        jamTnpDetik(item?.tgl)
+                      }}</q-item-label>
+                    </q-item-section>
+                  </template>
 
-                <q-separator />
-                <q-card class="q-ma-xs" :class="{ 'bg-grey-8 text-white': hoveredId === item?.id }">
-                  <q-card-section>
-                    <div class="row q-pa-xs">
-                      <div class="col-5">Barang</div>
-                      <div class="col-1 text-right">Jumlah</div>
-                      <div class="col-1 text-right">Jumlah Retur</div>
-                      <div class="col-1 text-right">Harga</div>
-                      <div class="col-1 text-right">Diskon</div>
-                      <div class="col-1 text-right">Retur</div>
-                      <div class="col-2 text-right">Subtotal</div>
-                    </div>
-                    <template v-if="item?.detail?.length">
-                      <div
-                        v-for="detail in item?.detail"
-                        :key="detail?.id"
-                        class="row  q-gutter-y-sm"
+                  <q-separator />
+                  <q-card
+                    class="q-ma-xs"
+                    :class="{ 'bg-grey-8 text-white': hoveredId === item?.id }"
+                  >
+                    <q-card-section>
+                      <div class="row q-pa-xs">
+                        <div class="col-5">Barang</div>
+                        <div class="col-1 text-right">Jumlah</div>
+                        <div class="col-1 text-right">Jumlah Retur</div>
+                        <div class="col-1 text-right">Harga</div>
+                        <div class="col-1 text-right">Diskon</div>
+                        <div class="col-1 text-right">Retur</div>
+                        <div class="col-2 text-right">Subtotal</div>
+                      </div>
+                      <template v-if="item?.detail?.length">
+                        <div
+                          v-for="detail in item?.detail"
+                          :key="detail?.id"
+                          class="row q-gutter-y-sm"
+                        >
+                          <div class="col-5">
+                            {{
+                              detail?.master_barang?.namabarang ??
+                              '' +
+                                ' ' +
+                                (detail?.motif ? detail?.motif + ' ' : '')
+                            }}
+                          </div>
+                          <div class="col-1 text-right">{{
+                            formatDouble(detail?.jumlah)
+                          }}</div>
+                          <div class="col-1 text-right">
+                            {{ formatDouble(detailRetur(item, detail)) }}
+                          </div>
+                          <div class="col-1 text-right">{{
+                            formatDouble(detail?.harga_jual)
+                          }}</div>
+                          <div class="col-1 text-right">{{
+                            formatDouble(detail?.diskon)
+                          }}</div>
+                          <div class="col-1 text-right">
+                            {{
+                              item?.header_retur?.length > 0
+                                ? formatDouble(
+                                    item?.header_retur
+                                      ?.flatMap(m => m.detail)
+                                      .filter(
+                                        m => m.kodebarang === detail?.kodebarang
+                                      )
+                                      ?.reduce(
+                                        (acc, it) => acc + it.subtotal,
+                                        0
+                                      )
+                                  )
+                                : 0
+                            }}
+                          </div>
+                          <div class="col-2 text-right">{{
+                            formatDouble(subtotal(item, detail))
+                          }}</div>
+                        </div>
+                      </template>
+                      <div v-else class="q-pa-md text-center text-grey"
+                        >Tidak ada detail barang</div
                       >
-                        <div class="col-5">
+                    </q-card-section>
+                  </q-card>
+                </q-expansion-item>
+                <q-separator />
+              </q-intersection>
 
-                          {{
-                            detail?.master_barang?.namabarang ??
-                            '' +
-                              ' '  + (detail?.motif ? detail?.motif + ' ':'')
-                          }}
-                        </div>
-                        <div class="col-1 text-right">{{ formatDouble(detail?.jumlah) }}</div>
-                        <div class="col-1 text-right">
-                          {{ formatDouble(detailRetur(item, detail)) }}
-                        </div>
-                        <div class="col-1 text-right">{{ formatDouble(detail?.harga_jual) }}</div>
-                        <div class="col-1 text-right">{{ formatDouble(detail?.diskon) }}</div>
-                        <div class="col-1 text-right">
-                          {{
-                            item?.header_retur?.length >0?formatDouble(
-                              item?.header_retur
-                                ?.flatMap((m) => m.detail)
-                                .filter((m) => m.kodebarang === detail?.kodebarang)
-                                ?.reduce((acc, it) => acc + it.subtotal, 0),
-                            ):0
-                          }}
-                        </div>
-                        <div class="col-2 text-right">{{ formatDouble(subtotal(item, detail)) }}</div>
-                      </div>
-                    </template>
-                    <div v-else class="q-pa-md text-center text-grey">Tidak ada detail barang</div>
-                  </q-card-section>
-                </q-card>
-              </q-expansion-item>
-              <q-separator />
-            </q-intersection>
-
-            <template #loading>
-              <div v-if="!list.isError" class="text-center q-my-md">
-                <q-spinner-dots color="primary" size="40px" />
-              </div>
-            </template>
-          </q-infinite-scroll>
-        </div>
+              <template #loading>
+                <div v-if="!list.isError" class="text-center q-my-md">
+                  <q-spinner-dots color="primary" size="40px" />
+                </div>
+              </template>
+            </q-infinite-scroll>
+          </div>
         </q-list>
-
-
       </div>
 
       <q-separator />
-
-
     </div>
   </div>
 </template>
@@ -228,23 +273,21 @@ function reload() {
   list.getList()
 }
 function loadMore(index, done) {
-// const el = scrollTarget?.value
-//   if (el) {
-//     console.log('scrollTop:', el.scrollTop)
-//     console.log('scrollHeight:', el.scrollHeight)
-//     console.log('clientHeight:', el.clientHeight)
-//     console.log('offset trigger:', el.scrollHeight - el.scrollTop - el.clientHeight)
-//   }
+  // const el = scrollTarget?.value
+  //   if (el) {
+  //     console.log('scrollTop:', el.scrollTop)
+  //     console.log('scrollHeight:', el.scrollHeight)
+  //     console.log('clientHeight:', el.clientHeight)
+  //     console.log('offset trigger:', el.scrollHeight - el.scrollTop - el.clientHeight)
+  //   }
   list.loadMore(index, done)
-
-
 }
 function detailRetur(item, detail) {
   let total = 0
   if (item?.header_retur?.length > 0) {
     total = item?.header_retur
-      ?.flatMap((m) => m?.detail)
-      .filter((f) => f?.kodebarang === detail?.kodebarang)
+      ?.flatMap(m => m?.detail)
+      .filter(f => f?.kodebarang === detail?.kodebarang)
       ?.reduce((total, item) => total + item?.jumlah, 0)
   }
   return total || 0
@@ -257,8 +300,8 @@ function subtotal(item, detail) {
 
   if (item?.header_retur?.length > 0) {
     returTotal = item?.header_retur
-      ?.flatMap((m) => m?.detail)
-      .filter((f) => f?.kodebarang === detail?.kodebarang)
+      ?.flatMap(m => m?.detail)
+      .filter(f => f?.kodebarang === detail?.kodebarang)
       ?.reduce((total, item) => total + item?.subtotal, 0)
   }
 

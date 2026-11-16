@@ -26,18 +26,31 @@
                 text-color="brown-8"
                 :options="[
                   { label: 'Thermal', value: 'one' },
-                  { label: 'Matrix', value: 'two' },
+                  { label: 'Matrix', value: 'two' }
                 ]"
               />
             </div>
           </q-card>
 
-          <div id="printThermal" v-show="opsiprint === 'one'" class="row flex-center q-py-md">
-            <div v-if="profil.fotoProfil" class="col" style="min-width: 50mm; max-width: 100mm">
+          <div
+            id="printThermal"
+            v-show="opsiprint === 'one'"
+            class="row flex-center q-py-md"
+          >
+            <div
+              v-if="profil.fotoProfil"
+              class="col"
+              style="min-width: 50mm; max-width: 100mm"
+            >
               <div class="row justify-center">
                 <q-img
                   :src="profil.fotoProfil"
-                  style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover"
+                  style="
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                  "
                   spinner-color="primary"
                 />
               </div>
@@ -53,10 +66,16 @@
               <div class="row full-width text-center flex-center" style="">
                 Telp : {{ profil.profilData?.telepon || '-' }}
               </div>
-              <div class="row q-pb-xs full-width text-center flex-center" style="">
+              <div
+                class="row q-pb-xs full-width text-center flex-center"
+                style=""
+              >
                 Email : {{ profil.profilData?.email || '-' }}
               </div>
-              <div class="q-pt-xs" style="border-top-style: solid; border-width: 1px"></div>
+              <div
+                class="q-pt-xs"
+                style="border-top-style: solid; border-width: 1px"
+              ></div>
               <div class="row text-bold full-width" style="">
                 <span
                   >No: {{ store.itemCetak?.no_penjualan }},
@@ -113,26 +132,45 @@
                 >
               </div>
 
-              <div class="q-pt-xs" style="border-top-style: dashed; border-width: 1px"></div>
+              <div
+                class="q-pt-xs"
+                style="border-top-style: dashed; border-width: 1px"
+              ></div>
               <div v-for="(item, n) in store.itemCetak?.detail" :key="n">
                 <div class="row full-width text-bold">
                   <span class="col"
                     >{{ item.master_barang?.namabarang }}
-                    <template v-if="item?.motif"> Seri {{ item?.motif }}</template></span
+                    <template v-if="item?.motif">
+                      Seri {{ item?.motif }}</template
+                    ></span
                   >
                 </div>
                 <div class="row full-width" style="">
-                  <template v-if="parseFloat(item.jumlah) % parseFloat(item?.isi) == 0">
+                  <template
+                    v-if="parseFloat(item.jumlah) % parseFloat(item?.isi) == 0"
+                  >
                     <span>
                       *
                       {{
-                        formatDouble(Math.floor(parseFloat(item?.jumlah) / parseFloat(item.isi)))
+                        formatDouble(
+                          Math.floor(
+                            parseFloat(item?.jumlah) / parseFloat(item.isi)
+                          )
+                        )
                       }}
                       {{ item?.master_barang?.satuan_b }}
                     </span>
                     <span class="q-px-xs"> X </span>
-                    <span v-if="parseFloat(item.jumlah) % parseFloat(item?.isi) == 0">
-                      {{ formatDouble(parseFloat(item?.harga_jual) * parseFloat(item?.isi)) }}
+                    <span
+                      v-if="
+                        parseFloat(item.jumlah) % parseFloat(item?.isi) == 0
+                      "
+                    >
+                      {{
+                        formatDouble(
+                          parseFloat(item?.harga_jual) * parseFloat(item?.isi)
+                        )
+                      }}
                       <template v-if="item?.diskon !== 0">
                         - disc {{ formatDouble(item.diskon) }}</template
                       >
@@ -142,10 +180,15 @@
                   </template>
                   <template v-else>
                     <span>
-                      * {{ formatDouble(item?.jumlah) }} {{ item?.master_barang?.satuan_k }}
+                      * {{ formatDouble(item?.jumlah) }}
+                      {{ item?.master_barang?.satuan_k }}
                     </span>
                     <span class="q-px-xs"> X </span>
-                    <span v-if="parseFloat(item.jumlah) % parseFloat(item?.isi) !== 0">
+                    <span
+                      v-if="
+                        parseFloat(item.jumlah) % parseFloat(item?.isi) !== 0
+                      "
+                    >
                       {{ formatDouble(item?.harga_jual) }}
                       <template v-if="item?.diskon !== 0">
                         - disc {{ formatDouble(item.diskon) }}</template
@@ -156,7 +199,10 @@
                   </template>
                 </div>
               </div>
-              <div class="q-pt-xs" style="border-top-style: dashed; border-width: 1px"></div>
+              <div
+                class="q-pt-xs"
+                style="border-top-style: dashed; border-width: 1px"
+              ></div>
               <div class="row full-width">
                 <span class="col-auto">Subtotal Barang </span>
                 <q-space />
@@ -173,7 +219,9 @@
                 <span> {{ formatRpDouble(dppNota()) }}</span>
               </div>
               <div v-if="adaPpn()" class="row full-width">
-                <span class="col-auto">PPN ({{ formatDouble(ppnPersen()) }}%) </span>
+                <span class="col-auto"
+                  >PPN ({{ formatDouble(ppnPersen()) }}%)
+                </span>
                 <q-space />
                 <span> {{ formatRpDouble(ppnNominal()) }}</span>
               </div>
@@ -188,7 +236,9 @@
                 <span> {{ formatRpDouble(hitungBayar()) }}</span>
               </div>
               <div class="row full-width">
-                <span v-if="store.itemCetak?.flag === '5'" class="col-auto">Kembalian </span>
+                <span v-if="store.itemCetak?.flag === '5'" class="col-auto"
+                  >Kembalian
+                </span>
                 <span v-else class="col-auto">Sisa Piutang </span>
                 <q-space />
                 <span> {{ formatRpDouble(hitungSisa()) }}</span>
@@ -250,18 +300,28 @@
                 >
                   COPY PRINT</span
                 >
-                <span v-else class="text-bold" style="font-size: large"> ORIGINAL PRINT</span>
+                <span v-else class="text-bold" style="font-size: large">
+                  ORIGINAL PRINT</span
+                >
               </div>
               <div style="border-bottom-style: solid; border-width: 1px"></div>
-              <div class="row full-width text-center flex-start" style="font-size: small">
+              <div
+                class="row full-width text-center flex-start"
+                style="font-size: small"
+              >
                 <span class="text-center">
-                  created by CV UdumbaraInformatika cvudumbarainformatika@gmail.com</span
+                  created by CV UdumbaraInformatika
+                  cvudumbarainformatika@gmail.com</span
                 >
               </div>
             </div>
           </div>
 
-          <div id="printReguler" v-show="opsiprint === 'two'" class="print-container">
+          <div
+            id="printReguler"
+            v-show="opsiprint === 'two'"
+            class="print-container"
+          >
             <div class="print-header">
               <div class="row full-width justify-between">
                 <div class="flex-start content-center" style="width: 60%">
@@ -269,7 +329,12 @@
                     <div class="q-pr-md" v-if="profil.fotoProfil">
                       <q-img
                         :src="profil.fotoProfil"
-                        style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover"
+                        style="
+                          width: 100px;
+                          height: 100px;
+                          border-radius: 50%;
+                          object-fit: cover;
+                        "
                         spinner-color="primary"
                       />
                     </div>
@@ -281,15 +346,21 @@
                         {{ profil.profilData?.alamat || '-' }}
                       </div>
                       <div>
-                        <span class="q-pr-sm">Telp : {{ profil.profilData?.telepon || '-' }}</span>
+                        <span class="q-pr-sm"
+                          >Telp : {{ profil.profilData?.telepon || '-' }}</span
+                        >
                       </div>
                       <div>
-                        <span>Email : {{ profil.profilData?.email || '-' }} </span>
+                        <span
+                          >Email : {{ profil.profilData?.email || '-' }}
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="col flex-end q-pl-xl q-py-xs content-center text-center">
+                <div
+                  class="col flex-end q-pl-xl q-py-xs content-center text-center"
+                >
                   <span class="text-bold" style="font-size: large">FAKTUR</span>
                 </div>
               </div>
@@ -425,14 +496,23 @@
                       <td class="text-center">{{ n + 1 }}</td>
                       <td>
                         {{ item.master_barang?.namabarang }}
-                        <template v-if="item?.motif"> Seri {{ item?.motif }}</template>
+                        <template v-if="item?.motif">
+                          Seri {{ item?.motif }}</template
+                        >
                       </td>
                       <td class="text-center">
-                        <template v-if="parseFloat(item.jumlah) % parseFloat(item?.isi) == 0">
+                        <template
+                          v-if="
+                            parseFloat(item.jumlah) % parseFloat(item?.isi) == 0
+                          "
+                        >
                           <div class="col-1 text-right">
                             {{
                               formatDouble(
-                                Math.floor(parseFloat(item?.jumlah) / parseFloat(item.isi)),
+                                Math.floor(
+                                  parseFloat(item?.jumlah) /
+                                    parseFloat(item.isi)
+                                )
                               )
                             }}
                             {{ item?.master_barang?.satuan_b }}
@@ -440,15 +520,23 @@
                         </template>
                         <template v-else>
                           <div class="col-1 text-right">
-                            {{ formatDouble(item?.jumlah) }} {{ item?.master_barang?.satuan_k }}
+                            {{ formatDouble(item?.jumlah) }}
+                            {{ item?.master_barang?.satuan_k }}
                           </div>
                         </template>
                       </td>
                       <td class="text-right">
-                        <template v-if="parseFloat(item.jumlah) % parseFloat(item?.isi) == 0">
+                        <template
+                          v-if="
+                            parseFloat(item.jumlah) % parseFloat(item?.isi) == 0
+                          "
+                        >
                           <div class="col-2 text-right">
                             {{
-                              formatRpDouble(parseFloat(item?.harga_jual) * parseFloat(item?.isi))
+                              formatRpDouble(
+                                parseFloat(item?.harga_jual) *
+                                  parseFloat(item?.isi)
+                              )
                             }}
                           </div>
                         </template>
@@ -458,8 +546,12 @@
                           </div>
                         </template>
                       </td>
-                      <td class="text-right">{{ formatRpDouble(item.diskon) }}</td>
-                      <td class="text-right">{{ formatRpDouble(item.subtotal) }}</td>
+                      <td class="text-right">{{
+                        formatRpDouble(item.diskon)
+                      }}</td>
+                      <td class="text-right">{{
+                        formatRpDouble(item.subtotal)
+                      }}</td>
                     </tr>
                     <tr>
                       <td colspan="5">
@@ -467,7 +559,9 @@
                           <div class="flex-start">
                             <span hidden></span>
                           </div>
-                          <div class="text-bold flex-end q-pl-sm">SUBTOTAL BARANG</div>
+                          <div class="text-bold flex-end q-pl-sm"
+                            >SUBTOTAL BARANG</div
+                          >
                         </div>
                       </td>
                       <td class="text-bold text-right">
@@ -478,10 +572,14 @@
                       <td colspan="5">
                         <div class="row justify-between">
                           <div class="flex-start"><span hidden></span></div>
-                          <div class="text-bold flex-end q-pl-sm">DISKON NOTA</div>
+                          <div class="text-bold flex-end q-pl-sm"
+                            >DISKON NOTA</div
+                          >
                         </div>
                       </td>
-                      <td class="text-bold text-right">- {{ formatRpDouble(diskonNota()) }}</td>
+                      <td class="text-bold text-right"
+                        >- {{ formatRpDouble(diskonNota()) }}</td
+                      >
                     </tr>
                     <tr v-if="adaDiskonNota() || adaPpn()">
                       <td colspan="5">
@@ -490,27 +588,41 @@
                           <div class="text-bold flex-end q-pl-sm">DPP</div>
                         </div>
                       </td>
-                      <td class="text-bold text-right">{{ formatRpDouble(dppNota()) }}</td>
+                      <td class="text-bold text-right">{{
+                        formatRpDouble(dppNota())
+                      }}</td>
                     </tr>
                     <tr v-if="adaPpn()">
                       <td colspan="5">
                         <div class="row justify-between">
                           <div class="flex-start"><span hidden></span></div>
-                          <div class="text-bold flex-end q-pl-sm">PPN ({{ formatDouble(ppnPersen()) }}%)</div>
+                          <div class="text-bold flex-end q-pl-sm"
+                            >PPN ({{ formatDouble(ppnPersen()) }}%)</div
+                          >
                         </div>
                       </td>
-                      <td class="text-bold text-right">{{ formatRpDouble(ppnNominal()) }}</td>
+                      <td class="text-bold text-right">{{
+                        formatRpDouble(ppnNominal())
+                      }}</td>
                     </tr>
                     <tr>
                       <td colspan="5">
                         <div class="row justify-between">
                           <div class="flex-start">
-                            Terbilang : {{ terbilangRupiah(store.itemCetak?.total) }} Rupiah,
+                            Terbilang :
+                            {{
+                              terbilangRupiah(store.itemCetak?.total)
+                            }}
+                            Rupiah,
                           </div>
-                          <div class="text-bold flex-end q-pl-sm">TOTAL TAGIHAN</div>
+                          <div class="text-bold flex-end q-pl-sm"
+                            >TOTAL TAGIHAN</div
+                          >
                         </div>
                       </td>
-                      <td class="text-bold text-right">{{ formatRpDouble(store.itemCetak?.total) }}</td>
+                      <td class="text-bold text-right">{{
+                        formatRpDouble(store.itemCetak?.total)
+                      }}</td>
                     </tr>
                     <tr>
                       <td colspan="5">
@@ -532,10 +644,14 @@
                             <span hidden></span>
                           </div>
                           <template v-if="store.itemCetak?.flag === '5'">
-                            <div class="text-bold flex-end q-pl-sm">KEMBALIAN</div>
+                            <div class="text-bold flex-end q-pl-sm"
+                              >KEMBALIAN</div
+                            >
                           </template>
                           <template v-else>
-                            <div class="text-bold flex-end q-pl-sm">SISA PIUTANG</div>
+                            <div class="text-bold flex-end q-pl-sm"
+                              >SISA PIUTANG</div
+                            >
                           </template>
                         </div>
                       </td>
@@ -549,7 +665,9 @@
               <!-- <div class="row justify-between full-width"> -->
               <div class="col flex-start text-left q-pl-md">
                 <div class="content-center" style="font-size: small">
-                  <span>Terimakasih Telah Berkunjung, Semoga Sehat Selalu.</span>
+                  <span
+                    >Terimakasih Telah Berkunjung, Semoga Sehat Selalu.</span
+                  >
                 </div>
               </div>
               <!-- <div class="col flex-end content-center text-center">
@@ -565,7 +683,10 @@
                   >
                 </div> -->
               <!-- </div> -->
-              <div class="row justify-between full-width q-pt-xs q-pb-sm" style="">
+              <div
+                class="row justify-between full-width q-pt-xs q-pb-sm"
+                style=""
+              >
                 <div class="col flex-start content-center text-center">
                   <div class="invisible">.</div>
                   <div>Penerima/Pembeli</div>
@@ -579,16 +700,23 @@
                   </div>
                 </div>
                 <div class="col flex-end content-center text-center">
-                  <div>Probolinggo, {{ dateFullFormat(store.itemCetak?.tgl) }}</div>
+                  <div
+                    >Probolinggo,
+                    {{ dateFullFormat(store.itemCetak?.tgl) }}</div
+                  >
                   <div>{{ profil.profilData?.namatoko || 'Nama Toko' }}</div>
                   <div style="height: 30px"></div>
                   <div>{{ profil.profilData.pemilik }}</div>
                 </div>
               </div>
               <div style="border-bottom-style: solid; border-width: 1px" />
-              <div class="row full-width text-center flex-start" style="font-size: x-small">
+              <div
+                class="row full-width text-center flex-start"
+                style="font-size: x-small"
+              >
                 <span class="q-pl-sm">
-                  created by CV UdumbaraInformatika | cvudumbarainformatika@gmail.com</span
+                  created by CV UdumbaraInformatika |
+                  cvudumbarainformatika@gmail.com</span
                 >
               </div>
             </div>
@@ -663,13 +791,20 @@ function hitungSisa() {
   }
 }
 function subtotalBarang() {
-  if (Array.isArray(store.itemCetak?.detail) && store.itemCetak.detail.length > 0) {
-    return store.itemCetak.detail.reduce((sum, d) => sum + (parseFloat(d?.subtotal) || 0), 0)
+  if (
+    Array.isArray(store.itemCetak?.detail) &&
+    store.itemCetak.detail.length > 0
+  ) {
+    return store.itemCetak.detail.reduce(
+      (sum, d) => sum + (parseFloat(d?.subtotal) || 0),
+      0
+    )
   }
   const total = Number(store.itemCetak?.total || 0)
   const ppn = ppnNominal()
   const diskon = diskonNota()
-  return store.itemCetak?.subtotal === null || store.itemCetak?.subtotal === undefined
+  return store.itemCetak?.subtotal === null ||
+    store.itemCetak?.subtotal === undefined
     ? total - ppn + diskon
     : Number(store.itemCetak.subtotal) + diskon
 }
@@ -680,7 +815,10 @@ function adaDiskonNota() {
   return diskonNota() > 0
 }
 function dppNota() {
-  if (store.itemCetak?.subtotal !== null && store.itemCetak?.subtotal !== undefined) {
+  if (
+    store.itemCetak?.subtotal !== null &&
+    store.itemCetak?.subtotal !== undefined
+  ) {
     return Number(store.itemCetak.subtotal)
   }
   return Math.max(0, subtotalBarang() - diskonNota())
@@ -710,7 +848,7 @@ const printObj = computed(() => ({
   closeCallback() {
     printed.value = false
     console.log('closePrint')
-  },
+  }
 }))
 
 const printReg = computed(() => ({
@@ -726,7 +864,7 @@ const printReg = computed(() => ({
   closeCallback() {
     printed.value = false
     console.log('closePrint')
-  },
+  }
 }))
 </script>
 

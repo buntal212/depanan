@@ -3,7 +3,10 @@
     <div class="row items-center justify-between q-mb-sm">
       <div class="row items-center q-gutter-x-sm">
         <q-icon name="assignment_return" color="orange" size="md" />
-        <span class="f-24 text-weight-bold" :class="app?.dark ? 'text-amber-4' : 'text-primary'">
+        <span
+          class="f-24 text-weight-bold"
+          :class="app?.dark ? 'text-amber-4' : 'text-primary'"
+        >
           Form Retur Penjualan
         </span>
       </div>
@@ -23,17 +26,25 @@
         <div class="row q-col-gutter-sm text-caption">
           <div class="col-12 col-md-3">
             <span class="text-grey-5">Nomor Nota Asal:</span>
-            <div class="text-weight-bold text-body2 text-primary">{{ store.item?.no_penjualan }}</div>
+            <div class="text-weight-bold text-body2 text-primary">{{
+              store.item?.no_penjualan
+            }}</div>
           </div>
           <div class="col-12 col-md-3">
             <span class="text-grey-5">Nomor Retur:</span>
-            <div class="text-weight-bold text-body2" :class="store.noRetur ? 'text-amber-4' : 'text-grey-5'">
+            <div
+              class="text-weight-bold text-body2"
+              :class="store.noRetur ? 'text-amber-4' : 'text-grey-5'"
+            >
               {{ store.noRetur || '(Draft Retur Baru)' }}
             </div>
           </div>
           <div class="col-12 col-md-3">
             <span class="text-grey-5">Tanggal Nota:</span>
-            <div class="text-weight-bold">{{ humanDate(store.item?.tgl) }} {{ jamTnpDetik(store.item?.tgl) }}</div>
+            <div class="text-weight-bold"
+              >{{ humanDate(store.item?.tgl) }}
+              {{ jamTnpDetik(store.item?.tgl) }}</div
+            >
           </div>
           <div class="col-12 col-md-3">
             <span class="text-grey-5">Status Nota Asal:</span>
@@ -46,15 +57,28 @@
           <div class="col-12 col-md-6">
             <span class="text-grey-5">Pelanggan:</span>
             <div class="text-weight-bold">
-              {{ store.item?.pelanggan?.nama || store.item?.keterangan?.nama || '-' }}
-              <span v-if="store.item?.pelanggan?.telepon || store.item?.keterangan?.tlp" class="text-grey-5">
-                ({{ store.item?.pelanggan?.telepon || store.item?.keterangan?.tlp }})
+              {{
+                store.item?.pelanggan?.nama ||
+                store.item?.keterangan?.nama ||
+                '-'
+              }}
+              <span
+                v-if="
+                  store.item?.pelanggan?.telepon || store.item?.keterangan?.tlp
+                "
+                class="text-grey-5"
+              >
+                ({{
+                  store.item?.pelanggan?.telepon || store.item?.keterangan?.tlp
+                }})
               </span>
             </div>
           </div>
           <div class="col-12 col-md-6">
             <span class="text-grey-5">Sales:</span>
-            <div class="text-weight-bold">{{ store.item?.sales?.nama || '-' }}</div>
+            <div class="text-weight-bold">{{
+              store.item?.sales?.nama || '-'
+            }}</div>
           </div>
         </div>
       </div>
@@ -79,10 +103,20 @@
       <div v-for="(item, index) in store.item?.detail" :key="index">
         <div
           class="row items-center q-pa-sm text-caption"
-          :class="app?.dark ? (index % 2 === 0 ? 'bg-grey-9' : 'bg-grey-10') : (index % 2 === 0 ? 'bg-white' : 'bg-grey-1')"
+          :class="
+            app?.dark
+              ? index % 2 === 0
+                ? 'bg-grey-9'
+                : 'bg-grey-10'
+              : index % 2 === 0
+                ? 'bg-white'
+                : 'bg-grey-1'
+          "
         >
           <div class="col-3">
-            <div class="text-weight-bold">{{ item?.master_barang?.namabarang }}</div>
+            <div class="text-weight-bold">{{
+              item?.master_barang?.namabarang
+            }}</div>
             <div class="text-grey-5 text-italic">
               Motif: {{ item?.motif || '-' }}
               <template v-if="Number(item?.diskon) > 0">
@@ -90,25 +124,49 @@
               </template>
             </div>
           </div>
-          <div class="col-1 text-center">{{ item?.master_barang?.satuan_k || 'PCS' }}</div>
+          <div class="col-1 text-center">{{
+            item?.master_barang?.satuan_k || 'PCS'
+          }}</div>
           <div class="col-1 text-right">{{ formatDouble(item?.jumlah) }}</div>
-          <div class="col-1 text-right text-orange-4">{{ formatDouble(getSudahRetur(item)) }}</div>
-          <div class="col-1 text-right text-weight-bold text-primary">{{ formatDouble(getMaxBolehRetur(item)) }}</div>
-          <div class="col-1 text-right">{{ formatDouble(item?.harga_jual) }}</div>
+          <div class="col-1 text-right text-orange-4">{{
+            formatDouble(getSudahRetur(item))
+          }}</div>
+          <div class="col-1 text-right text-weight-bold text-primary">{{
+            formatDouble(getMaxBolehRetur(item))
+          }}</div>
+          <div class="col-1 text-right">{{
+            formatDouble(item?.harga_jual)
+          }}</div>
           <div class="col-2 q-px-xs">
             <app-input
               v-model="item.retur"
               label="Jumlah Retur"
               dense
-              @clear="() => { item.retur = 0 }"
-              @update:model-value="(val) => onUpdateRetur(item, val)"
+              @clear="
+                () => {
+                  item.retur = 0
+                }
+              "
+              @update:model-value="val => onUpdateRetur(item, val)"
               :disable="item?.loading || getMaxBolehRetur(item) <= 0"
               :loading="item?.loading"
             />
           </div>
-          <div class="col-1 text-right text-weight-bold" :class="Number(item?.retur) > 0 ? (app?.dark ? 'text-amber-4' : 'text-deep-orange-9') : 'text-grey-5'">
+          <div
+            class="col-1 text-right text-weight-bold"
+            :class="
+              Number(item?.retur) > 0
+                ? app?.dark
+                  ? 'text-amber-4'
+                  : 'text-deep-orange-9'
+                : 'text-grey-5'
+            "
+          >
             Rp {{ formatDouble(getSubtotalReturBaris(item)) }}
-            <div v-if="getDiskonItemProporsional(item) > 0" class="text-caption text-amber-3 f-10">
+            <div
+              v-if="getDiskonItemProporsional(item) > 0"
+              class="text-caption text-amber-3 f-10"
+            >
               -disc: {{ formatDouble(getDiskonItemProporsional(item)) }}
             </div>
           </div>
@@ -117,7 +175,11 @@
               icon="send"
               color="grey-10"
               dense
-              @click="() => { submit(item) }"
+              @click="
+                () => {
+                  submit(item)
+                }
+              "
               :disable="item?.loading || Number(item?.retur) <= 0"
               :loading="item?.loading"
               tooltip="Simpan baris ini"
@@ -132,10 +194,15 @@
         <div class="col-12 col-sm-10 col-md-7 col-lg-6">
           <div
             class="q-pa-md rounded-borders text-body2 shadow-1"
-            :class="app?.dark ? 'bg-grey-9 text-grey-2' : 'bg-white text-grey-9'"
+            :class="
+              app?.dark ? 'bg-grey-9 text-grey-2' : 'bg-white text-grey-9'
+            "
           >
             <div class="row justify-between items-center q-pb-xs">
-              <span class="text-subtitle2 text-weight-bold" :class="app?.dark ? 'text-amber-4' : 'text-primary'">
+              <span
+                class="text-subtitle2 text-weight-bold"
+                :class="app?.dark ? 'text-amber-4' : 'text-primary'"
+              >
                 Preview Perhitungan Retur (Reaktif)
               </span>
               <q-badge
@@ -150,60 +217,98 @@
 
             <div class="row justify-between q-py-xs">
               <span>Total Barang Diretur Sekarang:</span>
-              <span class="text-weight-bold">{{ formatDouble(previewKuantitasRetur) }} PCS</span>
+              <span class="text-weight-bold"
+                >{{ formatDouble(previewKuantitasRetur) }} PCS</span
+              >
             </div>
 
             <div class="row justify-between q-py-xs">
               <span>Harga Jual × Jumlah (Bruto):</span>
-              <span class="text-weight-bold">Rp {{ formatDouble(previewBruto) }}</span>
+              <span class="text-weight-bold"
+                >Rp {{ formatDouble(previewBruto) }}</span
+              >
             </div>
 
             <div
               class="row justify-between q-py-xs"
-              :class="previewDiskonItem > 0 ? (app?.dark ? 'text-amber-3' : 'text-orange-9') : ''"
+              :class="
+                previewDiskonItem > 0
+                  ? app?.dark
+                    ? 'text-amber-3'
+                    : 'text-orange-9'
+                  : ''
+              "
             >
               <span>Diskon Item Proporsional:</span>
               <span class="text-weight-bold">
-                {{ previewDiskonItem > 0 ? '- Rp ' + formatDouble(previewDiskonItem) : 'Rp 0' }}
+                {{
+                  previewDiskonItem > 0
+                    ? '- Rp ' + formatDouble(previewDiskonItem)
+                    : 'Rp 0'
+                }}
               </span>
             </div>
 
             <div class="row justify-between q-py-xs">
               <span>Subtotal Retur:</span>
-              <span class="text-weight-bold">Rp {{ formatDouble(previewSubtotalRetur) }}</span>
+              <span class="text-weight-bold"
+                >Rp {{ formatDouble(previewSubtotalRetur) }}</span
+              >
             </div>
 
             <div
               class="row justify-between q-py-xs"
-              :class="previewDiskonNota > 0 ? (app?.dark ? 'text-amber-3' : 'text-orange-9') : 'text-grey-5'"
+              :class="
+                previewDiskonNota > 0
+                  ? app?.dark
+                    ? 'text-amber-3'
+                    : 'text-orange-9'
+                  : 'text-grey-5'
+              "
             >
               <span>Diskon Nota Retur:</span>
-              <span v-if="hasSnapshotNota && previewDiskonNota > 0" class="text-weight-bold">
+              <span
+                v-if="hasSnapshotNota && previewDiskonNota > 0"
+                class="text-weight-bold"
+              >
                 - Rp {{ formatDouble(previewDiskonNota) }}
               </span>
               <span v-else-if="hasSnapshotNota" class="text-weight-bold">
                 Rp 0
               </span>
-              <span v-else class="text-caption text-italic">Rincian historis tidak tersedia</span>
-            </div>
-
-            <div class="row justify-between q-py-xs" :class="hasSnapshotNota ? '' : 'text-grey-5'">
-              <span>DPP (Dasar Pengenaan Pajak):</span>
-              <span v-if="hasSnapshotNota" class="text-weight-bold">
-                Rp {{ formatDouble(previewDpp) }}
-              </span>
-              <span v-else class="text-caption text-italic">Rincian historis tidak tersedia</span>
+              <span v-else class="text-caption text-italic"
+                >Rincian historis tidak tersedia</span
+              >
             </div>
 
             <div
               class="row justify-between q-py-xs"
-              :class="hasSnapshotNota && previewPpn > 0 ? 'text-primary' : 'text-grey-5'"
+              :class="hasSnapshotNota ? '' : 'text-grey-5'"
+            >
+              <span>DPP (Dasar Pengenaan Pajak):</span>
+              <span v-if="hasSnapshotNota" class="text-weight-bold">
+                Rp {{ formatDouble(previewDpp) }}
+              </span>
+              <span v-else class="text-caption text-italic"
+                >Rincian historis tidak tersedia</span
+              >
+            </div>
+
+            <div
+              class="row justify-between q-py-xs"
+              :class="
+                hasSnapshotNota && previewPpn > 0
+                  ? 'text-primary'
+                  : 'text-grey-5'
+              "
             >
               <span>PPN Retur ({{ formatDouble(previewPpnPersen) }}%):</span>
               <span v-if="hasSnapshotNota" class="text-weight-bold">
                 Rp {{ formatDouble(previewPpn) }}
               </span>
-              <span v-else class="text-caption text-italic">Rincian historis tidak tersedia</span>
+              <span v-else class="text-caption text-italic"
+                >Rincian historis tidak tersedia</span
+              >
             </div>
 
             <q-separator :dark="app?.dark" class="q-my-xs" />
@@ -219,14 +324,19 @@
             </div>
 
             <div class="text-caption text-grey-5 q-mt-xs text-italic">
-              * Nilai retur tersimpan dihitung dari akumulasi harga jual dikurangi diskon item proporsional.
+              * Nilai retur tersimpan dihitung dari akumulasi harga jual
+              dikurangi diskon item proporsional.
             </div>
 
             <div v-if="store.noRetur" class="row justify-end q-mt-md">
               <app-btn
                 label="Selesai dan tambah stok"
                 color="primary"
-                @click="() => { selesai() }"
+                @click="
+                  () => {
+                    selesai()
+                  }
+                "
                 :disable="store.loading"
                 :loading="store.loading"
               />
@@ -252,25 +362,34 @@ const app = useAppStore()
 
 function statusFlag(flag) {
   switch (flag) {
-    case null: return 'Draft'
-    case '1': return 'Pesanan Sales'
-    case '2': return 'Belum Ada Cicilan'
-    case '3': return 'Proses Cicilan'
-    case '4': return 'Dibawa Sales'
-    case '5': return 'Lunas'
-    case '6': return 'Batal'
-    case '7': return 'Down Payment (DP)'
-    default: return '-'
+    case null:
+      return 'Draft'
+    case '1':
+      return 'Pesanan Sales'
+    case '2':
+      return 'Belum Ada Cicilan'
+    case '3':
+      return 'Proses Cicilan'
+    case '4':
+      return 'Dibawa Sales'
+    case '5':
+      return 'Lunas'
+    case '6':
+      return 'Batal'
+    case '7':
+      return 'Down Payment (DP)'
+    default:
+      return '-'
   }
 }
 
 function getSudahRetur(item) {
   return (store.item?.detail_retur || [])
     .filter(
-      (f) =>
+      f =>
         f.kodebarang === item.kodebarang &&
         f.detail_penjualan_id === item.id &&
-        f.status !== '',
+        f.status !== ''
     )
     .reduce((acc, cur) => acc + Number(cur.jumlah || 0), 0)
 }
@@ -286,7 +405,7 @@ function getDiskonItemProporsional(item) {
   const jumlah = Number(item?.jumlah || 0)
   const diskon = Number(item?.diskon || 0)
   if (retur <= 0 || jumlah <= 0 || diskon <= 0) return 0
-  return Math.round((diskon * (retur / jumlah)) * 100) / 100
+  return Math.round(diskon * (retur / jumlah) * 100) / 100
 }
 
 function getBruto(item) {
@@ -311,12 +430,19 @@ function onUpdateRetur(item, val) {
   } else {
     item.retur = maxRetur
     item.sisa = 0
-    notifError('Jumlah retur tidak boleh lebih dari Sisa Boleh Diretur (' + maxRetur + ')')
+    notifError(
+      'Jumlah retur tidak boleh lebih dari Sisa Boleh Diretur (' +
+        maxRetur +
+        ')'
+    )
   }
 }
 
 const previewKuantitasRetur = computed(() => {
-  return (store.item?.detail || []).reduce((sum, d) => sum + (Number(d?.retur) || 0), 0)
+  return (store.item?.detail || []).reduce(
+    (sum, d) => sum + (Number(d?.retur) || 0),
+    0
+  )
 })
 
 const previewBruto = computed(() => {
@@ -324,11 +450,17 @@ const previewBruto = computed(() => {
 })
 
 const previewDiskonItem = computed(() => {
-  return (store.item?.detail || []).reduce((sum, d) => sum + getDiskonItemProporsional(d), 0)
+  return (store.item?.detail || []).reduce(
+    (sum, d) => sum + getDiskonItemProporsional(d),
+    0
+  )
 })
 
 const previewSubtotalRetur = computed(() => {
-  return (store.item?.detail || []).reduce((sum, d) => sum + getSubtotalReturBaris(d), 0)
+  return (store.item?.detail || []).reduce(
+    (sum, d) => sum + getSubtotalReturBaris(d),
+    0
+  )
 })
 
 const hasSnapshotNota = computed(() => {
@@ -336,24 +468,41 @@ const hasSnapshotNota = computed(() => {
   if (!item) return false
   return (
     (item.ppn_persen !== null && item.ppn_persen !== undefined) ||
-    (item.ppn_nominal !== null && item.ppn_nominal !== undefined && Number(item.ppn_nominal) > 0) ||
-    (item.diskon_kuitansi !== null && item.diskon_kuitansi !== undefined && Number(item.diskon_kuitansi) > 0)
+    (item.ppn_nominal !== null &&
+      item.ppn_nominal !== undefined &&
+      Number(item.ppn_nominal) > 0) ||
+    (item.diskon_kuitansi !== null &&
+      item.diskon_kuitansi !== undefined &&
+      Number(item.diskon_kuitansi) > 0)
   )
 })
 
 const previewDiskonNota = computed(() => {
   if (!hasSnapshotNota.value) return 0
-  const notaSubtotal = (store.item?.detail || []).reduce((sum, d) => sum + (Number(d?.subtotal) || 0), 0)
+  const notaSubtotal = (store.item?.detail || []).reduce(
+    (sum, d) => sum + (Number(d?.subtotal) || 0),
+    0
+  )
   const notaDiskon = Number(store.item?.diskon_kuitansi || 0)
   const subtotalRetur = previewSubtotalRetur.value
   if (notaSubtotal <= 0 || subtotalRetur <= 0 || notaDiskon <= 0) return 0
 
-  const totalTerjual = (store.item?.detail || []).reduce((sum, d) => sum + (Number(d?.jumlah) || 0), 0)
-  const totalSudahRetur = (store.item?.detail || []).reduce((sum, d) => sum + getSudahRetur(d), 0)
-  const isAll = (totalTerjual > 0 && totalSudahRetur + previewKuantitasRetur.value >= totalTerjual)
+  const totalTerjual = (store.item?.detail || []).reduce(
+    (sum, d) => sum + (Number(d?.jumlah) || 0),
+    0
+  )
+  const totalSudahRetur = (store.item?.detail || []).reduce(
+    (sum, d) => sum + getSudahRetur(d),
+    0
+  )
+  const isAll =
+    totalTerjual > 0 &&
+    totalSudahRetur + previewKuantitasRetur.value >= totalTerjual
 
   const prevDiskon = (store.item?.header_retur || []).reduce((sum, r) => {
-    return String(r?.status) === '1' ? sum + Number(r?.diskon_kuitansi || 0) : sum
+    return String(r?.status) === '1'
+      ? sum + Number(r?.diskon_kuitansi || 0)
+      : sum
   }, 0)
 
   if (isAll) {
@@ -366,7 +515,11 @@ const previewDiskonNota = computed(() => {
 
 const previewDpp = computed(() => {
   if (!hasSnapshotNota.value) return previewSubtotalRetur.value
-  return Math.max(0, Math.round((previewSubtotalRetur.value - previewDiskonNota.value) * 100) / 100)
+  return Math.max(
+    0,
+    Math.round((previewSubtotalRetur.value - previewDiskonNota.value) * 100) /
+      100
+  )
 })
 
 const previewPpnPersen = computed(() => {
@@ -381,9 +534,17 @@ const previewPpn = computed(() => {
   const prevPpn = (store.item?.header_retur || []).reduce((sum, r) => {
     return String(r?.status) === '1' ? sum + Number(r?.ppn_nominal || 0) : sum
   }, 0)
-  const totalTerjual = (store.item?.detail || []).reduce((sum, d) => sum + (Number(d?.jumlah) || 0), 0)
-  const totalSudahRetur = (store.item?.detail || []).reduce((sum, d) => sum + getSudahRetur(d), 0)
-  const isAll = (totalTerjual > 0 && totalSudahRetur + previewKuantitasRetur.value >= totalTerjual)
+  const totalTerjual = (store.item?.detail || []).reduce(
+    (sum, d) => sum + (Number(d?.jumlah) || 0),
+    0
+  )
+  const totalSudahRetur = (store.item?.detail || []).reduce(
+    (sum, d) => sum + getSudahRetur(d),
+    0
+  )
+  const isAll =
+    totalTerjual > 0 &&
+    totalSudahRetur + previewKuantitasRetur.value >= totalTerjual
 
   if (isAll && notaPpn > 0) {
     return Math.max(0, Math.round((notaPpn - prevPpn) * 100) / 100)
@@ -399,21 +560,36 @@ const previewTotalNilaiRetur = computed(() => {
   const prevTotal = (store.item?.header_retur || []).reduce((sum, r) => {
     return String(r?.status) === '1' ? sum + Number(r?.total || 0) : sum
   }, 0)
-  const totalTerjual = (store.item?.detail || []).reduce((sum, d) => sum + (Number(d?.jumlah) || 0), 0)
-  const totalSudahRetur = (store.item?.detail || []).reduce((sum, d) => sum + getSudahRetur(d), 0)
-  const isAll = (totalTerjual > 0 && totalSudahRetur + previewKuantitasRetur.value >= totalTerjual)
+  const totalTerjual = (store.item?.detail || []).reduce(
+    (sum, d) => sum + (Number(d?.jumlah) || 0),
+    0
+  )
+  const totalSudahRetur = (store.item?.detail || []).reduce(
+    (sum, d) => sum + getSudahRetur(d),
+    0
+  )
+  const isAll =
+    totalTerjual > 0 &&
+    totalSudahRetur + previewKuantitasRetur.value >= totalTerjual
 
   if (isAll && notaTotal > 0) {
     return Math.max(0, Math.round((notaTotal - prevTotal) * 100) / 100)
   }
   const sisaBoleh = Math.max(0, notaTotal - prevTotal)
-  const totalCalc = Math.round((previewDpp.value + previewPpn.value) * 100) / 100
+  const totalCalc =
+    Math.round((previewDpp.value + previewPpn.value) * 100) / 100
   return notaTotal > 0 ? Math.min(sisaBoleh, totalCalc) : totalCalc
 })
 
 const statusReturForm = computed(() => {
-  const totalTerjual = (store.item?.detail || []).reduce((sum, d) => sum + (Number(d?.jumlah) || 0), 0)
-  const totalSudahRetur = (store.item?.detail || []).reduce((sum, d) => sum + getSudahRetur(d), 0)
+  const totalTerjual = (store.item?.detail || []).reduce(
+    (sum, d) => sum + (Number(d?.jumlah) || 0),
+    0
+  )
+  const totalSudahRetur = (store.item?.detail || []).reduce(
+    (sum, d) => sum + getSudahRetur(d),
+    0
+  )
   const totalReturSekarang = previewKuantitasRetur.value
   const kumulatif = totalSudahRetur + totalReturSekarang
 
@@ -427,7 +603,8 @@ const statusReturForm = computed(() => {
 })
 
 function submit(item) {
-  if (parseInt(item.retur) <= 0) return notifError('Jumlah retur harus lebih dari nol')
+  if (parseInt(item.retur) <= 0)
+    return notifError('Jumlah retur harus lebih dari nol')
   store.initForm('no_penjualan', item?.no_penjualan)
   store.initForm('kodebarang', item?.kodebarang)
   store.initForm('retur', item?.retur)
@@ -441,7 +618,7 @@ function selesai() {
   store.loading = true
   store
     .selesai({ no_retur: store.noRetur })
-    .then((data) => {
+    .then(data => {
       store.loading = false
       emits('selesai', data)
     })

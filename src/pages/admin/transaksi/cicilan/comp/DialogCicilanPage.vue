@@ -12,13 +12,22 @@
       <q-card-section class="row items-center q-pb-none">
         <div class="text-h6">Pembayaran Cicilan</div>
         <q-space />
-        <q-btn icon="close" flat round dense v-close-popup @click="store.isOpenDetail = false" />
+        <q-btn
+          icon="close"
+          flat
+          round
+          dense
+          v-close-popup
+          @click="store.isOpenDetail = false"
+        />
       </q-card-section>
 
       <q-card-section class="q-pt-none">
         <div class="row q-mt-sm justify-between">
           <div class="col-4">Total Hutang</div>
-          <div class="col-3 text-right">{{ formatDouble(totalHutang()) || 0 }}</div>
+          <div class="col-3 text-right">{{
+            formatDouble(totalHutang()) || 0
+          }}</div>
         </div>
         <div class="row q-mt-sm justify-between">
           <div class="col-4">Total Down Payment</div>
@@ -35,7 +44,11 @@
         <div class="row q-mt-sm justify-between">
           <div class="col-4">Sisa Hutang</div>
           <div class="col-3 text-right">
-            {{ formatDouble(totalHutang() - totalCicilan() - totalDp() - totalRetur()) }}
+            {{
+              formatDouble(
+                totalHutang() - totalCicilan() - totalDp() - totalRetur()
+              )
+            }}
           </div>
         </div>
         <div class="row justify-end">
@@ -48,7 +61,9 @@
             @click="store.isOpenDetail = !store.isOpenDetail"
           >
             <q-tooltip>{{
-              store.isOpenDetail ? 'Tutup detail hutang' : 'Melihat detail hutang'
+              store.isOpenDetail
+                ? 'Tutup detail hutang'
+                : 'Melihat detail hutang'
             }}</q-tooltip></q-btn
           >
         </div>
@@ -62,7 +77,9 @@
           </div>
           <q-separator />
           <div v-for="item in cariPenjualan()" :key="item.id" class="row">
-            <div style="width: 32%" class="col-auto">{{ item.no_penjualan }}</div>
+            <div style="width: 32%" class="col-auto">{{
+              item.no_penjualan
+            }}</div>
 
             <div style="width: 17%" class="col-auto text-right">
               {{ formatDouble(item?.total - item?.bayar - retur(item)) }}
@@ -74,7 +91,11 @@
               {{ formatDouble(cariCicilan(item)) }}
             </div>
             <div style="width: 17%" class="col-auto text-right">
-              {{ formatDouble(item?.total - item?.bayar - cariCicilan(item) - retur(item)) }}
+              {{
+                formatDouble(
+                  item?.total - item?.bayar - cariCicilan(item) - retur(item)
+                )
+              }}
             </div>
           </div>
         </div>
@@ -134,8 +155,8 @@ function cariCicilan(item) {
 function totalCicilan() {
   const total =
     list.items
-      ?.filter((f) => f.pelanggan_id === store?.item?.pelanggan?.id)
-      ?.flatMap((x) => x?.cicilan)
+      ?.filter(f => f.pelanggan_id === store?.item?.pelanggan?.id)
+      ?.flatMap(x => x?.cicilan)
       ?.reduce((a, b) => a + parseFloat(b?.jumlah ?? 0), 0) ?? 0
 
   return total
@@ -143,7 +164,7 @@ function totalCicilan() {
 function totalDp() {
   const dp =
     list.items
-      ?.filter((f) => f.pelanggan_id === store?.item?.pelanggan?.id)
+      ?.filter(f => f.pelanggan_id === store?.item?.pelanggan?.id)
       ?.reduce((a, b) => a + parseFloat(b?.bayar ?? 0), 0) ?? 0
   const item = store.item
   const dp1 = item.bayar
@@ -153,7 +174,7 @@ function totalHutang() {
   // ada pelanggan
   const hutang =
     list.items
-      ?.filter((f) => f.pelanggan_id === store?.item?.pelanggan?.id)
+      ?.filter(f => f.pelanggan_id === store?.item?.pelanggan?.id)
       ?.reduce((a, b) => a + parseFloat(b?.total ?? 0), 0) ?? 0
   // const retur=list.items?.filter(f=>f.pelanggan_id===store?.item?.pelanggan?.id)?.flatMap(x=>x?.header_retur)?.reduce((a, b) => a + parseFloat(b?.total??0), 0) ?? 0
   // const dp=list.items?.filter(f=>f.pelanggan_id===store?.item?.pelanggan?.id)?.reduce((a, b) => a + parseFloat(b?.bayar??0), 0) ?? 0
@@ -168,13 +189,17 @@ function totalHutang() {
 
   const tanpaPelangganId = hutang1
 
-  return adaPelangganId > 0 ? adaPelangganId : tanpaPelangganId > 0 ? tanpaPelangganId : 0
+  return adaPelangganId > 0
+    ? adaPelangganId
+    : tanpaPelangganId > 0
+      ? tanpaPelangganId
+      : 0
 }
 function totalRetur() {
   let retur =
     list.items
-      ?.filter((f) => f.pelanggan_id === store?.item?.pelanggan?.id)
-      ?.flatMap((x) => x?.header_retur)
+      ?.filter(f => f.pelanggan_id === store?.item?.pelanggan?.id)
+      ?.flatMap(x => x?.header_retur)
       ?.reduce((a, b) => a + parseFloat(b?.total ?? 0), 0) ?? 0
   // const item=store.item
   // if(retur?.length==0 || !item.pelanggan_id) retur=item?.header_retur?.reduce((a, b) => a + parseFloat(b?.total??0), 0) ?? 0
@@ -182,7 +207,9 @@ function totalRetur() {
   return retur
 }
 function cariPenjualan() {
-  const data = list.items?.filter((f) => f.pelanggan_id === store?.item?.pelanggan?.id)
+  const data = list.items?.filter(
+    f => f.pelanggan_id === store?.item?.pelanggan?.id
+  )
   // const item=store.item
   // if(data?.length==0 || !item.pelanggan_id)data.push(item)
   return data

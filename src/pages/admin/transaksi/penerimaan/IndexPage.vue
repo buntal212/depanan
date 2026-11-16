@@ -9,14 +9,18 @@
         }
       "
       @edit="
-        (data) => {
+        data => {
           storepenerimaan.itemPenerimaan = data
           isList = false
         }
       "
     />
 
-    <FormPage v-else :data="storepenerimaan.itemPenerimaan" @back="isList = true" />
+    <FormPage
+      v-else
+      :data="storepenerimaan.itemPenerimaan"
+      @back="isList = true"
+    />
   </div>
 </template>
 

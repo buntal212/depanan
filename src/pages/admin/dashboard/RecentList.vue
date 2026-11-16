@@ -17,16 +17,24 @@
         </q-item>
       </template>
       <q-item v-else-if="!items.length">
-        <q-item-section class="text-center text-grey-6 q-py-md">Belum ada data.</q-item-section>
+        <q-item-section class="text-center text-grey-6 q-py-md"
+          >Belum ada data.</q-item-section
+        >
       </q-item>
       <template v-else>
         <q-item v-for="item in items" :key="item.nomor">
           <q-item-section>
-            <q-item-label class="text-weight-medium">{{ item.nomor }}</q-item-label>
-            <q-item-label caption>{{ item.pihak }} · {{ formatDate(item.tanggal) }}</q-item-label>
+            <q-item-label class="text-weight-medium">{{
+              item.nomor
+            }}</q-item-label>
+            <q-item-label caption
+              >{{ item.pihak }} · {{ formatDate(item.tanggal) }}</q-item-label
+            >
           </q-item-section>
           <q-item-section side class="items-end">
-            <q-item-label class="text-white text-weight-medium">{{ formatCurrency(item.total) }}</q-item-label>
+            <q-item-label class="text-white text-weight-medium">{{
+              formatCurrency(item.total)
+            }}</q-item-label>
             <q-item-label caption>{{ item.keterangan }}</q-item-label>
           </q-item-section>
         </q-item>
@@ -41,22 +49,22 @@ defineProps({
   subtitle: { type: String, required: true },
   to: { type: String, required: true },
   items: { type: Array, default: () => [] },
-  loading: Boolean,
+  loading: Boolean
 })
 
-const formatCurrency = (value) =>
+const formatCurrency = value =>
   new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR',
-    minimumFractionDigits: 0,
+    minimumFractionDigits: 0
   }).format(Number(value))
 
-const formatDate = (value) =>
+const formatDate = value =>
   value
     ? new Intl.DateTimeFormat('id-ID', {
         day: '2-digit',
         month: 'short',
-        year: 'numeric',
+        year: 'numeric'
       }).format(new Date(value))
     : '-'
 </script>

@@ -25,12 +25,12 @@ export const useAdminFormTransaksiPembayaranPiutangStore = defineStore(
         keterangan: '',
         nopenjualan: '',
         total: 0,
-        tgl: date.formatDate(Date.now(), 'YYYY-MM-DD'),
+        tgl: date.formatDate(Date.now(), 'YYYY-MM-DD')
       },
       dateDisplay: {
-        tgl: date.formatDate(Date.now(), 'DD MMMM YYYY'),
+        tgl: date.formatDate(Date.now(), 'DD MMMM YYYY')
       },
-      carinota: '',
+      carinota: ''
     }),
 
     actions: {
@@ -39,7 +39,10 @@ export const useAdminFormTransaksiPembayaranPiutangStore = defineStore(
         this.loadingcaripiutang = true
         const params = { params: { pelanggan_id: this.form.pelanggan_id } }
         try {
-          const { data } = await api.get('/v1/transaksi/pembayaranpiutang/list-piutang', params)
+          const { data } = await api.get(
+            '/v1/transaksi/pembayaranpiutang/list-piutang',
+            params
+          )
           const hasil = data
           this.olahdatahutang(hasil)
           // console.log('hasil', hasil)
@@ -55,7 +58,7 @@ export const useAdminFormTransaksiPembayaranPiutangStore = defineStore(
         this.riwayatNota = null
         try {
           const { data } = await api.get(
-            `/v1/transaksi/pembayaranpiutang/riwayat-nota/${encodeURIComponent(noPenjualan)}`,
+            `/v1/transaksi/pembayaranpiutang/riwayat-nota/${encodeURIComponent(noPenjualan)}`
           )
           this.riwayatNota = data.data || null
           this.dialogRiwayat = true
@@ -66,31 +69,52 @@ export const useAdminFormTransaksiPembayaranPiutangStore = defineStore(
 
       olahdatahutang(val) {
         const hasil = []
-        val?.forEach((x) => {
-          const totalnota = x?.total !== undefined && x?.total !== null
-            ? parseFloat(x.total)
-            : (Array.isArray(x?.detail) ? x.detail.reduce((a, b) => parseFloat(a) + parseFloat(b?.subtotal || 0), 0) : 0)
+        val?.forEach(x => {
+          const totalnota =
+            x?.total !== undefined && x?.total !== null
+              ? parseFloat(x.total)
+              : Array.isArray(x?.detail)
+                ? x.detail.reduce(
+                    (a, b) => parseFloat(a) + parseFloat(b?.subtotal || 0),
+                    0
+                  )
+                : 0
 
           const totalpiutangterbayar = Array.isArray(x?.cicilan)
-            ? x.cicilan.reduce((a, b) => parseFloat(a) + parseFloat(b?.jumlah || 0), 0)
+            ? x.cicilan.reduce(
+                (a, b) => parseFloat(a) + parseFloat(b?.jumlah || 0),
+                0
+              )
             : 0
 
-          const tglpenjualan = x?.tgl ? new Date(x.tgl).toISOString().split('T')[0] : ''
+          const tglpenjualan = x?.tgl
+            ? new Date(x.tgl).toISOString().split('T')[0]
+            : ''
           const dp = parseFloat(x?.bayar || 0)
           const diskon = parseFloat(x?.total_diskon || 0)
 
           const retur = Array.isArray(x?.header_retur)
             ? x.header_retur.reduce((a, b) => {
-                const isFinal = b?.status === undefined || b?.status === null || String(b?.status) === '1'
-                return isFinal ? parseFloat(a) + parseFloat(b?.total || b?.subtotal || 0) : parseFloat(a)
+                const isFinal =
+                  b?.status === undefined ||
+                  b?.status === null ||
+                  String(b?.status) === '1'
+                return isFinal
+                  ? parseFloat(a) + parseFloat(b?.total || b?.subtotal || 0)
+                  : parseFloat(a)
               }, 0)
-            : (String(x?.header_retur?.[0]?.status ?? '1') === '1'
-                ? (x?.header_retur?.[0]?.total ? parseFloat(x.header_retur[0].total) : (x?.header_retur?.[0]?.subtotal ? parseFloat(x.header_retur[0].subtotal) : 0))
-                : 0)
+            : String(x?.header_retur?.[0]?.status ?? '1') === '1'
+              ? x?.header_retur?.[0]?.total
+                ? parseFloat(x.header_retur[0].total)
+                : x?.header_retur?.[0]?.subtotal
+                  ? parseFloat(x.header_retur[0].subtotal)
+                  : 0
+              : 0
 
           const sisaPiutang = Math.max(
             0,
-            Math.round((totalnota - retur - dp - totalpiutangterbayar) * 100) / 100,
+            Math.round((totalnota - retur - dp - totalpiutangterbayar) * 100) /
+              100
           )
           const datahutang = {
             id: x?.id,
@@ -106,14 +130,16 @@ export const useAdminFormTransaksiPembayaranPiutangStore = defineStore(
             totalpiutang: sisaPiutang,
             totalterbayang: totalpiutangterbayar + dp,
             yangakandibayar: sisaPiutang,
-            sisajumlahbelumditerimax: sisaPiutang,
+            sisajumlahbelumditerimax: sisaPiutang
           }
           hasil.push(datahutang)
         })
-        const filteryanglunas = hasil.filter((item) => item.yangakandibayar >= 0.01)
+        const filteryanglunas = hasil.filter(
+          item => item.yangakandibayar >= 0.01
+        )
         // console.log('totalpiutang', filteryanglunas)
         const urut = filteryanglunas.sort(
-          (a, b) => new Date(a.tgljatuhtempo) - new Date(b.tgljatuhtempo),
+          (a, b) => new Date(a.tgljatuhtempo) - new Date(b.tgljatuhtempo)
         )
         this.items = urut
         // console.log('datahutangxx', this.items)
@@ -122,12 +148,17 @@ export const useAdminFormTransaksiPembayaranPiutangStore = defineStore(
       async simpan() {
         this.loadingsimpan = true
         try {
-          const { data } = await api.post('/v1/transaksi/pembayaranpiutang/simpan', this.form)
+          const { data } = await api.post(
+            '/v1/transaksi/pembayaranpiutang/simpan',
+            this.form
+          )
           this.form.nopembayaran = data?.data[0]?.nopembayaran
           // console.log('this.form.nopembayaran', data?.data[0]?.nopembayaran)
           const nopenjualan = data?.nopenjualan
           // console.log('nopembayaran', data?.nopenjualan)
-          const arr = this.items.filter((item) => item.nopenjualan !== nopenjualan)
+          const arr = this.items.filter(
+            item => item.nopenjualan !== nopenjualan
+          )
           this.items = arr
           //  console.log('data', this.items)
           const list = useAdminListTransaksiPembayaranPiutangStore()
@@ -142,13 +173,16 @@ export const useAdminFormTransaksiPembayaranPiutangStore = defineStore(
           notifError(error?.response?.data?.message)
           this.loadingsimpan = false
         }
-      },
-    },
-  },
+      }
+    }
+  }
 )
 
 if (import.meta.hot) {
   import.meta.hot.accept(
-    acceptHMRUpdate(useAdminFormTransaksiPembayaranPiutangStore, import.meta.hot),
+    acceptHMRUpdate(
+      useAdminFormTransaksiPembayaranPiutangStore,
+      import.meta.hot
+    )
   )
 }

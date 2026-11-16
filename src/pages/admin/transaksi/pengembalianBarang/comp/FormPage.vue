@@ -6,7 +6,12 @@
           <q-card-section class="row items-center">
             <div class="text-h6">Form Pengembalian Barang</div>
             <q-space />
-            <q-btn label="Kembali" color="primary" @click="$emit('back')" icon="arrow_back" />
+            <q-btn
+              label="Kembali"
+              color="primary"
+              @click="$emit('back')"
+              icon="arrow_back"
+            />
           </q-card-section>
 
           <q-card-section>
@@ -23,12 +28,18 @@
                       </div>
                       <div class="row">
                         <div class="col-4">Tanggal</div>
-                        <div class="col-8">: {{ dateFullFormat(form.item?.tgl) }}</div>
+                        <div class="col-8"
+                          >: {{ dateFullFormat(form.item?.tgl) }}</div
+                        >
                       </div>
                       <div class="row">
                         <div class="col-4">Pelanggan</div>
                         <div class="col-8">
-                          : {{ form.item?.pelanggan?.nama || form.item?.keterangan?.nama }}
+                          :
+                          {{
+                            form.item?.pelanggan?.nama ||
+                            form.item?.keterangan?.nama
+                          }}
                         </div>
                       </div>
                     </div>
@@ -45,7 +56,7 @@
                     v-model="form.keterangan"
                     label="Keterangan"
                     type="textarea"
-                    :rules="[(val) => !!val || 'Keterangan harus diisi']"
+                    :rules="[val => !!val || 'Keterangan harus diisi']"
                   />
                 </div>
               </div>
@@ -54,7 +65,9 @@
               <div class="text-subtitle2 q-mt-md">Detail Barang</div>
 
               <!-- Header -->
-              <div class="row q-pa-sm bg-primary text-white text-weight-bold q-col-gutter-x-sm">
+              <div
+                class="row q-pa-sm bg-primary text-white text-weight-bold q-col-gutter-x-sm"
+              >
                 <div class="col-4">Barang</div>
                 <div class="col-1">Satuan</div>
                 <div class="col-2 text-right">Jumlah Beli</div>
@@ -68,7 +81,14 @@
                 :key="item.id"
                 class="row q-pa-sm items-center q-col-gutter-x-sm"
               >
-                <div class="col-4">{{ item.master_barang?.namabarang   }} {{ item?.motif && item?.motif!=='-' ? ' (' + item?.motif + ') ':'' }}</div>
+                <div class="col-4"
+                  >{{ item.master_barang?.namabarang }}
+                  {{
+                    item?.motif && item?.motif !== '-'
+                      ? ' (' + item?.motif + ') '
+                      : ''
+                  }}</div
+                >
                 <div class="col-1">{{ item.master_barang?.satuan_k }}</div>
                 <div class="col-2 text-right">{{ item.jumlah }}</div>
                 <div class="col-2 text-right">
@@ -78,8 +98,8 @@
                     dense
                     class="text-right"
                     :rules="[
-                      (val) => val >= 0 || 'Qty harus lebih dari 0',
-                      (val) => val <= item.jumlah || 'Qty melebihi pembelian',
+                      val => val >= 0 || 'Qty harus lebih dari 0',
+                      val => val <= item.jumlah || 'Qty melebihi pembelian'
                     ]"
                   />
                 </div>
@@ -87,14 +107,22 @@
                   <q-input
                     v-model="item.keterangan"
                     dense
-                    :rules="[(val) => !item.qty_retur || !!val || 'Keterangan harus diisi']"
+                    :rules="[
+                      val =>
+                        !item.qty_retur || !!val || 'Keterangan harus diisi'
+                    ]"
                   />
                 </div>
               </div>
 
               <!-- Buttons -->
               <div class="row justify-end q-gutter-sm">
-                <q-btn label="Reset" color="negative" @click="resetForm" :disable="form.loading" />
+                <q-btn
+                  label="Reset"
+                  color="negative"
+                  @click="resetForm"
+                  :disable="form.loading"
+                />
                 <q-btn
                   label="Simpan"
                   type="submit"
@@ -127,7 +155,7 @@ const emit = defineEmits(['back', 'selesai'])
 async function onSubmit() {
   try {
     // Filter hanya barang yang di-retur
-    const validDetails = form.details.filter((d) => d.qty_retur > 0)
+    const validDetails = form.details.filter(d => d.qty_retur > 0)
     if (!validDetails.length) {
       notifError('Minimal satu barang harus diretur')
       return
@@ -140,7 +168,7 @@ async function onSubmit() {
     }
 
     // Validate details have keterangan
-    const missingKeterangan = validDetails.find((d) => !d.keterangan)
+    const missingKeterangan = validDetails.find(d => !d.keterangan)
     if (missingKeterangan) {
       notifError('Semua barang yang diretur harus memiliki keterangan')
       return
@@ -150,12 +178,14 @@ async function onSubmit() {
     emit('selesai', response?.data)
   } catch (error) {
     console.error('Error saving:', error)
-    notifError(error?.response?.data?.message || 'Gagal menyimpan pengembalian barang')
+    notifError(
+      error?.response?.data?.message || 'Gagal menyimpan pengembalian barang'
+    )
   }
 }
 
 function resetForm() {
-  form.details.forEach((item) => {
+  form.details.forEach(item => {
     item.qty_retur = 0
     item.keterangan = ''
   })

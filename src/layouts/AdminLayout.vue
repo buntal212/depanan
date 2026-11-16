@@ -21,7 +21,7 @@
         :tab="selectedTab"
         :menu="selectedMenu"
         @menu-click="
-          (val) => {
+          val => {
             selectedMenu = val
             toLink(val)
           }
@@ -42,7 +42,7 @@
       <LeftMenu
         ref="refLeftMenu"
         @select-tab="
-          (val) => {
+          val => {
             //  console.log(val)
             selectedTab = val
 
@@ -108,7 +108,6 @@
         <div>Kanan</div>
       </div>
     </q-footer> -->
-
   </q-layout>
 </template>
 
@@ -125,8 +124,12 @@ import { watch } from 'vue'
 
 const LeftMenu = defineAsyncComponent(() => import('./comp/LeftMenu.vue'))
 const SubLeftMenu = defineAsyncComponent(() => import('./comp/SubLeftMenu.vue'))
-const AppCounter = defineAsyncComponent(() => import('src/components/app/AppCounter.vue'))
-const NgurusiSocket = defineAsyncComponent(() => import('./comp/NgurusiSocket.vue'))
+const AppCounter = defineAsyncComponent(
+  () => import('src/components/app/AppCounter.vue')
+)
+const NgurusiSocket = defineAsyncComponent(
+  () => import('./comp/NgurusiSocket.vue')
+)
 
 const refLeftMenu = ref(null)
 
@@ -155,16 +158,17 @@ onMounted(() => {
 function initMenu() {
   // console.log('left route',route?.fullPath);
 
-  const leftMenuInStore = left?.tabs?.map((x) => x?.link)
-  const findMenu = leftMenuInStore?.find((x) => x === route?.fullPath) ?? null // cari di menu utama
+  const leftMenuInStore = left?.tabs?.map(x => x?.link)
+  const findMenu = leftMenuInStore?.find(x => x === route?.fullPath) ?? null // cari di menu utama
   left.setTab(route?.fullPath)
 
   if (!findMenu) {
     const findMenuSub =
-      left?.tabs?.find((x) => x?.subs?.find((y) => y?.link === route?.fullPath)) ?? null // cari di menu sub
+      left?.tabs?.find(x => x?.subs?.find(y => y?.link === route?.fullPath)) ??
+      null // cari di menu sub
 
     if (findMenuSub) {
-      const target = findMenuSub.subs?.find((y) => y?.link === route?.fullPath)
+      const target = findMenuSub.subs?.find(y => y?.link === route?.fullPath)
       // console.log('target', target);
       selectedMenu.value = target
     }

@@ -2,7 +2,9 @@
   <q-dialog v-model="storeorder.fixed">
     <q-card>
       <q-card-section>
-        <div class="text-h6"><q-input outlined label="Cari Orderan" clearable /></div>
+        <div class="text-h6"
+          ><q-input outlined label="Cari Orderan" clearable
+        /></div>
       </q-card-section>
 
       <q-separator />
@@ -13,19 +15,28 @@
         </div>
         <div
           align="center"
-          v-if="storeorder.loadingdialogorder === false && storeorder.itemorderan.length === 0"
+          v-if="
+            storeorder.loadingdialogorder === false &&
+            storeorder.itemorderan.length === 0
+          "
         >
           Belum Ada Data Yang Ditampilkan...!!!
         </div>
         <div v-else>
           <q-list separator>
             <transition-group name="list">
-              <q-item v-for="(item, n) in storeorder.itemorderan" :key="n" class="list-move">
+              <q-item
+                v-for="(item, n) in storeorder.itemorderan"
+                :key="n"
+                class="list-move"
+              >
                 <q-item-section>
                   <q-item-label>
                     <span class="text-weight-bold">No. Order</span> :
                     <span class="text-weight-bold"
-                      ><q-badge outline color="yellow-8">{{ item?.noorder }}</q-badge></span
+                      ><q-badge outline color="yellow-8">{{
+                        item?.noorder
+                      }}</q-badge></span
                     >
                   </q-item-label>
                   <!-- <q-separator class="q-my-md" /> -->
@@ -74,7 +85,12 @@
 
       <q-card-actions align="right">
         <!-- <q-btn flat label="Decline" color="primary" v-close-popup /> -->
-        <app-btn label="Keluar" color="grey-10" class="text-yellow-9" v-close-popup />
+        <app-btn
+          label="Keluar"
+          color="grey-10"
+          class="text-yellow-9"
+          v-close-popup
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>

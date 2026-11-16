@@ -2,9 +2,18 @@
   <q-dialog v-model="isDialogOpen" persistent>
     <q-card style="width: 300px; max-width: 80vw">
       <q-card-section class="row items-center q-pb-none">
-        <div class="full-width full-height q-pb-sm text-center text-h6">Preview Image</div>
+        <div class="full-width full-height q-pb-sm text-center text-h6"
+          >Preview Image</div
+        >
         <q-space />
-        <q-btn class="absolute-top-right" icon="close" flat round dense @click="closeDialog" />
+        <q-btn
+          class="absolute-top-right"
+          icon="close"
+          flat
+          round
+          dense
+          @click="closeDialog"
+        />
       </q-card-section>
 
       <q-card-section class="q-pt-none">
@@ -22,7 +31,7 @@ const isDialogOpen = ref(false)
 const imageUrl = ref('')
 
 // Fungsi untuk membuka dialog
-const openDialog = (url) => {
+const openDialog = url => {
   imageUrl.value = url
   isDialogOpen.value = true
 }
@@ -35,6 +44,6 @@ const closeDialog = () => {
 
 // Ekspos fungsi openDialog agar bisa dipanggil dari luar
 defineExpose({
-  openDialog,
+  openDialog
 })
 </script>

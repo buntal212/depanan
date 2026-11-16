@@ -17,16 +17,16 @@ export const useAdminListTransaksiPenerimaanBarangStore = defineStore(
         page: 0,
         per_page: 15,
         from: date.formatDate(Date.now(), 'YYYY-MM-01'),
-        to: date.formatDate(Date.now(), 'YYYY-MM-DD'),
+        to: date.formatDate(Date.now(), 'YYYY-MM-DD')
       },
       getorderan: {
-        noorder: null,
+        noorder: null
       },
       getorderhasil: [],
       dateDisplay: {
         from: date.formatDate(Date.now(), '01 MMMM YYYY'),
-        to: date.formatDate(Date.now(), 'DD MMMM YYYY'),
-      },
+        to: date.formatDate(Date.now(), 'DD MMMM YYYY')
+      }
     }),
     // persist: true,
     // getters: {
@@ -41,10 +41,13 @@ export const useAdminListTransaksiPenerimaanBarangStore = defineStore(
         this.isError = false
         this.loading = true
         const params = {
-          params: this.params,
+          params: this.params
         }
         try {
-          const { data } = await api.get('/v1/transaksi/penerimaan/getpenerimaan', params)
+          const { data } = await api.get(
+            '/v1/transaksi/penerimaan/getpenerimaan',
+            params
+          )
           // console.log('get master barang', data)
           this.meta = data
           this.olahdata(data?.data)
@@ -61,12 +64,12 @@ export const useAdminListTransaksiPenerimaanBarangStore = defineStore(
         this.isError = false
         this.params.page = index
         const params = {
-          params: this.params,
+          params: this.params
         }
 
         // console.log('load more', index)
 
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           api
             .get('/v1/transaksi/penerimaan/getpenerimaan', params)
             .then(({ data }) => {
@@ -88,9 +91,9 @@ export const useAdminListTransaksiPenerimaanBarangStore = defineStore(
         this.getorderan.noorder = val
 
         const params = {
-          params: this.getorderan,
+          params: this.getorderan
         }
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           api
             .get('/v1/transaksi/orderpembelian/getallbynoorder', params)
             .then(({ data }) => {
@@ -110,9 +113,15 @@ export const useAdminListTransaksiPenerimaanBarangStore = defineStore(
       olahdata(val) {
         // console.log('asli', val)
         // const hasilglobal = []
-        val?.forEach((x) => {
-          const total = x.rinci.reduce((a, b) => parseFloat(a) + parseFloat(b.subtotal), 0)
-          const totalfix = x.rinci.reduce((a, b) => parseFloat(a) + parseFloat(b.subtotalfix), 0)
+        val?.forEach(x => {
+          const total = x.rinci.reduce(
+            (a, b) => parseFloat(a) + parseFloat(b.subtotal),
+            0
+          )
+          const totalfix = x.rinci.reduce(
+            (a, b) => parseFloat(a) + parseFloat(b.subtotalfix),
+            0
+          )
           const hasil = {
             id: x?.id,
             nopenerimaan: x?.nopenerimaan,
@@ -128,11 +137,11 @@ export const useAdminListTransaksiPenerimaanBarangStore = defineStore(
             totalfix: totalfix,
             rinci: x?.rinci,
             orderan_h: x?.orderheder,
-            jenis_pembayaran: x?.jenis_pembayaran,
+            jenis_pembayaran: x?.jenis_pembayaran
           }
           // console.log('hasilccccc', hasil)
           // hasilglobal.push(hasil)
-          const index = this.items.findIndex((q) => q.id === x?.id)
+          const index = this.items.findIndex(q => q.id === x?.id)
 
           if (index >= 0) this.items[index] = hasil
           else this.items.unshift(hasil)
@@ -150,10 +159,13 @@ export const useAdminListTransaksiPenerimaanBarangStore = defineStore(
           from: this.params.from,
           to: this.params.to,
           q: this.params.q,
-          per_page: String(this.params.per_page),
+          per_page: String(this.params.per_page)
         }
         try {
-          const resp = await api.post('/v1/transaksi/penerimaan/hapusall', payload)
+          const resp = await api.post(
+            '/v1/transaksi/penerimaan/hapusall',
+            payload
+          )
           console.log(resp)
           if (resp.status === 200) {
             // this.olahdata(resp?.data?.data)
@@ -166,13 +178,13 @@ export const useAdminListTransaksiPenerimaanBarangStore = defineStore(
           notifError(err?.response?.data?.message)
           this.loadingdeleteall = false
         }
-      },
-    },
-  },
+      }
+    }
+  }
 )
 
 if (import.meta.hot) {
   import.meta.hot.accept(
-    acceptHMRUpdate(useAdminListTransaksiPenerimaanBarangStore, import.meta.hot),
+    acceptHMRUpdate(useAdminListTransaksiPenerimaanBarangStore, import.meta.hot)
   )
 }

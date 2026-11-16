@@ -36,7 +36,9 @@ export const useListPengembalianStore = defineStore('pengembalian-list-store', {
 
     async getById(id) {
       try {
-        const { data } = await api.get(`/v1/transaksi/pengembalianbarang/getbyid/${id}`)
+        const { data } = await api.get(
+          `/v1/transaksi/pengembalianbarang/getbyid/${id}`
+        )
         return data
       } catch (error) {
         console.error('Error fetching pengembalian detail:', error)
@@ -65,5 +67,7 @@ export const useListPengembalianStore = defineStore('pengembalian-list-store', {
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useListPengembalianStore, import.meta.hot))
+  import.meta.hot.accept(
+    acceptHMRUpdate(useListPengembalianStore, import.meta.hot)
+  )
 }

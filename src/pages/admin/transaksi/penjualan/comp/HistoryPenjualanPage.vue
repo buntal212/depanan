@@ -18,12 +18,12 @@
                       outlined
                       :debounce="300"
                       @set-model="
-                        (val) => {
+                        val => {
                           store.dateDisplay.from = val
                         }
                       "
                       @db-model="
-                        (val) => {
+                        val => {
                           store.params.from = val
                           reload()
                         }
@@ -36,12 +36,12 @@
                       outlined
                       :debounce="300"
                       @set-model="
-                        (val) => {
+                        val => {
                           store.dateDisplay.to = val
                         }
                       "
                       @db-model="
-                        (val) => {
+                        val => {
                           store.params.to = val
                           reload()
                         }
@@ -54,7 +54,7 @@
                       option-value="value"
                       :options="store.flagOptions"
                       @update:model-value="
-                        (e) => {
+                        e => {
                           reload()
                         }
                       "
@@ -66,7 +66,7 @@
                       style="min-width: 250px"
                       :debounce="300"
                       @update:model-value="
-                        (e) => {
+                        e => {
                           reload()
                         }
                       "
@@ -102,7 +102,12 @@
             <q-separator />
           </div>
 
-          <div ref="scrollTarget" id="scrtrgt" class="col full-height" style="height: 600px; overflow-y: auto;">
+          <div
+            ref="scrollTarget"
+            id="scrtrgt"
+            class="col full-height"
+            style="height: 600px; overflow-y: auto"
+          >
             <q-infinite-scroll
               @load="loadMore"
               ref="infiniteScroll"
@@ -110,9 +115,14 @@
               :offset="150"
               debounce="500"
               :initial-index="store.params.page"
-              >
+            >
               <!-- scroll-target="#scrtrgt" -->
-              <q-intersection v-for="(item, i) in store.items" :key="i" transition="fade" class="example-item">
+              <q-intersection
+                v-for="(item, i) in store.items"
+                :key="i"
+                transition="fade"
+                class="example-item"
+              >
                 <q-expansion-item
                   v-model="item.expand"
                   clickable
@@ -126,9 +136,15 @@
                       <q-item-label lines="1">
                         <div class="row">
                           <div class="col-3">{{ item?.no_penjualan }}</div>
-                          <div class="col-2 q-ml-sm">{{ formatDouble(item?.total) }}</div>
-                          <div class="col-2 q-ml-sm">{{ formatDouble(item?.total_diskon) }}</div>
-                          <div class="col-2 q-ml-sm">{{ statusFlag(item) }}</div>
+                          <div class="col-2 q-ml-sm">{{
+                            formatDouble(item?.total)
+                          }}</div>
+                          <div class="col-2 q-ml-sm">{{
+                            formatDouble(item?.total_diskon)
+                          }}</div>
+                          <div class="col-2 q-ml-sm">{{
+                            statusFlag(item)
+                          }}</div>
                           <div v-if="item?.tempo" class="col-2 q-ml-sm">
                             {{ dateFullFormat(item?.tempo) }}
                             <span class="f-10 text-italic">(tempo)</span>
@@ -189,7 +205,9 @@
                           @click="lihatCetak(item)"
                         ></app-btn-cetak>
                         <app-btn
-                          v-if="item?.flag !== null && String(item?.flag) !== '6'"
+                          v-if="
+                            item?.flag !== null && String(item?.flag) !== '6'
+                          "
                           class="q-mr-xs"
                           icon="local_shipping"
                           color="teal"
@@ -200,8 +218,12 @@
                     </q-item-section>
 
                     <q-item-section v-else side top>
-                      <q-item-label caption>{{ humanDate(item?.tgl) }}</q-item-label>
-                      <q-item-label caption>{{ jamTnpDetik(item?.tgl) }}</q-item-label>
+                      <q-item-label caption>{{
+                        humanDate(item?.tgl)
+                      }}</q-item-label>
+                      <q-item-label caption>{{
+                        jamTnpDetik(item?.tgl)
+                      }}</q-item-label>
                     </q-item-section>
                   </template>
                   <q-separator />
@@ -232,7 +254,8 @@
                       <div class="col-5">
                         {{
                           detail?.master_barang?.namabarang +
-                          ' ' + (detail?.motif ?detail?.motif + ' ':'')  +
+                          ' ' +
+                          (detail?.motif ? detail?.motif + ' ' : '') +
                           (item?.flag != null
                             ? ''
                             : detail?.master_barang?.stok === null
@@ -245,29 +268,46 @@
                         }}
                       </div>
                       <div class="col-1 text-right">{{ detail?.jumlah }}</div>
-                      <div class="col-1 text-right">{{ detail?.master_barang?.satuan_k }}</div>
-                      <div class="col-2 text-right">{{ formatDouble(detail?.harga_jual) }}</div>
-                      <div class="col-1 text-right">{{ formatDouble(detail?.diskon) }}</div>
-                      <div class="col-2 text-right">{{ formatDouble(detail?.subtotal) }}</div>
+                      <div class="col-1 text-right">{{
+                        detail?.master_barang?.satuan_k
+                      }}</div>
+                      <div class="col-2 text-right">{{
+                        formatDouble(detail?.harga_jual)
+                      }}</div>
+                      <div class="col-1 text-right">{{
+                        formatDouble(detail?.diskon)
+                      }}</div>
+                      <div class="col-2 text-right">{{
+                        formatDouble(detail?.subtotal)
+                      }}</div>
                     </div>
                   </div>
                   <template v-if="item?.flag != null">
                     <q-separator />
                     <div
                       class="row q-pa-sm text-weight-bold f-10 text-italic"
-                      :class="app?.dark ? 'bg-grey-9 text-yellow-3' : 'bg-grey-4 text-black'"
+                      :class="
+                        app?.dark
+                          ? 'bg-grey-9 text-yellow-3'
+                          : 'bg-grey-4 text-black'
+                      "
                     >
                       (Detail Penjualan Fifo)
                     </div>
                     <div v-for="detail in item?.detail_fifo" :key="detail?.id">
                       <div
                         class="row q-px-sm"
-                        :class="app?.dark ? 'bg-grey-9 text-yellow-3' : 'bg-grey-4 text-black'"
+                        :class="
+                          app?.dark
+                            ? 'bg-grey-9 text-yellow-3'
+                            : 'bg-grey-4 text-black'
+                        "
                       >
                         <div class="col-5">
                           {{
                             detail?.master_barang?.namabarang +
-                            ' ' + (detail?.motif ?detail?.motif + ' ':'') +
+                            ' ' +
+                            (detail?.motif ? detail?.motif + ' ' : '') +
                             (item?.flag != null
                               ? ''
                               : detail?.master_barang?.stok === null
@@ -305,7 +345,11 @@
                     <div class="col-12 col-sm-8 col-md-5 col-lg-4">
                       <div
                         class="q-pa-sm rounded-borders text-body2"
-                        :class="app?.dark ? 'bg-grey-9 text-grey-2' : 'bg-white text-grey-9'"
+                        :class="
+                          app?.dark
+                            ? 'bg-grey-9 text-grey-2'
+                            : 'bg-white text-grey-9'
+                        "
                       >
                         <div
                           class="text-subtitle2 text-weight-bold q-pb-xs"
@@ -317,30 +361,57 @@
 
                         <div class="row justify-between q-py-xs">
                           <span>Subtotal Barang:</span>
-                          <span class="text-weight-bold">Rp {{ formatDouble(hitungSubtotalBarang(item)) }}</span>
+                          <span class="text-weight-bold"
+                            >Rp
+                            {{ formatDouble(hitungSubtotalBarang(item)) }}</span
+                          >
                         </div>
 
                         <div
                           class="row justify-between q-py-xs"
-                          :class="getDiskonNota(item) > 0 ? (app?.dark ? 'text-amber-3' : 'text-orange-9') : ''"
+                          :class="
+                            getDiskonNota(item) > 0
+                              ? app?.dark
+                                ? 'text-amber-3'
+                                : 'text-orange-9'
+                              : ''
+                          "
                         >
                           <span>Diskon Nota:</span>
                           <span class="text-weight-bold">
-                            {{ getDiskonNota(item) > 0 ? '- Rp ' + formatDouble(getDiskonNota(item)) : 'Rp 0' }}
+                            {{
+                              getDiskonNota(item) > 0
+                                ? '- Rp ' + formatDouble(getDiskonNota(item))
+                                : 'Rp 0'
+                            }}
                           </span>
                         </div>
 
                         <div class="row justify-between q-py-xs">
                           <span>DPP (Dasar Pengenaan Pajak):</span>
-                          <span class="text-weight-bold">Rp {{ formatDouble(hitungDpp(item)) }}</span>
+                          <span class="text-weight-bold"
+                            >Rp {{ formatDouble(hitungDpp(item)) }}</span
+                          >
                         </div>
 
                         <div
                           class="row justify-between q-py-xs"
-                          :class="getNominalPpn(item) > 0 ? 'text-primary' : (app?.dark ? 'text-grey-5' : 'text-grey-7')"
+                          :class="
+                            getNominalPpn(item) > 0
+                              ? 'text-primary'
+                              : app?.dark
+                                ? 'text-grey-5'
+                                : 'text-grey-7'
+                          "
                         >
-                          <span>PPN ({{ formatDouble(getPersenPpn(item)) }}%):</span>
-                          <span class="text-weight-bold">Rp {{ formatDouble(getNominalPpn(item)) }}</span>
+                          <span
+                            >PPN ({{
+                              formatDouble(getPersenPpn(item))
+                            }}%):</span
+                          >
+                          <span class="text-weight-bold"
+                            >Rp {{ formatDouble(getNominalPpn(item)) }}</span
+                          >
                         </div>
 
                         <q-separator :dark="app?.dark" class="q-my-xs" />
@@ -350,7 +421,9 @@
                           :class="app?.dark ? 'text-white' : 'text-black'"
                         >
                           <span>Total Tagihan Final:</span>
-                          <span :class="app?.dark ? 'text-amber-4' : 'text-primary'">
+                          <span
+                            :class="app?.dark ? 'text-amber-4' : 'text-primary'"
+                          >
                             Rp {{ formatDouble(item?.total) }}
                           </span>
                         </div>
@@ -359,11 +432,20 @@
                           <q-separator :dark="app?.dark" class="q-my-xs" />
                           <div class="row justify-between q-py-xs text-caption">
                             <span>Bayar:</span>
-                            <span class="text-weight-bold">Rp {{ formatDouble(item?.bayar) }}</span>
+                            <span class="text-weight-bold"
+                              >Rp {{ formatDouble(item?.bayar) }}</span
+                            >
                           </div>
                           <div class="row justify-between q-py-xs text-caption">
-                            <span>{{ item?.flag === '5' ? 'Kembalian:' : 'Sisa Tagihan:' }}</span>
-                            <span class="text-weight-bold">Rp {{ formatDouble(hitungSisaBayar(item)) }}</span>
+                            <span>{{
+                              item?.flag === '5'
+                                ? 'Kembalian:'
+                                : 'Sisa Tagihan:'
+                            }}</span>
+                            <span class="text-weight-bold"
+                              >Rp
+                              {{ formatDouble(hitungSisaBayar(item)) }}</span
+                            >
                           </div>
                         </template>
                       </div>
@@ -380,15 +462,27 @@
                       <div class="col-12 col-sm-10 col-md-8 col-lg-7">
                         <div
                           class="q-pa-md rounded-borders text-body2 shadow-1"
-                          :class="app?.dark ? 'bg-grey-9 text-grey-2' : 'bg-white text-grey-9'"
+                          :class="
+                            app?.dark
+                              ? 'bg-grey-9 text-grey-2'
+                              : 'bg-white text-grey-9'
+                          "
                         >
                           <!-- Header Section Retur -->
                           <div class="row items-center justify-between q-pb-sm">
                             <div class="row items-center q-gutter-x-sm">
-                              <q-icon name="assignment_return" color="orange" size="sm" />
+                              <q-icon
+                                name="assignment_return"
+                                color="orange"
+                                size="sm"
+                              />
                               <span
                                 class="text-subtitle2 text-weight-bold"
-                                :class="app?.dark ? 'text-orange-4' : 'text-deep-orange-9'"
+                                :class="
+                                  app?.dark
+                                    ? 'text-orange-4'
+                                    : 'text-deep-orange-9'
+                                "
                               >
                                 Informasi Retur Penjualan
                               </span>
@@ -412,28 +506,45 @@
                             class="q-pa-sm q-mb-sm rounded-borders"
                             :class="app?.dark ? 'bg-grey-10' : 'bg-grey-2'"
                           >
-                            <div class="row justify-between items-center q-pb-xs">
+                            <div
+                              class="row justify-between items-center q-pb-xs"
+                            >
                               <div class="row items-center q-gutter-x-sm">
-                                <span class="text-weight-bold text-caption text-primary">#{{ retur?.no_retur }}</span>
+                                <span
+                                  class="text-weight-bold text-caption text-primary"
+                                  >#{{ retur?.no_retur }}</span
+                                >
                                 <span class="text-caption text-grey-5">
-                                  ({{ humanDate(retur?.tgl) }} {{ jamTnpDetik(retur?.tgl) }})
+                                  ({{ humanDate(retur?.tgl) }}
+                                  {{ jamTnpDetik(retur?.tgl) }})
                                 </span>
                               </div>
                               <div class="flex items-center q-gutter-x-xs">
                                 <q-badge
-                                  :color="isReturFinal(retur) ? 'positive' : 'grey-7'"
+                                  :color="
+                                    isReturFinal(retur) ? 'positive' : 'grey-7'
+                                  "
                                   class="text-caption text-weight-bold"
                                 >
-                                  {{ isReturFinal(retur) ? 'Selesai' : 'Draft' }}
+                                  {{
+                                    isReturFinal(retur) ? 'Selesai' : 'Draft'
+                                  }}
                                 </q-badge>
                               </div>
                             </div>
 
                             <!-- Rincian Barang yang diretur -->
-                            <div v-if="retur?.detail && retur.detail.length > 0" class="q-my-xs">
+                            <div
+                              v-if="retur?.detail && retur.detail.length > 0"
+                              class="q-my-xs"
+                            >
                               <div
                                 class="row text-caption text-weight-bold q-py-xs rounded-borders"
-                                :class="app?.dark ? 'bg-grey-9 text-grey-3' : 'bg-grey-4 text-black'"
+                                :class="
+                                  app?.dark
+                                    ? 'bg-grey-9 text-grey-3'
+                                    : 'bg-grey-4 text-black'
+                                "
                               >
                                 <div class="col-4">Barang & Motif</div>
                                 <div class="col-1 text-center">Satuan</div>
@@ -448,26 +559,65 @@
                                 v-for="(rd, dIdx) in retur.detail"
                                 :key="rd?.id || dIdx"
                                 class="row items-center text-caption q-py-xs"
-                                :class="app?.dark ? (dIdx % 2 === 0 ? 'bg-grey-9 text-grey-2' : 'bg-grey-10 text-grey-3') : (dIdx % 2 === 0 ? 'bg-white text-grey-9' : 'bg-grey-2 text-grey-9')"
+                                :class="
+                                  app?.dark
+                                    ? dIdx % 2 === 0
+                                      ? 'bg-grey-9 text-grey-2'
+                                      : 'bg-grey-10 text-grey-3'
+                                    : dIdx % 2 === 0
+                                      ? 'bg-white text-grey-9'
+                                      : 'bg-grey-2 text-grey-9'
+                                "
                               >
                                 <div class="col-4">
-                                  <div class="text-weight-bold">{{ rd?.master_barang?.namabarang || rd?.kodebarang }}</div>
+                                  <div class="text-weight-bold">{{
+                                    rd?.master_barang?.namabarang ||
+                                    rd?.kodebarang
+                                  }}</div>
                                   <div class="text-grey-5 text-italic">
-                                    Motif: {{ rd?.detail_penjualan?.motif || rd?.motif || '-' }}
+                                    Motif:
+                                    {{
+                                      rd?.detail_penjualan?.motif ||
+                                      rd?.motif ||
+                                      '-'
+                                    }}
                                   </div>
                                 </div>
-                                <div class="col-1 text-center">{{ rd?.master_barang?.satuan_k || 'PCS' }}</div>
+                                <div class="col-1 text-center">{{
+                                  rd?.master_barang?.satuan_k || 'PCS'
+                                }}</div>
                                 <div class="col-1 text-right text-grey-5">
-                                  {{ rd?.detail_penjualan?.jumlah ? formatDouble(rd.detail_penjualan.jumlah) : '-' }}
+                                  {{
+                                    rd?.detail_penjualan?.jumlah
+                                      ? formatDouble(rd.detail_penjualan.jumlah)
+                                      : '-'
+                                  }}
                                 </div>
-                                <div class="col-1 text-right text-weight-bold" :class="app?.dark ? 'text-amber-4' : 'text-deep-orange-9'">
+                                <div
+                                  class="col-1 text-right text-weight-bold"
+                                  :class="
+                                    app?.dark
+                                      ? 'text-amber-4'
+                                      : 'text-deep-orange-9'
+                                  "
+                                >
                                   {{ formatDouble(rd?.jumlah) }}
                                 </div>
-                                <div class="col-1 text-right">{{ formatDouble(rd?.harga_jual) }}</div>
-                                <div class="col-1 text-right">{{ formatDouble((Number(rd?.harga_jual) || 0) * (Number(rd?.jumlah) || 0)) }}</div>
-                                <div class="col-1 text-right">{{ formatDouble(rd?.diskon) }}</div>
+                                <div class="col-1 text-right">{{
+                                  formatDouble(rd?.harga_jual)
+                                }}</div>
+                                <div class="col-1 text-right">{{
+                                  formatDouble(
+                                    (Number(rd?.harga_jual) || 0) *
+                                      (Number(rd?.jumlah) || 0)
+                                  )
+                                }}</div>
+                                <div class="col-1 text-right">{{
+                                  formatDouble(rd?.diskon)
+                                }}</div>
                                 <div class="col-2 text-right text-weight-bold">
-                                  Rp {{ formatDouble(rd?.total || rd?.subtotal) }}
+                                  Rp
+                                  {{ formatDouble(rd?.total || rd?.subtotal) }}
                                 </div>
                               </div>
                             </div>
@@ -477,38 +627,119 @@
                               <div class="col-12 col-md-7 col-lg-6">
                                 <div
                                   class="q-pa-xs rounded-borders text-caption"
-                                  style="border-top: 1px dashed rgba(128,128,128,0.3)"
+                                  style="
+                                    border-top: 1px dashed
+                                      rgba(128, 128, 128, 0.3);
+                                  "
                                 >
                                   <div class="row justify-between q-py-xs">
-                                    <span class="text-grey-5">Subtotal Retur:</span>
-                                    <span class="text-weight-bold">Rp {{ formatDouble(retur?.subtotal || retur?.dpp || retur?.total) }}</span>
+                                    <span class="text-grey-5"
+                                      >Subtotal Retur:</span
+                                    >
+                                    <span class="text-weight-bold"
+                                      >Rp
+                                      {{
+                                        formatDouble(
+                                          retur?.subtotal ||
+                                            retur?.dpp ||
+                                            retur?.total
+                                        )
+                                      }}</span
+                                    >
                                   </div>
                                   <div
                                     class="row justify-between q-py-xs"
-                                    :class="Number(retur?.diskon_kuitansi) > 0 ? (app?.dark ? 'text-amber-3' : 'text-orange-9') : 'text-grey-5'"
+                                    :class="
+                                      Number(retur?.diskon_kuitansi) > 0
+                                        ? app?.dark
+                                          ? 'text-amber-3'
+                                          : 'text-orange-9'
+                                        : 'text-grey-5'
+                                    "
                                   >
                                     <span>Diskon Nota Retur:</span>
-                                    <span v-if="retur?.diskon_kuitansi !== null && Number(retur?.diskon_kuitansi) > 0" class="text-weight-bold">
-                                      - Rp {{ formatDouble(retur?.diskon_kuitansi) }}
+                                    <span
+                                      v-if="
+                                        retur?.diskon_kuitansi !== null &&
+                                        Number(retur?.diskon_kuitansi) > 0
+                                      "
+                                      class="text-weight-bold"
+                                    >
+                                      - Rp
+                                      {{ formatDouble(retur?.diskon_kuitansi) }}
                                     </span>
-                                    <span v-else class="text-caption text-italic">Rincian historis tidak tersedia</span>
+                                    <span
+                                      v-else
+                                      class="text-caption text-italic"
+                                      >Rincian historis tidak tersedia</span
+                                    >
                                   </div>
-                                  <div class="row justify-between q-py-xs" :class="retur?.dpp !== null ? '' : 'text-grey-5'">
+                                  <div
+                                    class="row justify-between q-py-xs"
+                                    :class="
+                                      retur?.dpp !== null ? '' : 'text-grey-5'
+                                    "
+                                  >
                                     <span>DPP (Dasar Pengenaan Pajak):</span>
-                                    <span v-if="retur?.dpp !== null" class="text-weight-bold">Rp {{ formatDouble(retur?.dpp) }}</span>
-                                    <span v-else class="text-caption text-italic">Rincian historis tidak tersedia</span>
+                                    <span
+                                      v-if="retur?.dpp !== null"
+                                      class="text-weight-bold"
+                                      >Rp {{ formatDouble(retur?.dpp) }}</span
+                                    >
+                                    <span
+                                      v-else
+                                      class="text-caption text-italic"
+                                      >Rincian historis tidak tersedia</span
+                                    >
                                   </div>
-                                  <div class="row justify-between q-py-xs" :class="Number(retur?.ppn_nominal) > 0 ? 'text-primary' : 'text-grey-5'">
+                                  <div
+                                    class="row justify-between q-py-xs"
+                                    :class="
+                                      Number(retur?.ppn_nominal) > 0
+                                        ? 'text-primary'
+                                        : 'text-grey-5'
+                                    "
+                                  >
                                     <span>PPN Retur:</span>
-                                    <span v-if="retur?.ppn_nominal !== null && Number(retur?.ppn_nominal) > 0" class="text-weight-bold">
-                                      PPN ({{ formatDouble(retur?.ppn_persen) }}%): Rp {{ formatDouble(retur?.ppn_nominal) }}
+                                    <span
+                                      v-if="
+                                        retur?.ppn_nominal !== null &&
+                                        Number(retur?.ppn_nominal) > 0
+                                      "
+                                      class="text-weight-bold"
+                                    >
+                                      PPN ({{
+                                        formatDouble(retur?.ppn_persen)
+                                      }}%): Rp
+                                      {{ formatDouble(retur?.ppn_nominal) }}
                                     </span>
-                                    <span v-else class="text-caption text-italic">Rincian historis tidak tersedia</span>
+                                    <span
+                                      v-else
+                                      class="text-caption text-italic"
+                                      >Rincian historis tidak tersedia</span
+                                    >
                                   </div>
-                                  <q-separator :dark="app?.dark" class="q-my-xs" />
-                                  <div class="row justify-between items-center q-pt-xs text-caption text-weight-bold">
-                                    <span>Nilai Retur{{ isReturFinal(retur) ? '' : ' (Draft)' }}:</span>
-                                    <span :class="isReturFinal(retur) ? (app?.dark ? 'text-amber-4' : 'text-deep-orange-9') : 'text-grey-5'">
+                                  <q-separator
+                                    :dark="app?.dark"
+                                    class="q-my-xs"
+                                  />
+                                  <div
+                                    class="row justify-between items-center q-pt-xs text-caption text-weight-bold"
+                                  >
+                                    <span
+                                      >Nilai Retur{{
+                                        isReturFinal(retur) ? '' : ' (Draft)'
+                                      }}:</span
+                                    >
+                                    <span
+                                      :class="
+                                        isReturFinal(retur)
+                                          ? app?.dark
+                                            ? 'text-amber-4'
+                                            : 'text-deep-orange-9'
+                                          : 'text-grey-5'
+                                      "
+                                    >
                                       Rp {{ formatDouble(retur?.total) }}
                                     </span>
                                   </div>
@@ -519,22 +750,52 @@
 
                           <!-- Kumulatif Retur Selesai -->
                           <q-separator :dark="app?.dark" class="q-my-sm" />
-                          <div class="row justify-between items-center text-body2 q-py-xs">
-                            <span class="text-weight-bold">Total Barang Diretur (Selesai):</span>
-                            <span class="text-weight-bold">{{ formatDouble(totalQtyReturSelesai(item)) }} PCS</span>
+                          <div
+                            class="row justify-between items-center text-body2 q-py-xs"
+                          >
+                            <span class="text-weight-bold"
+                              >Total Barang Diretur (Selesai):</span
+                            >
+                            <span class="text-weight-bold"
+                              >{{
+                                formatDouble(totalQtyReturSelesai(item))
+                              }}
+                              PCS</span
+                            >
                           </div>
-                          <div class="row justify-between items-center text-subtitle2 text-weight-bolder q-py-xs">
-                            <span :class="app?.dark ? 'text-white' : 'text-black'">Total Nilai Retur Kumulatif:</span>
-                            <span class="text-weight-bolder" :class="app?.dark ? 'text-amber-4' : 'text-deep-orange-9'">
-                              Rp {{ formatDouble(totalNilaiReturSelesai(item)) }}
+                          <div
+                            class="row justify-between items-center text-subtitle2 text-weight-bolder q-py-xs"
+                          >
+                            <span
+                              :class="app?.dark ? 'text-white' : 'text-black'"
+                              >Total Nilai Retur Kumulatif:</span
+                            >
+                            <span
+                              class="text-weight-bolder"
+                              :class="
+                                app?.dark
+                                  ? 'text-amber-4'
+                                  : 'text-deep-orange-9'
+                              "
+                            >
+                              Rp
+                              {{ formatDouble(totalNilaiReturSelesai(item)) }}
                             </span>
                           </div>
                           <div
                             v-if="totalNilaiReturDraft(item) > 0"
                             class="row justify-between items-center text-caption text-grey-5 q-py-xs"
                           >
-                            <span>* Draft Retur (Belum Selesai, tidak dihitung kumulatif):</span>
-                            <span>Rp {{ formatDouble(totalNilaiReturDraft(item)) }}</span>
+                            <span
+                              >* Draft Retur (Belum Selesai, tidak dihitung
+                              kumulatif):</span
+                            >
+                            <span
+                              >Rp
+                              {{
+                                formatDouble(totalNilaiReturDraft(item))
+                              }}</span
+                            >
                           </div>
                         </div>
                       </div>
@@ -568,14 +829,22 @@ import { formatDouble } from 'src/modules/formatter'
 import { dateFullFormat, humanDate, jamTnpDetik } from 'src/modules/utils'
 import { useListPenjualanStore } from 'src/stores/admin/transaksi/penjualan/list'
 import { useAppStore } from 'src/stores/app'
-import { computed, defineAsyncComponent, onBeforeMount, ref, shallowRef } from 'vue'
+import {
+  computed,
+  defineAsyncComponent,
+  onBeforeMount,
+  ref,
+  shallowRef
+} from 'vue'
 
 // const search = ref(null)
 const store = useListPenjualanStore()
 const app = useAppStore()
-const DialogCetak = shallowRef(defineAsyncComponent(() => import('./cetak/DialogCetak.vue')))
+const DialogCetak = shallowRef(
+  defineAsyncComponent(() => import('./cetak/DialogCetak.vue'))
+)
 const DialogSuratJalan = shallowRef(
-  defineAsyncComponent(() => import('./cetak/DialogSuratJalan.vue')),
+  defineAsyncComponent(() => import('./cetak/DialogSuratJalan.vue'))
 )
 const scrollTarget = ref(null)
 const infiniteScroll = ref(null)
@@ -608,7 +877,6 @@ function loadMore(index, done) {
   //   // console.log('load ms',infiniteScroll.value, index);
   //   // infiniteScroll.value?.updateScrollTarget()
   // })
-
 }
 function lihatCetak(item) {
   store.itemCetak = item
@@ -678,7 +946,10 @@ const next = computed(() => {
 
 function hitungSubtotalBarang(item) {
   if (Array.isArray(item?.detail) && item.detail.length > 0) {
-    return item.detail.reduce((sum, d) => sum + (parseFloat(d?.subtotal) || 0), 0)
+    return item.detail.reduce(
+      (sum, d) => sum + (parseFloat(d?.subtotal) || 0),
+      0
+    )
   }
   if (item?.subtotal !== null && item?.subtotal !== undefined) {
     return Number(item.subtotal) + Number(item?.diskon_kuitansi || 0)
@@ -694,6 +965,9 @@ function getDiskonNota(item) {
 }
 
 function hitungDpp(item) {
+  if (item?.subtotal !== null && item?.subtotal !== undefined) {
+    return Number(item.subtotal)
+  }
   const subtotal = hitungSubtotalBarang(item)
   const diskonNota = getDiskonNota(item)
   return Math.max(0, subtotal - diskonNota)
@@ -735,7 +1009,10 @@ function totalQtyTerjual(item) {
     return item.detail.reduce((sum, d) => sum + (parseFloat(d?.jumlah) || 0), 0)
   }
   if (Array.isArray(item?.detail_fifo) && item.detail_fifo.length > 0) {
-    return item.detail_fifo.reduce((sum, d) => sum + (parseFloat(d?.jumlah) || 0), 0)
+    return item.detail_fifo.reduce(
+      (sum, d) => sum + (parseFloat(d?.jumlah) || 0),
+      0
+    )
   }
   return 0
 }
@@ -745,7 +1022,10 @@ function totalQtyReturSelesai(item) {
   return list.reduce((total, retur) => {
     if (!isReturFinal(retur)) return total
     if (!Array.isArray(retur?.detail)) return total
-    return total + retur.detail.reduce((sum, rd) => sum + (parseFloat(rd?.jumlah) || 0), 0)
+    return (
+      total +
+      retur.detail.reduce((sum, rd) => sum + (parseFloat(rd?.jumlah) || 0), 0)
+    )
   }, 0)
 }
 
@@ -768,13 +1048,13 @@ function totalNilaiReturDraft(item) {
 function statusReturBadge(item) {
   const qtyJual = totalQtyTerjual(item)
   const qtyRetur = totalQtyReturSelesai(item)
-  const hasDraft = getListRetur(item).some((r) => !isReturFinal(r))
+  const hasDraft = getListRetur(item).some(r => !isReturFinal(r))
 
   if (qtyRetur > 0 && qtyJual > 0 && qtyRetur >= qtyJual) {
     return {
       label: hasDraft ? 'Retur Seluruhnya (+Draft)' : 'Retur Seluruhnya',
       color: 'negative',
-      textColor: 'white',
+      textColor: 'white'
     }
   }
 
@@ -782,7 +1062,7 @@ function statusReturBadge(item) {
     return {
       label: hasDraft ? 'Retur Sebagian (+Draft)' : 'Retur Sebagian',
       color: 'deep-orange',
-      textColor: 'white',
+      textColor: 'white'
     }
   }
 
@@ -790,14 +1070,14 @@ function statusReturBadge(item) {
     return {
       label: 'Draft Retur',
       color: 'grey-8',
-      textColor: 'white',
+      textColor: 'white'
     }
   }
 
   return {
     label: 'Retur',
     color: 'orange',
-    textColor: 'white',
+    textColor: 'white'
   }
 }
 </script>

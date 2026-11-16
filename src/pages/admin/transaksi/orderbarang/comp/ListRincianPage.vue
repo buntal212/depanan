@@ -4,7 +4,9 @@
       <q-card flat bordered square class="full-height" style="overflow: hidden">
         <!-- <q-avatar size="33px" color="dark" text-color="white">-</q-avatar> -->
 
-        <q-card-section class="q-px-md q-py-xs bg-yellow-8 text-black col-auto full-width">
+        <q-card-section
+          class="q-px-md q-py-xs bg-yellow-8 text-black col-auto full-width"
+        >
           <div class="row items-center justify-between">
             <div class="f-12 text-weight-bold" style="height: 23px">
               List Order || No.Order : {{ data?.noorder ?? '-' }}
@@ -22,7 +24,9 @@
                   <q-item-section>
                     <div class="row full-width">
                       <div class="col-12">
-                        <span class="text-weight-medium">{{ item?.mbarang?.namabarang }}</span>
+                        <span class="text-weight-medium">{{
+                          item?.mbarang?.namabarang
+                        }}</span>
                         <span class="text-grey-8"> ({{ item?.kdbarang }})</span>
                       </div>
                       <div class="col-2">
@@ -37,7 +41,9 @@
                         <span> X </span>
                       </div>
                       <div class="col-3">
-                        <span class="text-weight-medium"> {{ formatRpDouble(item?.hargapo) }}</span>
+                        <span class="text-weight-medium">
+                          {{ formatRpDouble(item?.hargapo) }}</span
+                        >
                       </div>
                       <div class="col-1">
                         <span class="text-weight-medium"> = </span>
@@ -58,7 +64,9 @@
                         dense
                         round
                         icon="delete"
-                        @click="hapusrincian(item?.id, data?.noorder, data?.flaging)"
+                        @click="
+                          hapusrincian(item?.id, data?.noorder, data?.flaging)
+                        "
                       />
                     </div>
                   </q-item-section>
@@ -84,8 +92,8 @@ const storeform = useAdminFormTransaksiOrderBarangStore()
 const props = defineProps({
   data: {
     type: Object,
-    default: null,
-  },
+    default: null
+  }
 })
 
 function hapusrincian(id, noorder, kunci) {
@@ -95,7 +103,7 @@ function hapusrincian(id, noorder, kunci) {
       title: 'Peringatan',
       message: 'Apakah Data ini akan dihapus?',
       cancel: true,
-      persistent: true,
+      persistent: true
     })
       .onOk(() => {
         // console.log('OK')

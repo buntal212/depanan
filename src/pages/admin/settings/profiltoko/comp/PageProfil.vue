@@ -12,7 +12,13 @@
         </div>
         <div class="" style="width: 70%">
           <div class="q-pt-sm q-pl-sm">Nomor Telepon</div>
-          <q-input dense filled v-model="store.form.telepon" class="q-pa-sm" style="height: 90px" />
+          <q-input
+            dense
+            filled
+            v-model="store.form.telepon"
+            class="q-pa-sm"
+            style="height: 90px"
+          />
         </div>
       </div>
       <div class="flex-end content-center">
@@ -48,7 +54,13 @@
       </div>
       <div class="" style="width: 70%">
         <div class="q-pt-sm q-pl-sm">Tentang Toko</div>
-        <q-input dense type="textarea" filled v-model="store.form.bio" class="q-pa-sm" />
+        <q-input
+          dense
+          type="textarea"
+          filled
+          v-model="store.form.bio"
+          class="q-pa-sm"
+        />
       </div>
     </div>
     <div class="col-12 q-px-md">
@@ -88,7 +100,7 @@ onMounted(async () => {
 })
 
 // Handle file upload
-const handleFileUpload = (event) => {
+const handleFileUpload = event => {
   const file = event.target.files[0]
   if (!file) return
 

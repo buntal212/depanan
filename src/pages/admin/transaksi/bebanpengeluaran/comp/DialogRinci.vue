@@ -2,9 +2,18 @@
   <q-dialog class="full-width q-mt-lg" backdrop-filter="blur(4px)" persistent>
     <q-card style="width: 80vw; max-width: 80vw">
       <q-card-section class="row items-center q-pb-none">
-        <div class="full-width full-height q-pb-sm text-center text-h6">Rincian Beban</div>
+        <div class="full-width full-height q-pb-sm text-center text-h6"
+          >Rincian Beban</div
+        >
         <q-space />
-        <q-btn class="absolute-top-right" icon="close" flat round dense @click="closeDialog" />
+        <q-btn
+          class="absolute-top-right"
+          icon="close"
+          flat
+          round
+          dense
+          @click="closeDialog"
+        />
       </q-card-section>
 
       <q-card-section class="q-pt-none">
@@ -20,7 +29,7 @@
                   option-label="beban"
                   option-value="kodebeban"
                   clearable
-                  @update:model-value="(val) => isiproduk(val)"
+                  @update:model-value="val => isiproduk(val)"
                 />
                 <app-input
                   class="col-12"
@@ -28,8 +37,9 @@
                   label="Volume"
                   :valid="{ required: false }"
                   @update:model-value="
-                    (val) => {
-                      store.form.subtotal = parseFloat(store.form.nominal) * parseFloat(val)
+                    val => {
+                      store.form.subtotal =
+                        parseFloat(store.form.nominal) * parseFloat(val)
                     }
                   "
                 />
@@ -48,8 +58,9 @@
                   :label="Nominal"
                   :valid="{ required: false }"
                   @update:model-value="
-                    (val) => {
-                      store.form.subtotal = parseFloat(store.form.volume) * parseFloat(val)
+                    val => {
+                      store.form.subtotal =
+                        parseFloat(store.form.volume) * parseFloat(val)
                     }
                   "
                 />
@@ -101,11 +112,11 @@ onMounted(() => {
 defineProps({
   data: {
     type: Object,
-    default: null,
-  },
+    default: null
+  }
 })
 function isiproduk(val) {
-  const it = selectBeban.items.find((x) => x.kodebeban === val)
+  const it = selectBeban.items.find(x => x.kodebeban === val)
   console.log('produk', it)
   if (it) {
     store.form.beban = it.beban
@@ -114,7 +125,7 @@ function isiproduk(val) {
 const formatNilai = computed(() => {
   return new Intl.NumberFormat('id-ID', {
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 2
   }).format(store.form.nominal)
 })
 const Nominal = computed(() => {

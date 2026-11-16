@@ -15,19 +15,22 @@
         <q-form class="full-height" @submit="onSubmit">
           <q-card-section class="full-height q-pa-lg scroll">
             <div class="row q-col-gutter-md justify-around">
-              <div :class="`col-${isMobile ? 12 : 6}`" class="row q-col-gutter-md">
+              <div
+                :class="`col-${isMobile ? 12 : 6}`"
+                class="row q-col-gutter-md"
+              >
                 <app-input-date
                   class="col-12"
                   :model="store.dateDisplay.tgl"
                   label="Tanggal Libur"
                   :valid="{ required: false }"
                   @set-model="
-                    (val) => {
+                    val => {
                       store.dateDisplay.tgl = val
                     }
                   "
                   @db-model="
-                    (val) => {
+                    val => {
                       store.form.tgl = val
                     }
                   "

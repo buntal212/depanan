@@ -4,7 +4,12 @@
       <div v-if="profil.fotoProfil">
         <q-img
           :src="profil.fotoProfil"
-          style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover"
+          style="
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+          "
           spinner-color="primary"
         />
       </div>
@@ -17,7 +22,9 @@
         {{ profil.profilData?.alamat || '-' }}
       </div>
       <div>
-        <span class="q-pr-sm">Telp : {{ profil.profilData?.telepon || '-' }}</span>
+        <span class="q-pr-sm"
+          >Telp : {{ profil.profilData?.telepon || '-' }}</span
+        >
         <span>email : {{ profil.profilData?.email || '-' }} </span>
       </div>
     </div>

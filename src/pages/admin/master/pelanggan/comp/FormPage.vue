@@ -15,7 +15,10 @@
         <q-form class="full-height" @submit="onSubmit">
           <q-card-section class="full-height q-pa-lg scroll">
             <div class="row q-col-gutter-md justify-around">
-              <div :class="`col-${isMobile ? 12 : 6}`" class="row q-col-gutter-md">
+              <div
+                :class="`col-${isMobile ? 12 : 6}`"
+                class="row q-col-gutter-md"
+              >
                 <app-input
                   class="col-6"
                   v-model="store.form.nama_toko"
@@ -32,17 +35,33 @@
                   v-model="store.form.no_tlp"
                   label="No. Tlp"
                 />
-                <app-input class="col-6" v-model="store.form.no_ktp" label="No. KTP" />
-                <app-input class="col-12" v-model="store.form.no_npwp" label="No. NPWP" />
-                <app-input class="col-12" v-model="store.form.alamat" label="Alamat" />
-                <app-input class="col-6" v-model="store.form.namabank" label="Nama Bank" />
+                <app-input
+                  class="col-6"
+                  v-model="store.form.no_ktp"
+                  label="No. KTP"
+                />
+                <app-input
+                  class="col-12"
+                  v-model="store.form.no_npwp"
+                  label="No. NPWP"
+                />
+                <app-input
+                  class="col-12"
+                  v-model="store.form.alamat"
+                  label="Alamat"
+                />
+                <app-input
+                  class="col-6"
+                  v-model="store.form.namabank"
+                  label="Nama Bank"
+                />
                 <app-input
                   class="col-6"
                   v-model="store.form.norek"
                   label="Nomor Rekening"
                   :valid="{ number: true }"
                   @update:model-value="
-                    (val) => {
+                    val => {
                       //untuk hapus o dipean angka pake ini yaa
                       const _removedZeros = val?.replace(/^0+/, '')
                       if (val > 1) store.form.isi = _removedZeros
@@ -89,8 +108,8 @@ const store = useAdminFormMasterPelangganStore()
 const props = defineProps({
   data: {
     type: Object,
-    default: null,
-  },
+    default: null
+  }
 })
 onMounted(() => {
   store.initReset(props.data)

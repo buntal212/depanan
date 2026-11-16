@@ -21,17 +21,17 @@ export const useFormTransaksiPenyesuaianStore = defineStore(
         jumlah_k: 0,
         jumlahakhir: 0,
         tgl: date.formatDate(Date.now(), 'YYYY-MM-DD'),
-        keterangan: null,
+        keterangan: null
       },
       tambahkurang: [
         { label: 'Bertambah', value: 1 },
-        { label: 'Berkurang', value: 2 },
+        { label: 'Berkurang', value: 2 }
       ],
       dateDisplay: {
-        tgl: date.formatDate(Date.now(), 'DD MMMM YYYY'),
+        tgl: date.formatDate(Date.now(), 'DD MMMM YYYY')
       },
       loading: false,
-      dialogBarang: false,
+      dialogBarang: false
     }),
     // persist: true,
     // getters: {
@@ -41,7 +41,7 @@ export const useFormTransaksiPenyesuaianStore = defineStore(
     actions: {
       initReset(data) {
         if (data) {
-          return new Promise((resolve) => {
+          return new Promise(resolve => {
             this.form = {
               id: data?.id || null,
               nopenyesuaian: data?.nopenyesuaian || null,
@@ -50,7 +50,7 @@ export const useFormTransaksiPenyesuaianStore = defineStore(
               namabarang: data?.namabarang || null,
               jumlah_k: data?.jumlah_k || 0,
               tgl: data?.tgl || date.formatDate(Date.now(), 'YYYY-MM-DD'), // Pastikan default
-              keterangan: data?.keterangan || null,
+              keterangan: data?.keterangan || null
             }
             this.dateDisplay.tgl = data?.tgl
               ? date.formatDate(data.tgl, 'DD MMMM YYYY')
@@ -67,7 +67,7 @@ export const useFormTransaksiPenyesuaianStore = defineStore(
             namabarang: null,
             jumlah_k: 0,
             tgl: date.formatDate(Date.now(), 'YYYY-MM-DD'), // Atur default, bukan null
-            keterangan: null,
+            keterangan: null
           }
           this.dateDisplay.tgl = date.formatDate(Date.now(), 'DD MMMM YYYY') // Atur default, bukan null
         }
@@ -75,13 +75,17 @@ export const useFormTransaksiPenyesuaianStore = defineStore(
 
       jumlahBaru(val) {
         if (!['Bertambah', 'Berkurang'].includes(val)) {
-          console.warn('Nilai keterangan tidak valid, harus "Bertambah" atau "Berkurang"')
+          console.warn(
+            'Nilai keterangan tidak valid, harus "Bertambah" atau "Berkurang"'
+          )
           return
         }
 
         // Terapkan aturan positif/negatif
         this.form.jumlah_k =
-          val === 'Berkurang' ? -Math.abs(this.form.jumlah_k) : Math.abs(this.form.jumlah_k)
+          val === 'Berkurang'
+            ? -Math.abs(this.form.jumlah_k)
+            : Math.abs(this.form.jumlah_k)
         this.updateStokAkhir()
       },
 
@@ -104,7 +108,7 @@ export const useFormTransaksiPenyesuaianStore = defineStore(
 
       updateStokAkhir() {
         const select = useSelectStockStore()
-        const itemx = select.items?.find((x) => x.id === this.form.stok_id)
+        const itemx = select.items?.find(x => x.id === this.form.stok_id)
 
         if (!itemx) {
           this.form.jumlahakhir = 0
@@ -112,7 +116,8 @@ export const useFormTransaksiPenyesuaianStore = defineStore(
         }
 
         const isi = itemx?.isi > 0 ? itemx.isi : 1
-        const jumlahTotal = (parseInt(itemx.jumlah_k) || 0) + (this.form.jumlah_k || 0)
+        const jumlahTotal =
+          (parseInt(itemx.jumlah_k) || 0) + (this.form.jumlah_k || 0)
         const stokAkhir = Math.floor(jumlahTotal / isi)
         const sisaAkhir = jumlahTotal % isi
 
@@ -138,8 +143,10 @@ export const useFormTransaksiPenyesuaianStore = defineStore(
                 arr.items.unshift(data?.result)
               } else {
                 if (arr?.items && data?.result?.id) {
-                  arr.items = arr.items.map((obj) =>
-                    obj?.id === data.result.id ? { ...obj, ...data.result } : obj,
+                  arr.items = arr.items.map(obj =>
+                    obj?.id === data.result.id
+                      ? { ...obj, ...data.result }
+                      : obj
                   )
                 }
               }
@@ -147,16 +154,18 @@ export const useFormTransaksiPenyesuaianStore = defineStore(
               this.initReset(null)
               resolve(data)
             })
-            .catch((err) => {
+            .catch(err => {
               this.loading = false
               reject(err)
             })
         })
-      },
-    },
-  },
+      }
+    }
+  }
 )
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useFormTransaksiPenyesuaianStore, import.meta.hot))
+  import.meta.hot.accept(
+    acceptHMRUpdate(useFormTransaksiPenyesuaianStore, import.meta.hot)
+  )
 }

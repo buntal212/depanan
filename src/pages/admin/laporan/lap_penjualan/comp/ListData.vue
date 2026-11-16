@@ -10,7 +10,9 @@
         <div class="col flex-end text-bold q-pr-md">: {{ store.jnsbayar }}</div>
       </div>
       <div class="row full-width q-px-md q-pb-sm justify-between">
-        <div class="col-auto flex-start text-bold q-pr-md">Total Penjualan Setelah Retur</div>
+        <div class="col-auto flex-start text-bold q-pr-md"
+          >Total Penjualan Setelah Retur</div
+        >
         <div class="col flex-end text-bold q-pr-md">
           : Rp. {{ formattanpaRp(totalPenjualan()) }}
         </div>
@@ -34,19 +36,29 @@
                 <div class="col text-bold">
                   {{ item.no_penjualan }}
                 </div>
-                <div v-if="item.namasales" class="col">Sales: {{ item.namasales }}</div>
+                <div v-if="item.namasales" class="col"
+                  >Sales: {{ item.namasales }}</div
+                >
               </td>
-              <td class="text-bold text-left q-px-sm">{{ dateDbFormat(item.tgl) }}</td>
+              <td class="text-bold text-left q-px-sm">{{
+                dateDbFormat(item.tgl)
+              }}</td>
               <td class="text-bold text-left q-px-sm">{{ item.pelanggan }}</td>
               <td class="text-bold text-left q-px-sm">
                 <template v-if="item?.flag === '5'">
                   <span>
                     LUNAS
-                    <template v-if="item.cara_bayar">({{ item?.cara_bayar }})</template></span
+                    <template v-if="item.cara_bayar"
+                      >({{ item?.cara_bayar }})</template
+                    ></span
                   >
                 </template>
                 <template
-                  v-else-if="item?.flag === '2' || item?.flag === '3' || item?.flag === '4'"
+                  v-else-if="
+                    item?.flag === '2' ||
+                    item?.flag === '3' ||
+                    item?.flag === '4'
+                  "
                 >
                   <span>
                     TEMPO
@@ -59,7 +71,9 @@
                 <template v-else-if="item?.flag === '7'">
                   <span class="text-bold">
                     PEMBAYARAN DP
-                    <template v-if="item?.cara_bayar">({{ item?.cara_bayar }}) </template>
+                    <template v-if="item?.cara_bayar"
+                      >({{ item?.cara_bayar }})
+                    </template>
 
                     <template v-if="item?.tempo">
                       <span class="row"
@@ -73,13 +87,17 @@
               <td class="text-bold text-right q-px-sm">
                 <div class="row full-width justify-between">
                   <div class="col-auto flex-start">Rp.</div>
-                  <div class="flex-end text-right">{{ formattanpaRp(item.total) }}</div>
+                  <div class="flex-end text-right">{{
+                    formattanpaRp(item.total)
+                  }}</div>
                 </div>
               </td>
               <td class="text-bold text-right q-px-sm">
                 <div class="row full-width justify-between">
                   <div class="col-auto flex-start">Rp.</div>
-                  <div class="flex-end text-right">{{ formattanpaRp(item.totaldenganretur) }}</div>
+                  <div class="flex-end text-right">{{
+                    formattanpaRp(item.totaldenganretur)
+                  }}</div>
                 </div>
               </td>
             </tr>
@@ -87,7 +105,9 @@
               <td>
                 <div class="row justify-between q-px-sm">
                   <div class="col-4 text-bold flex-start">RINCIAN</div>
-                  <div class="col text-right text-bold flex-end">NAMA BARANG</div>
+                  <div class="col text-right text-bold flex-end"
+                    >NAMA BARANG</div
+                  >
                 </div>
               </td>
               <td class="text-bold text-right">JUMLAH BARANG</td>
@@ -111,20 +131,43 @@
                       Penjualan :
                       <span
                         v-if="
-                          Math.floor(rincian.jumlah / (rincian?.isi > 0 ? rincian?.isi : 1)) >= 0
+                          Math.floor(
+                            rincian.jumlah /
+                              (rincian?.isi > 0 ? rincian?.isi : 1)
+                          ) >= 0
                         "
-                        >{{ Math.floor(rincian.jumlah / (rincian?.isi > 0 ? rincian?.isi : 1)) }}
+                        >{{
+                          Math.floor(
+                            rincian.jumlah /
+                              (rincian?.isi > 0 ? rincian?.isi : 1)
+                          )
+                        }}
                         {{ rincian?.satuan_b }}</span
                       >
                       <span
                         v-if="
-                          Math.floor(rincian.jumlah / (rincian?.isi > 0 ? rincian?.isi : 1)) > 0 &&
-                          rincian?.jumlah % (rincian?.isi > 0 ? rincian?.isi : 1) > 0
+                          Math.floor(
+                            rincian.jumlah /
+                              (rincian?.isi > 0 ? rincian?.isi : 1)
+                          ) > 0 &&
+                          rincian?.jumlah %
+                            (rincian?.isi > 0 ? rincian?.isi : 1) >
+                            0
                         "
                       >
                       </span>
-                      <span v-if="rincian?.jumlah % (rincian?.isi > 0 ? rincian?.isi : 1) > 0">
-                        Lebih {{ rincian?.jumlah % (rincian?.isi > 0 ? rincian?.isi : 1) }}
+                      <span
+                        v-if="
+                          rincian?.jumlah %
+                            (rincian?.isi > 0 ? rincian?.isi : 1) >
+                          0
+                        "
+                      >
+                        Lebih
+                        {{
+                          rincian?.jumlah %
+                          (rincian?.isi > 0 ? rincian?.isi : 1)
+                        }}
                         {{ rincian?.satuan_k }}</span
                       >
                     </div>
@@ -133,25 +176,42 @@
                       <span
                         v-if="
                           Math.floor(
-                            rincian.jumlah_retur / (rincian?.isi > 0 ? rincian?.isi : 1),
+                            rincian.jumlah_retur /
+                              (rincian?.isi > 0 ? rincian?.isi : 1)
                           ) >= 0
                         "
                         >{{
-                          Math.floor(rincian.jumlah_retur / (rincian?.isi > 0 ? rincian?.isi : 1))
+                          Math.floor(
+                            rincian.jumlah_retur /
+                              (rincian?.isi > 0 ? rincian?.isi : 1)
+                          )
                         }}
                         {{ rincian?.satuan_b }}</span
                       >
                       <span
                         v-if="
-                          Math.floor(rincian.jumlah_retur / (rincian?.isi > 0 ? rincian?.isi : 1)) >
-                            0 && rincian?.jumlah_retur % (rincian?.isi > 0 ? rincian?.isi : 1) > 0
+                          Math.floor(
+                            rincian.jumlah_retur /
+                              (rincian?.isi > 0 ? rincian?.isi : 1)
+                          ) > 0 &&
+                          rincian?.jumlah_retur %
+                            (rincian?.isi > 0 ? rincian?.isi : 1) >
+                            0
                         "
                       >
                       </span>
                       <span
-                        v-if="rincian?.jumlah_retur % (rincian?.isi > 0 ? rincian?.isi : 1) > 0"
+                        v-if="
+                          rincian?.jumlah_retur %
+                            (rincian?.isi > 0 ? rincian?.isi : 1) >
+                          0
+                        "
                       >
-                        Lebih {{ rincian?.jumlah_retur % (rincian?.isi > 0 ? rincian?.isi : 1) }}
+                        Lebih
+                        {{
+                          rincian?.jumlah_retur %
+                          (rincian?.isi > 0 ? rincian?.isi : 1)
+                        }}
                         {{ rincian?.satuan_k }}</span
                       >
                     </div>
@@ -159,12 +219,18 @@
                   <td style="vertical-align: top">
                     <div class="flex-end text-right">
                       Rp.
-                      {{ formattanpaRp(Math.floor(rincian.harga_jual * rincian?.isi)) }}
+                      {{
+                        formattanpaRp(
+                          Math.floor(rincian.harga_jual * rincian?.isi)
+                        )
+                      }}
                     </div>
                   </td>
                   <td style="vertical-align: top">
                     <div class="flex-end text-right">
-                      <div v-if="rincian.diskon">disc. Rp. {{ formattanpaRp(rincian.diskon) }}</div>
+                      <div v-if="rincian.diskon"
+                        >disc. Rp. {{ formattanpaRp(rincian.diskon) }}</div
+                      >
                     </div>
                     <div v-if="rincian.nilai_retur" class="flex-end text-right">
                       Nilai Retur : Rp.
@@ -183,7 +249,11 @@
                     <div class="row justify-between">
                       <div class="col-auto flex-start">Rp.</div>
                       <div class="flex-end text-right">
-                        {{ formattanpaRp(Math.floor(rincian.subtotal - rincian?.nilai_retur)) }}
+                        {{
+                          formattanpaRp(
+                            Math.floor(rincian.subtotal - rincian?.nilai_retur)
+                          )
+                        }}
                       </div>
                     </div>
                   </td>
@@ -226,7 +296,9 @@ import { useLaporanPenjualanStore } from 'src/stores/admin/laporan/lap_penjualan
 const store = useLaporanPenjualanStore()
 
 function totalPenjualan() {
-  const total = store.items.map((x) => parseFloat(x.totaldenganretur)).reduce((a, b) => a + b, 0)
+  const total = store.items
+    .map(x => parseFloat(x.totaldenganretur))
+    .reduce((a, b) => a + b, 0)
   return total
 }
 </script>

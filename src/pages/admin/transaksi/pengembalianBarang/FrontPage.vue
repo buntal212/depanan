@@ -1,13 +1,15 @@
 <template>
-  <template v-if="isList=='listPenjualan'">
+  <template v-if="isList == 'listPenjualan'">
     <Suspense>
       <list-penjualan-page
-        @list="()=>isList='list'"
-        @form="(val)=>{
-          form.item = val
-          form.setForm(val)
-          isList='form'
-        }"
+        @list="() => (isList = 'list')"
+        @form="
+          val => {
+            form.item = val
+            form.setForm(val)
+            isList = 'form'
+          }
+        "
       />
       <template #fallback>
         <Loading />
@@ -15,25 +17,25 @@
     </Suspense>
   </template>
 
-  <template v-if="isList=='list'">
+  <template v-if="isList == 'list'">
     <Suspense>
-      <list-page
-        @back="()=>isList='listPenjualan'"
-      />
+      <list-page @back="() => (isList = 'listPenjualan')" />
       <template #fallback>
         <Loading />
       </template>
     </Suspense>
   </template>
 
-  <template v-if="isList=='form'">
+  <template v-if="isList == 'form'">
     <Suspense>
       <form-page
-        @back="()=>{
-          form.item = null
-          form.resetForm()
-          isList='listPenjualan'
-        }"
+        @back="
+          () => {
+            form.item = null
+            form.resetForm()
+            isList = 'listPenjualan'
+          }
+        "
         @selesai="selesai"
       />
       <template #fallback>
@@ -48,17 +50,13 @@ import { defineAsyncComponent, ref } from 'vue'
 import { useListPengembalianStore } from 'src/stores/admin/transaksi/pengembalianBarang/list'
 import { useFormPengembalianStore } from 'src/stores/admin/transaksi/pengembalianBarang/form'
 
-const listPage = defineAsyncComponent(() =>
-  import('./comp/ListPage.vue')
+const listPage = defineAsyncComponent(() => import('./comp/ListPage.vue'))
+const formPage = defineAsyncComponent(() => import('./comp/FormPage.vue'))
+const listPenjualanPage = defineAsyncComponent(
+  () => import('./comp/ListPenjualanPage.vue')
 )
-const formPage = defineAsyncComponent(() =>
-  import('./comp/FormPage.vue')
-)
-const listPenjualanPage = defineAsyncComponent(() =>
-  import('./comp/ListPenjualanPage.vue')
-)
-const Loading = defineAsyncComponent(() =>
-  import('src/components/app/AppLoading.vue')
+const Loading = defineAsyncComponent(
+  () => import('src/components/app/AppLoading.vue')
 )
 
 // State untuk tracking halaman aktif

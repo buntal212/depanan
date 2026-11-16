@@ -23,7 +23,9 @@
           </tr>
           <tr class="bg-grey-9">
             <td class="text-bold text-center">Total Kas Masuk</td>
-            <td class="text-bold text-right">{{ formattanpaRp(store.items?.total_masuk) }}</td>
+            <td class="text-bold text-right">{{
+              formattanpaRp(store.items?.total_masuk)
+            }}</td>
           </tr>
           <tr class="bg-yellow-9">
             <td class="text-bold">Arus Kas Keluar</td>
@@ -37,11 +39,15 @@
           </tr>
           <tr class="bg-grey-9">
             <td class="text-bold text-center">Total Kas Keluar</td>
-            <td class="text-bold text-right">({{ formattanpaRp(store.items?.total_keluar) }})</td>
+            <td class="text-bold text-right"
+              >({{ formattanpaRp(store.items?.total_keluar) }})</td
+            >
           </tr>
           <tr class="">
             <td class="text-bold">Arus Kas Bersih</td>
-            <td class="text-bold text-right">{{ formattanpaRp(store.items?.kenaikan_kas) }}</td>
+            <td class="text-bold text-right">{{
+              formattanpaRp(store.items?.kenaikan_kas)
+            }}</td>
           </tr>
           <!-- <tr class="">
             <td class="text-bold">Saldo Awal</td>

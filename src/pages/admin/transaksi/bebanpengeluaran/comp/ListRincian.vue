@@ -1,6 +1,8 @@
 <template>
   <q-card flat class="full-width full-height">
-    <q-card-section class="q-px-md q-py-xs bg-grey-9 text-white col-auto full-width">
+    <q-card-section
+      class="q-px-md q-py-xs bg-grey-9 text-white col-auto full-width"
+    >
       <div class="row items-center justify-between">
         <div class="text-weight-bold">
           Rincian Pengeluaran || Nomor : {{ store.form?.notrans ?? '-' }}
@@ -9,7 +11,10 @@
       </div>
     </q-card-section>
     <div class="row q-col-gutter-md full-width justify-between">
-      <q-card-section class="full-height q-px-md" style="min-width: 50%; max-width: 100%">
+      <q-card-section
+        class="full-height q-px-md"
+        style="min-width: 50%; max-width: 100%"
+      >
         <q-list separator>
           <!-- <template v-if="store.listrincian.length > 0"> -->
           <q-item v-for="(item, n) in store.rincian" :key="n" class="list-move">
@@ -17,23 +22,31 @@
               <div class="row full-width">
                 <div class="full-width">
                   <span class="text-weight-medium">{{ item.beban }}</span>
-                  <span class="text-weight-medium q-pl-sm"> ({{ item?.kodebeban }})</span>
+                  <span class="text-weight-medium q-pl-sm">
+                    ({{ item?.kodebeban }})</span
+                  >
                 </div>
                 <div class="col-3">
                   <span class="text-weight-medium"> {{ item?.volume }} </span>
-                  <span class="q-pl-sm text-weight-medium"> {{ item?.satuan }}</span>
+                  <span class="q-pl-sm text-weight-medium">
+                    {{ item?.satuan }}</span
+                  >
                 </div>
                 <div class="col-1">
                   <span> x </span>
                 </div>
                 <div class="col-3">
-                  <span class="text-weight-medium"> {{ formatDenganRp(item?.nominal) }}</span>
+                  <span class="text-weight-medium">
+                    {{ formatDenganRp(item?.nominal) }}</span
+                  >
                 </div>
                 <div class="col-1">
                   <span class="text-weight-medium"> = </span>
                 </div>
                 <div class="col-4 text-right">
-                  <span class="text-weight-medium"> {{ formatDenganRp(item?.subtotal) }}</span>
+                  <span class="text-weight-medium">
+                    {{ formatDenganRp(item?.subtotal) }}</span
+                  >
                 </div>
               </div>
             </q-item-section>
@@ -93,12 +106,12 @@ function del(item) {
     title: 'Peringatan',
     message: 'Apakah Data ini akan dihapus?',
     cancel: true,
-    persistent: true,
+    persistent: true
   })
     .onOk(() => {
       const payload = {
         notrans: item.notrans,
-        id: item.id,
+        id: item.id
         // nopenerimaan: store.form.noserahterima,
       }
       console.log('payload', payload)
@@ -136,7 +149,7 @@ function totalrinci() {
     return 0
   }
   return arr
-    .map((x) => parseFloat(x.subtotal) || 0) // Tambahkan fallback jika subtotal bukan angka
+    .map(x => parseFloat(x.subtotal) || 0) // Tambahkan fallback jika subtotal bukan angka
     .reduce((a, b) => a + b, 0)
 }
 

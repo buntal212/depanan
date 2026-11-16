@@ -12,11 +12,11 @@ export const useLaporanPenjualanStore = defineStore('laporan-penjualan-store', {
       tglawal: date.formatDate(Date.now(), 'YYYY-MM-01'),
       tglakhir: date.formatDate(Date.now(), 'YYYY-MM-DD'),
       sales: null,
-      jnsbayar: null,
+      jnsbayar: null
     },
     dateDisplay: {
       from: date.formatDate(Date.now(), '01 MMMM YYYY'),
-      to: date.formatDate(Date.now(), 'DD MMMM YYYY'),
+      to: date.formatDate(Date.now(), 'DD MMMM YYYY')
     },
     loading: false,
     dialogCetak: false,
@@ -24,13 +24,13 @@ export const useLaporanPenjualanStore = defineStore('laporan-penjualan-store', {
     sales: null,
     jnsbayar: null,
     pelanggan: null,
-    items: [],
+    items: []
   }),
 
   actions: {
     initReset(data) {
       if (data) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           for (const key in this.params) {
             // console.log(`${key}: ${this.form[key]}`);
             // console.log(`${key}`);
@@ -51,7 +51,7 @@ export const useLaporanPenjualanStore = defineStore('laporan-penjualan-store', {
     async getdata() {
       this.loading = true
       const params = {
-        params: this.params,
+        params: this.params
       }
       console.log('params', params)
       return new Promise((resolve, reject) => {
@@ -65,15 +65,17 @@ export const useLaporanPenjualanStore = defineStore('laporan-penjualan-store', {
             this.params.jnsbayar = null
             resolve(data)
           })
-          .catch((err) => {
+          .catch(err => {
             this.loading = false
             reject(err)
           })
       })
-    },
-  },
+    }
+  }
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useLaporanPenjualanStore, import.meta.hot))
+  import.meta.hot.accept(
+    acceptHMRUpdate(useLaporanPenjualanStore, import.meta.hot)
+  )
 }

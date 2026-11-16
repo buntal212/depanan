@@ -8,7 +8,9 @@
         Form Pencatatan Nota Yang Dibawah/dikembalikan Sales
       </div>
     </div>
-    <div class="text-center">No. Transaksi : {{ storeform.form.notrans || '-' }}</div>
+    <div class="text-center"
+      >No. Transaksi : {{ storeform.form.notrans || '-' }}</div
+    >
     <div class="row full-width q-px-xl q-gutter-x-sm">
       <div class="col-3">
         <app-input-date
@@ -18,12 +20,12 @@
           outlined
           :disable="storeform.form.notrans !== ''"
           @set-model="
-            (val) => {
+            val => {
               storeform.dateDisplay.tgl = val
             }
           "
           @db-model="
-            (val) => {
+            val => {
               storeform.form.tgl = val
             }
           "
@@ -97,7 +99,9 @@
 
         <template v-slot:bottom-row>
           <q-tr>
-            <q-td colspan="6" class="text-right text-weight-bold text-red"> Total </q-td>
+            <q-td colspan="6" class="text-right text-weight-bold text-red">
+              Total
+            </q-td>
             <q-td class="text-right text-weight-bold text-red">
               {{ formatRpDouble(totalJumlah) }}
             </q-td>
@@ -118,9 +122,15 @@
       </q-table>
     </div>
   </div>
-  <DialogListPiutang v-if="props.pelanggan.length" :pelanggan="props.pelanggan" />
+  <DialogListPiutang
+    v-if="props.pelanggan.length"
+    :pelanggan="props.pelanggan"
+  />
 
-  <DialogCetak v-if="storeform.opendialogCetak === true" v-model="storeform.opendialogCetak" />
+  <DialogCetak
+    v-if="storeform.opendialogCetak === true"
+    v-model="storeform.opendialogCetak"
+  />
   <DialogCetak v-else v-model="storeform.opendialogCetakkedua" />
 </template>
 <script setup>
@@ -133,7 +143,9 @@ import { useAdminListTransaksiNotaSalesstore } from 'src/stores/admin/transaksi/
 
 import DialogListPiutang from './DialogListPiutang.vue'
 import { formatRpDouble } from 'src/modules/utils'
-const DialogCetak = shallowRef(defineAsyncComponent(() => import('./cetak/DialogCetak.vue')))
+const DialogCetak = shallowRef(
+  defineAsyncComponent(() => import('./cetak/DialogCetak.vue'))
+)
 const emits = defineEmits(['back'])
 
 const $q = useQuasar()
@@ -148,32 +160,32 @@ const loadingItem = ref({})
 const props = defineProps({
   data: {
     type: Object,
-    default: null,
+    default: null
   },
   pegawai: {
     type: Array,
-    default: () => [],
+    default: () => []
   },
   pelanggan: {
     type: Array,
-    default: () => [],
-  },
+    default: () => []
+  }
 })
 
 const sales = computed(() => {
   if (!Array.isArray(props.pegawai)) return []
-  const sales = props.pegawai.filter((f) => f?.jabatan === 'Sales')
-  const salesx = sales.map((x) => {
+  const sales = props.pegawai.filter(f => f?.jabatan === 'Sales')
+  const salesx = sales.map(x => {
     return {
       id: x.id,
-      nama: x.nama,
+      nama: x.nama
     }
   })
   return salesx
 })
 
 const semuaRinci = computed(() => {
-  return storelist.rinci.map((item) => ({
+  return storelist.rinci.map(item => ({
     id: item.id,
     notaPenjualan: item.notaPenjualan,
     tgljatuhtempo: item.tgljatuhtempo || '-',
@@ -182,34 +194,47 @@ const semuaRinci = computed(() => {
     sales: item?.hederpenjualan?.sales?.nama || '-',
     // terbayar: item.terbayar || '-',
     total: Number(item.total) || 0,
-    _deleting: false, // ← ini tambahan
+    _deleting: false // ← ini tambahan
   }))
 })
 
 const columns = [
   { name: 'no', label: 'No.', field: 'no', align: 'left' },
-  { name: 'notaPenjualan', label: 'No. Penjualan', field: 'notaPenjualan', align: 'left' },
+  {
+    name: 'notaPenjualan',
+    label: 'No. Penjualan',
+    field: 'notaPenjualan',
+    align: 'left'
+  },
   { name: 'pelanggan', label: 'Pelanggan', field: 'pelanggan', align: 'left' },
   { name: 'alamat', label: 'Alamat', field: 'alamat', align: 'left' },
-  { name: 'tgljatuhtempo', label: 'Tgl Jatuh Tempo', field: 'tgljatuhtempo', align: 'left' },
+  {
+    name: 'tgljatuhtempo',
+    label: 'Tgl Jatuh Tempo',
+    field: 'tgljatuhtempo',
+    align: 'left'
+  },
   { name: 'sales', label: 'Sales', field: 'sales', align: 'left' },
   {
     name: 'total',
     label: 'Jumlah',
     field: 'total',
     align: 'right',
-    format: (val) => formatRpDouble(val),
+    format: val => formatRpDouble(val)
   },
   {
     name: 'aksi',
     label: 'Aksi',
     field: 'aksi',
-    align: 'center',
-  },
+    align: 'center'
+  }
 ]
 
 const totalJumlah = computed(() => {
-  return semuaRinci.value.reduce((sum, item) => sum + (parseFloat(item.total) || 0), 0)
+  return semuaRinci.value.reduce(
+    (sum, item) => sum + (parseFloat(item.total) || 0),
+    0
+  )
 })
 
 function carinota(val) {
@@ -225,9 +250,11 @@ function carinota(val) {
 
 function lihatCetak() {
   // console.log('lihat cetak', storeform.itemCetak)
-  const namasales = sales.value.find((f) => f?.id === storeform.form.kdsales)
+  const namasales = sales.value.find(f => f?.id === storeform.form.kdsales)
   storeform.opendialogCetakkedua = true
-  storeform.itemCetak = storelist.items.find((x) => x.notrans === storeform.form.notrans)
+  storeform.itemCetak = storelist.items.find(
+    x => x.notrans === storeform.form.notrans
+  )
   storeform.itemCetak.sales = namasales.nama
 }
 
@@ -239,7 +266,7 @@ function hapusData(item) {
     title: 'Peringatan',
     message: 'Apakah Data ini akan dihapus?',
     cancel: true,
-    persistent: true,
+    persistent: true
   })
     .onOk(async () => {
       // console.log('OK')
@@ -250,7 +277,7 @@ function hapusData(item) {
           item.id,
           storeform.form.notrans,
           item.notaPenjualan,
-          storeform.form.keterangan,
+          storeform.form.keterangan
         )
       } catch (e) {
         console.log('del Pembayaran Hutang error', e)
@@ -295,9 +322,12 @@ onMounted(() => {
     storeform.form.notrans = props?.data?.notrans
     storeform.form.tgl = props?.data?.tgl
     storeform.form.kunci = props?.data?.kunci
-    storeform.dateDisplay.tgl = date.formatDate(props?.data?.tgl, 'DD MMMM YYYY')
+    storeform.dateDisplay.tgl = date.formatDate(
+      props?.data?.tgl,
+      'DD MMMM YYYY'
+    )
     const kdsales = parseInt(props?.data?.kdsales)
-    const sales = props.pegawai.find((f) => f?.id === kdsales)
+    const sales = props.pegawai.find(f => f?.id === kdsales)
 
     storeform.form.kdsales = sales?.id ?? null
 

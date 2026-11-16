@@ -22,16 +22,14 @@
     behavior="menu"
     transition-show="jump-up"
     transition-hide="jump-down"
-    :bottom-slots="hint !== null "
+    :bottom-slots="hint !== null"
     @filter="filterFn"
-    @update:model-value="val=>emits('selected',val)"
-    @input-value="val=>emits('onInput',val)"
+    @update:model-value="val => emits('selected', val)"
+    @input-value="val => emits('onInput', val)"
   >
     <template #no-option>
       <q-item>
-        <q-item-section class="text-grey">
-          No results
-        </q-item-section>
+        <q-item-section class="text-grey"> No results </q-item-section>
       </q-item>
     </template>
     <template v-if="hint" #hint>
@@ -43,7 +41,7 @@
 <script setup>
 import { ref } from 'vue'
 import { api } from 'src/boot/axios'
-const emits = defineEmits(['selected', 'onEnter','onInput'])
+const emits = defineEmits(['selected', 'onEnter', 'onInput'])
 const props = defineProps({
   label: { type: String, default: 'Label' },
   disable: { type: Boolean, default: false },
@@ -63,7 +61,7 @@ const refAuto = ref(null)
 const optionx = ref([])
 
 defineExpose({ refAuto })
-async function filterFn (val, update, abort) {
+async function filterFn(val, update, abort) {
   if (val.length < props.filterMin) {
     abort()
     return
@@ -76,23 +74,20 @@ async function filterFn (val, update, abort) {
 
   const params = { params: param }
 
-  const {data} = await api.get(props.url, params)
+  const { data } = await api.get(props.url, params)
   // console.log('data', data);
 
   update(() => {
     optionx.value = data
   })
-
 }
 
-function anotherValid (val) {
+function anotherValid(val) {
   if (props.valid) {
     return true
   }
   return (val !== null && val !== '') || 'Harap diisi'
 }
-
-
 </script>
 
 <style lang="scss" scoped>
@@ -101,5 +96,4 @@ function anotherValid (val) {
     min-height: 39px !important;
   }
 }
-
 </style>

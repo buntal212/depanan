@@ -15,7 +15,10 @@
         <q-form class="full-height" @submit="onSubmit">
           <q-card-section class="full-height q-pa-lg scroll">
             <div class="row q-col-gutter-md justify-around">
-              <div :class="`col-${isMobile ? 12 : 6}`" class="row q-col-gutter-md">
+              <div
+                :class="`col-${isMobile ? 12 : 6}`"
+                class="row q-col-gutter-md"
+              >
                 <app-input
                   class="col-12"
                   v-model="store.form.nama"
@@ -28,14 +31,18 @@
                   label="Nomor Telepon"
                   :valid="{ number: true }"
                   @update:model-value="
-                    (val) => {
+                    val => {
                       //untuk hapus o dipean angka pake ini yaa
                       const _removedZeros = val?.replace(/^0+/, '')
                       if (val > 1) store.form.isi = _removedZeros
                     }
                   "
                 />
-                <app-input class="col-12" v-model="store.form.alamat" label="Alamat" />
+                <app-input
+                  class="col-12"
+                  v-model="store.form.alamat"
+                  label="Alamat"
+                />
 
                 <div class="col-12">
                   <q-separator class="q-my-md" />
@@ -78,8 +85,8 @@ const store = useAdminFormMasterSupplierStore()
 const props = defineProps({
   data: {
     type: Object,
-    default: null,
-  },
+    default: null
+  }
 })
 onMounted(() => {
   store.initReset(props.data)

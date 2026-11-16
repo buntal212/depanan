@@ -14,9 +14,7 @@
                       label="Telusuri"
                       style="min-width: 350px"
                       :debounce="300"
-                      @update:model-value="
-                        refreshList
-                      "
+                      @update:model-value="refreshList"
                     />
                     <q-input
                       v-model="store.params.tanggal_mulai"
@@ -31,7 +29,11 @@
                     >
                       <template #append>
                         <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                          <q-popup-proxy
+                            cover
+                            transition-show="scale"
+                            transition-hide="scale"
+                          >
                             <q-date
                               v-model="store.params.tanggal_mulai"
                               mask="YYYY-MM-DD"
@@ -54,7 +56,11 @@
                     >
                       <template #append>
                         <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                          <q-popup-proxy
+                            cover
+                            transition-show="scale"
+                            transition-hide="scale"
+                          >
                             <q-date
                               v-model="store.params.tanggal_selesai"
                               mask="YYYY-MM-DD"
@@ -121,11 +127,15 @@
                     style="transition: all 0.2s ease; border-radius: 10px"
                   >
                     <!-- Order Header -->
-                    <q-card-section class="q-pb-sm flex justify-between items-center q-pa-sm">
+                    <q-card-section
+                      class="q-pb-sm flex justify-between items-center q-pa-sm"
+                    >
                       <div>
                         <div
                           class="text-body2 text-weight-medium"
-                          :class="$q.dark.isActive ? 'text-grey-5' : 'text-dark'"
+                          :class="
+                            $q.dark.isActive ? 'text-grey-5' : 'text-dark'
+                          "
                         >
                           Order # {{ item?.noorder }}
                         </div>
@@ -147,7 +157,10 @@
                       <div class="flex justify-between items-center full-width">
                         <div class="row items-center q-col-gutter-md">
                           <!-- Thumbnails -->
-                          <div class="flex items-center" style="margin-left: 5px">
+                          <div
+                            class="flex items-center"
+                            style="margin-left: 5px"
+                          >
                             <div class="flex avatar-wrapper avatar-group">
                               <q-img
                                 v-for="(img, index) in item.rincians?.length"
@@ -163,7 +176,9 @@
                           <div class="col">
                             <div class="row items-center q-gutter-xs text-body">
                               <q-icon name="shopping_cart"></q-icon>
-                              <span>{{ item?.rincians?.length }} Rincian item</span>
+                              <span
+                                >{{ item?.rincians?.length }} Rincian item</span
+                              >
                             </div>
                             <div class="text-base text-weight-bold text-grey-7">
                               Total : Rp {{ formatRp(item.total_harga) }}
@@ -208,7 +223,9 @@ import { useAdminOrderPenjualanStore } from 'src/stores/admin/transaksi/orderpen
 import { useQuasar } from 'quasar'
 import { humanDate, jamTnpDetik, formatRp } from 'src/modules/formatter'
 
-const BadgeStatusOrder = defineAsyncComponent(() => import('./BadgeStatusOrder.vue'))
+const BadgeStatusOrder = defineAsyncComponent(
+  () => import('./BadgeStatusOrder.vue')
+)
 
 const store = useAdminOrderPenjualanStore()
 const { getList } = store
@@ -226,7 +243,7 @@ const statusOptions = [
   { label: 'Tunggu Pengiriman', value: '4' },
   { label: 'Dikirim', value: '5' },
   { label: 'Selesai', value: '6' },
-  { label: 'Batal Order', value: '9' },
+  { label: 'Batal Order', value: '9' }
 ]
 
 const refreshList = () => {

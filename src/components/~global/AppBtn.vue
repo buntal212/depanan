@@ -1,27 +1,29 @@
 <template>
-  <q-btn class="glossy"
-      :rounded="label ? true : false"
-      :round="label ? false : true"
-      no-caps
-      :color="color"
-      :dense="dense"
-      :loading="loading"
-      :disabled="disable"
-      >
-      <div class="flex items-center" :class="{' q-px-md': label}">
-        <div v-if="icon" :class="{'q-mr-sm': label}"><q-icon :name="icon" size="1.5em"  /></div>
-        <div v-if="label">{{ label }}</div>
-      </div>
-      <template v-slot:loading>
-        <!-- Loading... -->
-        <q-spinner-hourglass/>
-      </template>
+  <q-btn
+    class="glossy"
+    :rounded="label ? true : false"
+    :round="label ? false : true"
+    no-caps
+    :color="color"
+    :dense="dense"
+    :loading="loading"
+    :disabled="disable"
+  >
+    <div class="flex items-center" :class="{ ' q-px-md': label }">
+      <div v-if="icon" :class="{ 'q-mr-sm': label }"
+        ><q-icon :name="icon" size="1.5em"
+      /></div>
+      <div v-if="label">{{ label }}</div>
+    </div>
+    <template v-slot:loading>
+      <!-- Loading... -->
+      <q-spinner-hourglass />
+    </template>
     <q-tooltip v-if="tooltip">{{ tooltip }}</q-tooltip>
   </q-btn>
 </template>
 
 <script setup>
-
 defineProps({
   label: {
     type: String,
@@ -56,5 +58,4 @@ defineProps({
     default: 'primary'
   }
 })
-
 </script>

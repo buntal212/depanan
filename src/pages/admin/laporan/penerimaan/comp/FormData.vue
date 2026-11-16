@@ -9,7 +9,7 @@
           style="min-width: 300px"
           :debounce="300"
           @update:model-value="
-            (e) => {
+            e => {
               store.getdata()
             }
           "
@@ -21,12 +21,12 @@
           outlined
           :debounce="300"
           @set-model="
-            (val) => {
+            val => {
               store.dateDisplay.from = val
             }
           "
           @db-model="
-            (val) => {
+            val => {
               store.params.tglawal = val
             }
           "
@@ -38,12 +38,12 @@
           outlined
           :debounce="300"
           @set-model="
-            (val) => {
+            val => {
               store.dateDisplay.to = val
             }
           "
           @db-model="
-            (val) => {
+            val => {
               store.params.tglakhir = val
             }
           "
@@ -56,7 +56,7 @@
           option-value="kodesupl"
           :valid="store.params.supplier === ''"
           @update:model-value="
-            (e) => {
+            e => {
               store.supplier = null
             }
           "
@@ -68,7 +68,7 @@
           :valid="store.params.jnsbayar === ''"
           onfocus="this.select()"
           @update:model-value="
-            (e) => {
+            e => {
               store.jnsbayar = null
             }
           "
@@ -84,10 +84,13 @@
             @click="
               () => {
                 store.getdata()
-                if (store.params.supplier != null || store.params.jnsbayar != null) {
+                if (
+                  store.params.supplier != null ||
+                  store.params.jnsbayar != null
+                ) {
                   store.jnsbayar = store.params.jnsbayar
                   const as = storesupllier.itemsall.find(
-                    (x) => x.kodesupl === store.params.supplier,
+                    x => x.kodesupl === store.params.supplier
                   )
                   store.supplier = as.nama
                 } else {
@@ -108,7 +111,13 @@
     <q-separator />
   </div>
   <div v-if="store.items.length > 0" class="row justify-end q-pr-md">
-    <q-btn icon="print" class="text-yellow-8" color="grey-10" round dense @click="cetakData()"
+    <q-btn
+      icon="print"
+      class="text-yellow-8"
+      color="grey-10"
+      round
+      dense
+      @click="cetakData()"
       ><q-tooltip>Cetak</q-tooltip></q-btn
     >
   </div>
@@ -119,7 +128,9 @@ import { useLaporanPenerimaanStore } from 'src/stores/admin/laporan/penerimaan/l
 import { useAdminMasterSupplierStore } from 'src/stores/admin/master/supplier/list'
 import { defineAsyncComponent, onMounted, shallowRef } from 'vue'
 
-const DialogCetak = shallowRef(defineAsyncComponent(() => import('./DialogCetak.vue')))
+const DialogCetak = shallowRef(
+  defineAsyncComponent(() => import('./DialogCetak.vue'))
+)
 const store = useLaporanPenerimaanStore()
 const storesupllier = useAdminMasterSupplierStore()
 onMounted(() => {

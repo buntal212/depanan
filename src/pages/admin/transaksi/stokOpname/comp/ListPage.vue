@@ -15,7 +15,7 @@
                       style="min-width: 250px"
                       :debounce="300"
                       @update:model-value="
-                        (e) => {
+                        e => {
                           infiniteScroll.reset()
                         }
                       "
@@ -28,7 +28,7 @@
                       style="min-width: 150px"
                       :disable="store.loading"
                       @update:model-value="
-                        (e) => {
+                        e => {
                           store.getList()
                           infiniteScroll.reset()
                         }
@@ -40,7 +40,7 @@
                       style="min-width: 100px"
                       :debounce="300"
                       @update:model-value="
-                        (e) => {
+                        e => {
                           store.getList()
                           infiniteScroll.reset()
                         }
@@ -107,7 +107,11 @@
                     </q-item-label>
                     <q-item-label caption lines="2">
                       <span class="text-weight-bold"
-                        ><q-badge rounded outline :color="app?.dark ? 'grey-5' : 'grey-8'">
+                        ><q-badge
+                          rounded
+                          outline
+                          :color="app?.dark ? 'grey-5' : 'grey-8'"
+                        >
                           No. Penerimaan : {{ item?.nopenerimaan }}
                         </q-badge></span
                       >
@@ -116,20 +120,36 @@
                         :class="app?.dark ? 'text-yellow-3' : 'text-orange-9'"
                       >
                         || Jumlah :
-                        <span v-if="Math.floor(item.jumlah_k / (item?.isi > 0 ? item?.isi : 1)) > 0"
-                          >{{ Math.floor(item.jumlah_k / (item?.isi > 0 ? item?.isi : 1)) }}
+                        <span
+                          v-if="
+                            Math.floor(
+                              item.jumlah_k / (item?.isi > 0 ? item?.isi : 1)
+                            ) > 0
+                          "
+                          >{{
+                            Math.floor(
+                              item.jumlah_k / (item?.isi > 0 ? item?.isi : 1)
+                            )
+                          }}
                           {{ item?.satuan_b }}</span
                         >
                         <span
                           v-if="
-                            Math.floor(item.jumlah_k / (item?.isi > 0 ? item?.isi : 1)) > 0 &&
+                            Math.floor(
+                              item.jumlah_k / (item?.isi > 0 ? item?.isi : 1)
+                            ) > 0 &&
                             item?.jumlah_k % (item?.isi > 0 ? item?.isi : 1) > 0
                           "
                         >
                           lebih
                         </span>
-                        <span v-if="item?.jumlah_k % (item?.isi > 0 ? item?.isi : 1) > 0"
-                          >{{ item?.jumlah_k % (item?.isi > 0 ? item?.isi : 1) }}
+                        <span
+                          v-if="
+                            item?.jumlah_k % (item?.isi > 0 ? item?.isi : 1) > 0
+                          "
+                          >{{
+                            item?.jumlah_k % (item?.isi > 0 ? item?.isi : 1)
+                          }}
                           {{ item?.satuan_k }}</span
                         >
                       </span>
@@ -143,7 +163,8 @@
                         class="text-weight-bold"
                         :class="app?.dark ? 'text-green-3' : 'text-teal-9'"
                       >
-                        || Harga Satuan Kecil : {{ formatRpDouble(item?.harga_beli_k) }} per({{
+                        || Harga Satuan Kecil :
+                        {{ formatRpDouble(item?.harga_beli_k) }} per({{
                           item?.satuan_k
                         }})</span
                       >
@@ -151,15 +172,20 @@
                         class="text-weight-bold"
                         :class="app?.dark ? 'text-green-3' : 'text-teal-9'"
                       >
-                        || Harga Satuan Besar : {{ formatRpDouble(item?.harga_beli_b) }} per({{
+                        || Harga Satuan Besar :
+                        {{ formatRpDouble(item?.harga_beli_b) }} per({{
                           item?.satuan_b
                         }})</span
                       >
                     </q-item-label>
                   </q-item-section>
                   <q-item-section side top>
-                    <q-item-label caption>{{ humanDate(item?.tgl_opname) }}</q-item-label>
-                    <q-item-label caption>{{ jamTnpDetik(item?.tgl_opname) }}</q-item-label>
+                    <q-item-label caption>{{
+                      humanDate(item?.tgl_opname)
+                    }}</q-item-label>
+                    <q-item-label caption>{{
+                      jamTnpDetik(item?.tgl_opname)
+                    }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator inset="item" />
@@ -198,7 +224,7 @@ const emits = defineEmits(['add', 'edit'])
 store.init()
 store.getList()
 
-const lihatdetail = (item) => {
+const lihatdetail = item => {
   emits('edit', item)
 }
 

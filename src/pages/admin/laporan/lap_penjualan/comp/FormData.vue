@@ -9,7 +9,7 @@
           style="min-width: 300px"
           :debounce="300"
           @update:model-value="
-            (e) => {
+            e => {
               store.getdata()
             }
           "
@@ -21,12 +21,12 @@
           outlined
           :debounce="300"
           @set-model="
-            (val) => {
+            val => {
               store.dateDisplay.from = val
             }
           "
           @db-model="
-            (val) => {
+            val => {
               store.params.tglawal = val
             }
           "
@@ -38,12 +38,12 @@
           outlined
           :debounce="300"
           @set-model="
-            (val) => {
+            val => {
               store.dateDisplay.to = val
             }
           "
           @db-model="
-            (val) => {
+            val => {
               store.params.tglakhir = val
             }
           "
@@ -56,7 +56,7 @@
           option-value="id"
           :valid="store.params.sales === null"
           @update:model-value="
-            (val) => {
+            val => {
               refseles = val
               store.sales = null
             }
@@ -71,7 +71,7 @@
           option-value="value"
           :valid="store.params.jnsbayar === null"
           @update:model-value="
-            (val) => {
+            val => {
               refjnsbayar = val
             }
           "
@@ -88,11 +88,18 @@
               () => {
                 store.getdata()
 
-                if (store.params.sales != null || store.params.jnsbayar != null) {
-                  const cari = getsales.sales.find((x) => x.id === store.params.sales)
+                if (
+                  store.params.sales != null ||
+                  store.params.jnsbayar != null
+                ) {
+                  const cari = getsales.sales.find(
+                    x => x.id === store.params.sales
+                  )
                   store.sales = cari.nama
 
-                  const caribyr = optionCaraBayar.find((x) => x.value === store.params.jnsbayar)
+                  const caribyr = optionCaraBayar.find(
+                    x => x.value === store.params.jnsbayar
+                  )
                   store.jnsbayar = caribyr.label
                 } else {
                   store.sales = null
@@ -112,7 +119,13 @@
     <q-separator />
   </div>
   <div v-if="store.items.length > 0" class="row justify-end q-pr-md">
-    <q-btn icon="print" class="text-yellow-8" color="grey-10" round dense @click="cetakData()"
+    <q-btn
+      icon="print"
+      class="text-yellow-8"
+      color="grey-10"
+      round
+      dense
+      @click="cetakData()"
       ><q-tooltip>Cetak</q-tooltip></q-btn
     >
   </div>
@@ -123,7 +136,9 @@ import { useLaporanPenjualanStore } from 'src/stores/admin/laporan/lap_penjualan
 import { useFromPenjualanStore } from 'src/stores/admin/transaksi/penjualan/form'
 import { defineAsyncComponent, onMounted, ref, shallowRef } from 'vue'
 
-const DialogCetak = shallowRef(defineAsyncComponent(() => import('./DialogCetak.vue')))
+const DialogCetak = shallowRef(
+  defineAsyncComponent(() => import('./DialogCetak.vue'))
+)
 const store = useLaporanPenjualanStore()
 const getsales = useFromPenjualanStore()
 
@@ -139,7 +154,7 @@ const refjnsbayar = ref(null)
 const optionCaraBayar = ref([
   { label: 'Lunas', value: '5' },
   { label: 'Down Payment (DP)', value: '7' },
-  { label: 'Tempo', value: '2' },
+  { label: 'Tempo', value: '2' }
   // { label: 'Hutang', value: '2' },
 ])
 </script>

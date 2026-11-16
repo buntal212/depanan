@@ -9,7 +9,7 @@
         }
       "
       @edit="
-        (data) => {
+        data => {
           // console.log('edit', data);
 
           item = data

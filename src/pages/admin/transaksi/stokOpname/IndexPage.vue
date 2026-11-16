@@ -9,7 +9,7 @@
         }
       "
       @edit="
-        (data) => {
+        data => {
           store.items = data
           isList = false
         }

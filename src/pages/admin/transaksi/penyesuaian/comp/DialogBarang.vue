@@ -26,7 +26,7 @@
                         style="min-width: 250px"
                         :debounce="300"
                         @update:model-value="
-                          (e) => {
+                          e => {
                             infiniteScroll.reset()
                             storeSelect.getList()
                           }
@@ -42,7 +42,10 @@
               <q-infinite-scroll
                 @load="storeSelect.loadMore"
                 ref="infiniteScroll"
-                :disable="storeSelect?.isError || storeSelect?.meta?.next_page_url === null"
+                :disable="
+                  storeSelect?.isError ||
+                  storeSelect?.meta?.next_page_url === null
+                "
                 :scroll-target="scrollTarget"
                 :offset="150"
                 :initial-index="storeSelect.params.page"
@@ -64,12 +67,20 @@
                         <span class="text-weight-bold">
                           {{ item?.namabarang }} Seri {{ item?.motif }}</span
                         >
-                        <span class="text-yellow-7"> || Kode : {{ item?.kdbarang }}</span>
+                        <span class="text-yellow-7">
+                          || Kode : {{ item?.kdbarang }}</span
+                        >
                       </q-item-label>
                       <q-item-label caption lines="2">
                         <span class="text-weight-bold"
-                          ><q-badge class="q-pa-xs" rounded outline color="yellow-8">
-                            Jumlah Stok Sekarang : {{ item?.jumlah_k }} {{ item?.satuan_k }}
+                          ><q-badge
+                            class="q-pa-xs"
+                            rounded
+                            outline
+                            color="yellow-8"
+                          >
+                            Jumlah Stok Sekarang : {{ item?.jumlah_k }}
+                            {{ item?.satuan_k }}
                           </q-badge></span
                         >
                         <!-- <span class="text-weight-bold text-red">
@@ -89,8 +100,12 @@
                       </div>
                     </q-item-section>
                     <q-item-section v-else side top>
-                      <q-item-label caption>{{ humanDate(item?.updated_at) }}</q-item-label>
-                      <q-item-label caption>{{ jamTnpDetik(item?.updated_at) }}</q-item-label>
+                      <q-item-label caption>{{
+                        humanDate(item?.updated_at)
+                      }}</q-item-label>
+                      <q-item-label caption>{{
+                        jamTnpDetik(item?.updated_at)
+                      }}</q-item-label>
                     </q-item-section>
                   </q-item>
                   <q-separator />

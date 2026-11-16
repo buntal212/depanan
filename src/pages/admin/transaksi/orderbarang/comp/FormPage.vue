@@ -22,8 +22,8 @@ const emits = defineEmits(['back'])
 defineProps({
   data: {
     type: Object,
-    default: null,
-  },
+    default: null
+  }
 })
 
 // const lists = computed(() => {

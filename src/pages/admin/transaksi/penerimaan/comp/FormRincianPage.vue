@@ -2,10 +2,16 @@
   <div class="fit column absolute">
     <div class="col full-height">
       <q-card flat bordered square class="full-height" style="overflow: hidden">
-        <q-card-section class="q-px-md q-py-xs bg-yellow-8 text-black col-auto full-width">
+        <q-card-section
+          class="q-px-md q-py-xs bg-yellow-8 text-black col-auto full-width"
+        >
           <div class="row items-center justify-between">
             <div class="f-12 text-weight-bold">
-              <app-btn-back size="sm" @click="emits('back')" class="bg-black text-yellow-8" />
+              <app-btn-back
+                size="sm"
+                @click="emits('back')"
+                class="bg-black text-yellow-8"
+              />
               Form Peneriaman
             </div>
           </div>
@@ -39,12 +45,12 @@
                 :debounce="300"
                 :disable="store.form.nopenerimaan !== ''"
                 @set-model="
-                  (val) => {
+                  val => {
                     store.dateDisplay.tgl = val
                   }
                 "
                 @db-model="
-                  (val) => {
+                  val => {
                     store.form.tgl = val
                   }
                 "
@@ -138,12 +144,12 @@
                 disable
                 :debounce="300"
                 @set-model="
-                  (val) => {
+                  val => {
                     store.dateDisplay.tgljthtempo = val
                   }
                 "
                 @db-model="
-                  (val) => {
+                  val => {
                     store.form.tgljthtempo = val
                   }
                 "
@@ -165,9 +171,13 @@
                     <div class="row q-gutter-xs">
                       <div class="col-12">
                         <span class="text-grey-8">{{ n + 1 }}. </span>
-                        <span class="text-weight-medium">{{ item?.mbarang?.namabarang }}</span>
+                        <span class="text-weight-medium">{{
+                          item?.mbarang?.namabarang
+                        }}</span>
                         <span class="text-grey-8"> ({{ item?.kdbarang }})</span
-                        ><span class="text-lime"> || Isi {{ item?.isi }} {{ item?.satuan_k }}</span>
+                        ><span class="text-lime">
+                          || Isi {{ item?.isi }} {{ item?.satuan_k }}</span
+                        >
                       </div>
                     </div>
                     <div class="row q-gutter-xs">
@@ -184,7 +194,9 @@
                         <span> X </span>
                       </div>
                       <div class="col-3">
-                        <span class="text-weight-medium"> {{ formatRpDouble(item?.hargapo) }}</span>
+                        <span class="text-weight-medium">
+                          {{ formatRpDouble(item?.hargapo) }}</span
+                        >
                       </div>
                       <div class="col-1">
                         <span> = </span>
@@ -194,7 +206,10 @@
                       </div>
                     </div>
 
-                    <div class="row q-gutter-xs" v-if="props?.data?.kunci !== '1'">
+                    <div
+                      class="row q-gutter-xs"
+                      v-if="props?.data?.kunci !== '1'"
+                    >
                       <div class="col-2">
                         <app-input
                           label="No. Seri"
@@ -244,10 +259,15 @@
                         />
                       </div>
 
-                      <div class="col-1 q-ml-auto side top" v-if="props?.data?.kunci !== '1'">
+                      <div
+                        class="col-1 q-ml-auto side top"
+                        v-if="props?.data?.kunci !== '1'"
+                      >
                         <div v-if="item.flaging !== '1'">
                           <app-btn
-                            :loading="store.loading && store.form.id === item.id"
+                            :loading="
+                              store.loading && store.form.id === item.id
+                            "
                             type="submit"
                             color="red"
                             icon="save"
@@ -308,7 +328,9 @@ import { notifError } from 'src/modules/notifs'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useAdminMasterSupplierStore } from 'src/stores/admin/master/supplier/list'
 
-const DialogCetakdata = defineAsyncComponent(() => import('./cetak/DialogCetak.vue'))
+const DialogCetakdata = defineAsyncComponent(
+  () => import('./cetak/DialogCetak.vue')
+)
 
 const store = useAdminFormTransaksiPenerimaanBarangStore()
 const storeorder = useAdminListTransaksiOrderBarangStore()
@@ -358,7 +380,10 @@ function onSubmit(val) {
       store.form.flagingx = null
     }
 
-    if (parseFloat(olahUang(store.form.jumlahorder)) < parseFloat(store.form.totalpenerimaanall)) {
+    if (
+      parseFloat(olahUang(store.form.jumlahorder)) <
+      parseFloat(store.form.totalpenerimaanall)
+    ) {
       notifError('Jumlah yang Anda Masukkan Melebihi jumlah pesanan...!!!')
     } else {
       store.save()
@@ -377,12 +402,12 @@ function onSubmit(val) {
 const props = defineProps({
   data: {
     type: Object,
-    default: null,
+    default: null
   },
   flaging: {
     type: String,
-    default: '',
-  },
+    default: ''
+  }
 })
 
 const lists = computed(() => {
@@ -394,7 +419,8 @@ const lists = computed(() => {
 })
 
 function kurangisisabarangdatang(item) {
-  item.sisajumlahbelumditerima = olahUang(item.sisajumlahbelumditerimax) - olahUang(item.itemrusak)
+  item.sisajumlahbelumditerima =
+    olahUang(item.sisajumlahbelumditerimax) - olahUang(item.itemrusak)
 }
 
 function cetakData() {
@@ -416,28 +442,37 @@ function updateJumlahHariTempo() {
   store.dateDisplay.tgljthtempo = tgl.toLocaleDateString('en-GB', {
     day: '2-digit',
     month: 'long',
-    year: 'numeric',
+    year: 'numeric'
   })
 }
 
 if (props?.data) {
   const rinciterima = props?.data?.rinci
-  const rinciorder = store.rinci?.filter((x) => x.noorder === props?.data?.noorder)
+  const rinciorder = store.rinci?.filter(
+    x => x.noorder === props?.data?.noorder
+  )
 
-  const kodebarang = rinciterima?.map((x) => x.kdbarang)
+  const kodebarang = rinciterima?.map(x => x.kdbarang)
   const newset = kodebarang?.length ? [...new Set(kodebarang)] : []
   const rincians = []
   for (let i = 0; i < newset.length; i++) {
     const el = newset[i]
-    const obterima = rinciterima?.filter((x) => x.kdbarang === el)
+    const obterima = rinciterima?.filter(x => x.kdbarang === el)
 
     const obj = {
-      kdbarang: rinciorder?.filter((x) => x.kdbarang === el)[0]?.kdbarang,
-      namabarang: rinciorder?.filter((x) => x.kdbarang === el)[0]?.mbarang?.namabarang,
-      jumlahorder: rinciorder?.filter((x) => x.kdbarang === el)[0]?.jumlahpo,
-      jumlahterima: obterima?.map((x) => parseInt(x.jumlah_b)).reduce((a, b) => a + b, 0),
-      hargafaktur: obterima?.map((x) => parseInt(x.hargafaktur)).reduce((a, b) => a + b, 0),
-      subtotalfix: obterima?.map((x) => parseInt(x.subtotalfix)).reduce((a, b) => a + b, 0),
+      kdbarang: rinciorder?.filter(x => x.kdbarang === el)[0]?.kdbarang,
+      namabarang: rinciorder?.filter(x => x.kdbarang === el)[0]?.mbarang
+        ?.namabarang,
+      jumlahorder: rinciorder?.filter(x => x.kdbarang === el)[0]?.jumlahpo,
+      jumlahterima: obterima
+        ?.map(x => parseInt(x.jumlah_b))
+        .reduce((a, b) => a + b, 0),
+      hargafaktur: obterima
+        ?.map(x => parseInt(x.hargafaktur))
+        .reduce((a, b) => a + b, 0),
+      subtotalfix: obterima
+        ?.map(x => parseInt(x.subtotalfix))
+        .reduce((a, b) => a + b, 0)
     }
     rincians.push(obj)
   }
@@ -450,7 +485,7 @@ if (props?.data) {
     tanggal: props?.data?.tgl,
     total: props?.data?.total,
     totalfix: props?.data?.totalfix,
-    rincians: rincians,
+    rincians: rincians
   }
 
   onMounted(() => {

@@ -29,12 +29,12 @@ export const useAdminFormTransaksiOrderBarangStore = defineStore(
         ukuran: null,
         jumlahx: 1,
         harga: null,
-        hargax: null,
+        hargax: null
       },
       loading: false,
       lock: false,
       loadingdeleteall: false,
-      dialogCetak: false,
+      dialogCetak: false
     }),
     // persist: true,
     // getters: {
@@ -91,7 +91,10 @@ export const useAdminFormTransaksiOrderBarangStore = defineStore(
               arr.olahdata(data?.result, 1)
 
               const hasil = data?.result[0]
-              const total = hasil?.rinci.reduce((a, b) => parseFloat(a) + parseFloat(b.subtotal), 0)
+              const total = hasil?.rinci.reduce(
+                (a, b) => parseFloat(a) + parseFloat(b.subtotal),
+                0
+              )
               hasil.total = total
 
               this.item = hasil
@@ -104,7 +107,7 @@ export const useAdminFormTransaksiOrderBarangStore = defineStore(
               //this.initReset(null)
               resolve(data)
             })
-            .catch((err) => {
+            .catch(err => {
               console.log('sasasx', err)
               notifError(err?.response?.data?.message)
               this.loading = false
@@ -116,7 +119,7 @@ export const useAdminFormTransaksiOrderBarangStore = defineStore(
       initReset(data) {
         if (data) {
           // console.log('fafafa', data)
-          return new Promise((resolve) => {
+          return new Promise(resolve => {
             for (const key in this.form) {
               // console.log(`${key}: ${this.form[key]}`);
               // console.log(`${key}`);
@@ -139,7 +142,10 @@ export const useAdminFormTransaksiOrderBarangStore = defineStore(
       async deleteData(id, noorder) {
         const payload = { id, noorder }
         try {
-          const resp = await api.post('v1/transaksi/orderpembelian/hapusrincian', payload)
+          const resp = await api.post(
+            'v1/transaksi/orderpembelian/hapusrincian',
+            payload
+          )
           // console.log(resp)
           if (resp.status === 200) {
             // console.log('sasasa', resp?.data?.result)
@@ -148,7 +154,10 @@ export const useAdminFormTransaksiOrderBarangStore = defineStore(
 
             const hasil = resp?.data?.result[0]
             // console.log('ccc', hasil)
-            const total = hasil?.rinci.reduce((a, b) => parseFloat(a) + parseFloat(b.subtotal), 0)
+            const total = hasil?.rinci.reduce(
+              (a, b) => parseFloat(a) + parseFloat(b.subtotal),
+              0
+            )
             hasil.total = total
 
             this.item = hasil
@@ -172,14 +181,17 @@ export const useAdminFormTransaksiOrderBarangStore = defineStore(
 
               const hasil = data?.result[0]
               // console.log('ccc', hasil)
-              const total = hasil?.rinci.reduce((a, b) => parseFloat(a) + parseFloat(b.subtotal), 0)
+              const total = hasil?.rinci.reduce(
+                (a, b) => parseFloat(a) + parseFloat(b.subtotal),
+                0
+              )
               hasil.total = total
 
               this.item = hasil
               notifSuccess(data?.message)
               resolve(data)
             })
-            .catch((err) => {
+            .catch(err => {
               this.lock = false
               reject(err)
             })
@@ -195,10 +207,13 @@ export const useAdminFormTransaksiOrderBarangStore = defineStore(
           from: arr.params.from,
           to: arr.params.to,
           q: arr.params.q,
-          per_page: parseInt(arr.params.per_page),
+          per_page: parseInt(arr.params.per_page)
         }
         try {
-          const resp = await api.post('/v1/transaksi/orderpembelian/hapusall', payload)
+          const resp = await api.post(
+            '/v1/transaksi/orderpembelian/hapusall',
+            payload
+          )
           console.log(resp)
           if (resp.status === 200) {
             console.log('sasa', arr.this)
@@ -213,11 +228,13 @@ export const useAdminFormTransaksiOrderBarangStore = defineStore(
           notifError(err?.response?.data?.message)
           this.loadingdeleteall = false
         }
-      },
-    },
-  },
+      }
+    }
+  }
 )
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useAdminFormTransaksiOrderBarangStore, import.meta.hot))
+  import.meta.hot.accept(
+    acceptHMRUpdate(useAdminFormTransaksiOrderBarangStore, import.meta.hot)
+  )
 }

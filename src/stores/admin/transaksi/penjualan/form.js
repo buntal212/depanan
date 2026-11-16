@@ -26,7 +26,7 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
       diskon: 0,
       subtotal: 0,
       pelanggan_id: null,
-      sales_id: null, //reset ketika nota baru atau setelah bayar atau ambil dari history
+      sales_id: null //reset ketika nota baru atau setelah bayar atau ambil dari history
     },
     formPembayaran: {
       no_penjualan: null,
@@ -40,21 +40,21 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
       dataPelanggan: {
         nama: '',
         tlp: '',
-        alamat: '',
-      },
+        alamat: ''
+      }
     },
     formTempo: {
       id: null,
       tempo: null,
       tgl_kirim: null,
-      jml_tempo: 30,
+      jml_tempo: 30
     },
     dispTempo: null,
     noNota: null,
     item: null,
     dariOrder: false,
     sales: [],
-    list: useListPenjualanStore(),
+    list: useListPenjualanStore()
   }),
   actions: {
     setForm(key, val) {
@@ -74,7 +74,7 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
         hargaJualB: 0,
         diskon: 0,
         subtotal: 0,
-        sales_id: salesId,
+        sales_id: salesId
       }
     },
     resetPembayaran() {
@@ -96,8 +96,8 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
         dataPelanggan: {
           nama: '',
           tlp: '',
-          alamat: '',
-        },
+          alamat: ''
+        }
       }
     },
     resetTempo() {
@@ -105,14 +105,18 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
         id: null,
         tempo: null,
         tgl_kirim: null,
-        jml_tempo: 30,
+        jml_tempo: 30
       }
       this.dispTempo = null
       this.item = null
       this.openDialogTempo = false
     },
     pastikanSalesTersedia(sales) {
-      if (!sales?.id || this.sales.some((item) => String(item.id) === String(sales.id))) return
+      if (
+        !sales?.id ||
+        this.sales.some(item => String(item.id) === String(sales.id))
+      )
+        return
       this.sales = [sales, ...this.sales]
     },
     gunakanOrderPenjualan(penjualan) {
@@ -126,7 +130,7 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
       this.formPembayaran.dataPelanggan = {
         nama: penjualan?.pelanggan?.nama || '',
         tlp: penjualan?.pelanggan?.telepon || '',
-        alamat: penjualan?.pelanggan?.alamat || '',
+        alamat: penjualan?.pelanggan?.alamat || ''
       }
       this.pastikanSalesTersedia(penjualan?.sales)
       this.siapkanPembayaran(penjualan)
@@ -134,15 +138,17 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
     siapkanPembayaran(penjualan) {
       const order = penjualan?.order_sumber
       const sistemBayar = order?.sistem_bayar
-      const flag = sistemBayar === 'tempo' ? '2' : sistemBayar === 'dp' ? '7' : '5'
+      const flag =
+        sistemBayar === 'tempo' ? '2' : sistemBayar === 'dp' ? '7' : '5'
       const total = Number(penjualan?.total || 0)
       const diskonKuitansi = Number(penjualan?.diskon_kuitansi || 0)
       const isDraft = !penjualan?.flag
       const kenaPpn = isDraft
         ? true
-        : (penjualan?.ppn_persen !== undefined && penjualan?.ppn_persen !== null
-            ? Number(penjualan?.ppn_persen) > 0 || Number(penjualan?.ppn_nominal || 0) > 0
-            : true)
+        : penjualan?.ppn_persen !== undefined && penjualan?.ppn_persen !== null
+          ? Number(penjualan?.ppn_persen) > 0 ||
+            Number(penjualan?.ppn_nominal || 0) > 0
+          : true
 
       this.item = penjualan || null
       this.noNota = penjualan?.no_penjualan || null
@@ -150,8 +156,13 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
         no_penjualan: penjualan?.no_penjualan || null,
         pelanggan_id: penjualan?.pelanggan_id || null,
         flag,
-        cara_bayar: sistemBayar === 'tempo' ? '' : (order?.cara_bayar || 'cash'),
-        bayar: sistemBayar === 'dp' ? Number(order?.down_payment || 0) : sistemBayar === 'tempo' ? 0 : total,
+        cara_bayar: sistemBayar === 'tempo' ? '' : order?.cara_bayar || 'cash',
+        bayar:
+          sistemBayar === 'dp'
+            ? Number(order?.down_payment || 0)
+            : sistemBayar === 'tempo'
+              ? 0
+              : total,
         total,
         kembali: 0,
         diskon_kuitansi: diskonKuitansi,
@@ -159,8 +170,8 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
         dataPelanggan: {
           nama: penjualan?.pelanggan?.nama || '',
           tlp: penjualan?.pelanggan?.telepon || '',
-          alamat: penjualan?.pelanggan?.alamat || '',
-        },
+          alamat: penjualan?.pelanggan?.alamat || ''
+        }
       }
     },
     async simpanDetail() {
@@ -168,7 +179,7 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
       if (this.noNota !== null) this.setForm('nota', this.noNota)
       const keys = Object.keys(this.form)
       const form = {}
-      keys.forEach((key) => {
+      keys.forEach(key => {
         if (key == 'harga_jual') form[key] = olahUang(this.form[key])
         else if (key == 'diskon') form[key] = olahUang(this.form[key])
         else if (key == 'harga_beli') form[key] = olahUang(this.form[key])
@@ -197,12 +208,14 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
           this.item = data?.header
 
           // cari di list
-          const index = this.list?.items?.findIndex((obj) => obj.id === this.item.id)
+          const index = this.list?.items?.findIndex(
+            obj => obj.id === this.item.id
+          )
           if (index >= 0) this.list.items[index] = this.item
           else this.list.items.unshift(this.item)
           this.resetForm()
         })
-        .catch((err) => {
+        .catch(err => {
           const msg = err?.response?.data?.message
           console.log('error cak', err?.response, msg)
           notifError(msg)
@@ -218,12 +231,14 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
           console.log('data', data)
           notifSuccess(data?.message ?? 'Data berhasil dihapus')
           if (data?.isDeleteHeader == '1') {
-            const index = this.list?.items?.findIndex((obj) => obj.id === this.item.id)
+            const index = this.list?.items?.findIndex(
+              obj => obj.id === this.item.id
+            )
             if (index >= 0) this.list.items.splice(index, 1)
             this.item = null
           } else this.item = data?.header
         })
-        .catch((err) => {
+        .catch(err => {
           const msg = err?.response?.data?.message
           console.log('error cak', err?.response, msg)
           notifError(msg)
@@ -232,9 +247,9 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
     },
     async getBarang(val) {
       const param = {
-        params: { q: val },
+        params: { q: val }
       }
-      await api.get('v1/transaksi/penjualan/list-barang', param).then((resp) => {
+      await api.get('v1/transaksi/penjualan/list-barang', param).then(resp => {
         console.log('barang', resp?.data)
         this.barangs = resp?.data
       })
@@ -244,7 +259,7 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
       //   params:{q:val}
       // }
 
-      await api.get('v1/transaksi/penjualan/list-sales').then((resp) => {
+      await api.get('v1/transaksi/penjualan/list-sales').then(resp => {
         console.log('sales', resp)
         this.sales = Array.isArray(resp?.data) ? resp.data : []
         this.pastikanSalesTersedia(this.item?.sales)
@@ -254,25 +269,28 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
       this.loadingPembayaran = true
       const keys = Object.keys(this.formPembayaran)
       const form = {}
-      keys.forEach((key) => {
-        if (key == 'bayar') form[key] = Number(olahUang(this.formPembayaran[key])) || 0
+      keys.forEach(key => {
+        if (key == 'bayar')
+          form[key] = Number(olahUang(this.formPembayaran[key])) || 0
         else if (key == 'total') form[key] = olahUang(this.formPembayaran[key])
-        else if (key == 'kembali') form[key] = olahUang(this.formPembayaran[key])
-        else if (key == 'diskon_kuitansi') form[key] = olahUang(this.formPembayaran[key])
+        else if (key == 'kembali')
+          form[key] = olahUang(this.formPembayaran[key])
+        else if (key == 'diskon_kuitansi')
+          form[key] = olahUang(this.formPembayaran[key])
         else form[key] = this.formPembayaran[key]
       })
       form['kena_ppn'] = Boolean(this.formPembayaran.kena_ppn)
       // return
 
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         api
           .post('v1/transaksi/penjualan/simpan-pembayaran', form)
-          .then((resp) => {
+          .then(resp => {
             this.loadingPembayaran = false
             const item = resp?.data?.data
             console.log('item', item)
 
-            const index = this.list?.items?.findIndex((obj) => obj.id === item.id)
+            const index = this.list?.items?.findIndex(obj => obj.id === item.id)
             if (index >= 0) this.list.items[index] = item
             else this.list.items.unshift(item)
             // this.resetPembayaran()
@@ -283,7 +301,7 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
             notifSuccess(resp?.data?.message)
             resolve(resp)
           })
-          .catch((err) => {
+          .catch(err => {
             this.loadingPembayaran = false
             const msg = err?.response?.data?.message
             notifError(msg)
@@ -292,14 +310,14 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
     },
     simpanTempo() {
       this.loadingTempo = true
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         api
           .post('v1/transaksi/penjualan/simpan-tempo', this.formTempo)
-          .then((resp) => {
+          .then(resp => {
             this.loadingTempo = false
             const data = resp?.data
             notifSuccess(data.message)
-            const index = this.list.items.findIndex((i) => i.id == data?.data?.id)
+            const index = this.list.items.findIndex(i => i.id == data?.data?.id)
             if (index >= 0) this.list.items[index].tempo = data?.data?.tempo
             this.list.itemCetak.jml_tempo = data?.data?.jml_tempo
             console.log('jadi tempo', this.list.itemCetak)
@@ -310,10 +328,12 @@ export const useFromPenjualanStore = defineStore('from-penjualan-store', {
             this.loadingTempo = false
           })
       })
-    },
-  },
+    }
+  }
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useFromPenjualanStore, import.meta.hot))
+  import.meta.hot.accept(
+    acceptHMRUpdate(useFromPenjualanStore, import.meta.hot)
+  )
 }

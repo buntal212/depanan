@@ -9,7 +9,7 @@
         }
       "
       @edit="
-        (data) => {
+        data => {
           item = data
           isList = false
         }

@@ -1,4 +1,4 @@
-import { io } from "socket.io-client";
+import { io } from 'socket.io-client'
 
 const WS = process.env.WS
 export const socket = io(WS, {
@@ -7,5 +7,5 @@ export const socket = io(WS, {
   timeout: 5000,
   reconnectionAttempts: 3,
   reconnectionDelay: 1000,
-  secure: true,
+  secure: true
 })

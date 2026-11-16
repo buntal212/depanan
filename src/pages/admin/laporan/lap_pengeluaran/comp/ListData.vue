@@ -2,7 +2,9 @@
   <div class="q-pa-sm full-width">
     <template v-if="store.items.length > 0">
       <div class="row full-width q-px-md q-pb-sm justify-between">
-        <div class="col-auto flex-start text-bold q-pr-md">Total Pengeluaran</div>
+        <div class="col-auto flex-start text-bold q-pr-md"
+          >Total Pengeluaran</div
+        >
         <div class="col flex-end text-bold q-pr-md">
           : Rp. {{ formattanpaRp(totalPengeluaran()) }}
         </div>
@@ -15,7 +17,10 @@
       </div>
       <q-markup-table style="width: 100%" wrap-cells>
         <thead>
-          <tr class="text-bold text-center bg-yellow-8" style="border-bottom: solid">
+          <tr
+            class="text-bold text-center bg-yellow-8"
+            style="border-bottom: solid"
+          >
             <td style="min-width: 50px; max-width: 70px">NO PENGELUARAN</td>
             <td style="min-width: 30px; max-width: 50px">TANGGAL TRANSAKSI</td>
             <td colspan="2">KETERANGAN</td>
@@ -30,8 +35,12 @@
                   {{ item.notrans }} ({{ formatDenganRp(item.total) }})
                 </div>
               </td>
-              <td class="text-center text-bold q-px-sm">{{ dateDbFormat(item.tgl) }}</td>
-              <td colspan="2" class="text-bold text-left q-px-sm">{{ item.keterangan }}</td>
+              <td class="text-center text-bold q-px-sm">{{
+                dateDbFormat(item.tgl)
+              }}</td>
+              <td colspan="2" class="text-bold text-left q-px-sm">{{
+                item.keterangan
+              }}</td>
             </tr>
             <tr>
               <td>
@@ -94,7 +103,9 @@ import { useLaporanPengeluaranStore } from 'src/stores/admin/laporan/lap_pengelu
 const store = useLaporanPengeluaranStore()
 
 function totalPengeluaran() {
-  const total = store.items.map((x) => parseFloat(x.total)).reduce((a, b) => a + b, 0)
+  const total = store.items
+    .map(x => parseFloat(x.total))
+    .reduce((a, b) => a + b, 0)
   return total
 }
 </script>

@@ -5,11 +5,11 @@ import { pathImg } from 'src/boot/axios'
 export const useProfilStore = defineStore('profil-toko-store', {
   state: () => ({
     profilData: null, // Simpan data profil utama di sini
-    loading: false,
+    loading: false
   }),
 
   getters: {
-    fotoProfil: (state) => {
+    fotoProfil: state => {
       if (!state.profilData?.foto) return null
 
       // Format 1: Jika foto sudah mengandung full URL (http://...)
@@ -24,7 +24,7 @@ export const useProfilStore = defineStore('profil-toko-store', {
       console.log('foto', `${pathImg}${state.profilData.foto}`)
       // Format 3: Jika foto hanya berisi path relatif
       return `${pathImg}${state.profilData.foto}`
-    },
+    }
   },
 
   actions: {
@@ -46,8 +46,8 @@ export const useProfilStore = defineStore('profil-toko-store', {
       } finally {
         // this.loading = false
       }
-    },
-  },
+    }
+  }
 })
 
 if (import.meta.hot) {

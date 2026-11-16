@@ -1,11 +1,10 @@
 {
   "name": "toko-bangunan",
   "version": "0.0.1",
+  "private": true,
   "description": "Aplikasi untuk Toko bangunan",
-  "productName": "Toko Bangunan",
   "author": "cvudumbarainformatika <cvudumbarainformatika@gmail.com>",
   "type": "module",
-  "private": true,
   "scripts": {
     "lint": "eslint -c ./eslint.config.js \"./src*/**/*.{js,cjs,mjs,vue}\"",
     "format": "prettier --write \"**/*.{js,vue,scss,html,md,json}\" --ignore-path .gitignore",
@@ -51,5 +50,6 @@
     "node": "^28 || ^26 || ^24 || ^22 || ^20 || ^18",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
-  }
+  },
+  "productName": "Toko Bangunan"
 }

@@ -19,12 +19,12 @@ export const useAdminListTransaksiNotaSalesstore = defineStore(
         page: 1,
         per_page: 15,
         from: date.formatDate(Date.now(), 'YYYY-MM-01'),
-        to: date.formatDate(Date.now(), 'YYYY-MM-DD'),
+        to: date.formatDate(Date.now(), 'YYYY-MM-DD')
       },
       dateDisplay: {
         from: date.formatDate(Date.now(), '01 MMMM YYYY'),
-        to: date.formatDate(Date.now(), 'DD MMMM YYYY'),
-      },
+        to: date.formatDate(Date.now(), 'DD MMMM YYYY')
+      }
     }),
     actions: {
       async getNotaSales() {
@@ -33,7 +33,7 @@ export const useAdminListTransaksiNotaSalesstore = defineStore(
         this.isError = false
         this.loading = true
         const params = {
-          params: this.params,
+          params: this.params
         }
         try {
           const { data } = await api.get('/v1/transaksi/notasales/list', params)
@@ -50,12 +50,12 @@ export const useAdminListTransaksiNotaSalesstore = defineStore(
         this.isError = false
         this.params.page = index
         const params = {
-          params: this.params,
+          params: this.params
         }
 
         // console.log('load more', index)
 
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           api
             .get('/v1/transaksi/notasales/list', params)
             .then(({ data }) => {
@@ -77,8 +77,11 @@ export const useAdminListTransaksiNotaSalesstore = defineStore(
       olahdata(val) {
         console.log('aslipembayaran hutang', val)
         // const hasilglobal = []
-        val?.forEach((x) => {
-          const totalhutang = x.rinci.reduce((a, b) => parseFloat(a) + parseFloat(b.total), 0)
+        val?.forEach(x => {
+          const totalhutang = x.rinci.reduce(
+            (a, b) => parseFloat(a) + parseFloat(b.total),
+            0
+          )
           const hasil = {
             id: x?.id,
             notrans: x?.notrans,
@@ -89,12 +92,12 @@ export const useAdminListTransaksiNotaSalesstore = defineStore(
             totalhutang: totalhutang,
             rinci: x?.rinci,
             lamatempo: x?.lamatempo,
-            keterangan: x?.keterangan,
+            keterangan: x?.keterangan
           }
           // console.log('hasilccccc', hasil)
           // hasilglobal.push(hasil)
           // console.log('this.itemsa', this.items)
-          const index = this.items.findIndex((q) => q.id === x?.id)
+          const index = this.items.findIndex(q => q.id === x?.id)
           // console.log('index', index)
           if (index >= 0) {
             console.log('aaaa')
@@ -109,13 +112,16 @@ export const useAdminListTransaksiNotaSalesstore = defineStore(
       },
       async deleteData(id, notrans, notaPenjualan, keterangan) {
         // this.loadinghapus = true
-        this.items = this.items.filter((item) => item.id !== id)
+        this.items = this.items.filter(item => item.id !== id)
         const params = { id, notrans, notaPenjualan, keterangan }
         try {
-          const resp = await api.post(`/v1/transaksi/notasales/hapusrincian`, params)
+          const resp = await api.post(
+            `/v1/transaksi/notasales/hapusrincian`,
+            params
+          )
           // console.log(resp)
           if (resp.status === 200) {
-            const newArr = this.rinci?.filter((item) => item?.id !== id)
+            const newArr = this.rinci?.filter(item => item?.id !== id)
             this.rinci = newArr
             this.olahdata(resp?.data?.data)
 
@@ -127,7 +133,7 @@ export const useAdminListTransaksiNotaSalesstore = defineStore(
           // this.loadinghapus = false
           notifError(error?.response?.data?.message)
         }
-      },
-    },
-  },
+      }
+    }
+  }
 )

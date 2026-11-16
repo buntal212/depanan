@@ -10,14 +10,19 @@
         <div class="col flex-end text-bold q-pr-md">: {{ store.jnsbayar }}</div>
       </div>
       <div class="row full-width q-px-md q-pb-sm justify-between">
-        <div class="col-auto flex-start text-bold q-pr-md">Total Penerimaan</div>
+        <div class="col-auto flex-start text-bold q-pr-md"
+          >Total Penerimaan</div
+        >
         <div class="col flex-end text-bold q-pr-md">
           : Rp. {{ formattanpaRp(totalPenerimaan()) }}
         </div>
       </div>
       <q-markup-table style="width: 100%" wrap-cells>
         <thead>
-          <tr class="text-bold text-center bg-yellow-8" style="border-bottom: solid">
+          <tr
+            class="text-bold text-center bg-yellow-8"
+            style="border-bottom: solid"
+          >
             <td>NO PENERIMAAN</td>
             <td>TANGGAL FAKTUR</td>
             <td>SUPPLIER</td>
@@ -29,14 +34,22 @@
         <tbody>
           <template v-for="item in store.items" :key="item">
             <tr class="bg-grey-9">
-              <td class="text-bold text-left q-px-sm">{{ item.nopenerimaan }}</td>
+              <td class="text-bold text-left q-px-sm">{{
+                item.nopenerimaan
+              }}</td>
               <td class="text-bold text-left q-px-sm">{{ item.tgl_faktur }}</td>
-              <td class="text-bold text-left q-px-sm">{{ item.namasupplier }}</td>
-              <td class="text-bold text-left q-px-sm">{{ item.jenis_pembayaran }}</td>
+              <td class="text-bold text-left q-px-sm">{{
+                item.namasupplier
+              }}</td>
+              <td class="text-bold text-left q-px-sm">{{
+                item.jenis_pembayaran
+              }}</td>
               <td class="text-bold text-right q-px-sm">
                 <div class="row full-width justify-between">
                   <div class="col-auto flex-start">Rp.</div>
-                  <div class="flex-end text-right">{{ formattanpaRp(item.total) }}</div>
+                  <div class="flex-end text-right">{{
+                    formattanpaRp(item.total)
+                  }}</div>
                 </div>
               </td>
             </tr>
@@ -61,7 +74,8 @@
                       (seri {{ rincian.motif }})
                     </div>
                     <div class="text-right q-px-sm">
-                      Jumlah Barang Rusak: {{ rincian.jumlah_rusak_b }} {{ rincian.satuan_b }}
+                      Jumlah Barang Rusak: {{ rincian.jumlah_rusak_b }}
+                      {{ rincian.satuan_b }}
                     </div>
                   </td>
                   <td>
@@ -124,7 +138,9 @@ import { useLaporanPenerimaanStore } from 'src/stores/admin/laporan/penerimaan/l
 const store = useLaporanPenerimaanStore()
 
 function totalPenerimaan() {
-  const total = store.items.map((x) => parseFloat(x.total)).reduce((a, b) => a + b, 0)
+  const total = store.items
+    .map(x => parseFloat(x.total))
+    .reduce((a, b) => a + b, 0)
   return total
 }
 </script>

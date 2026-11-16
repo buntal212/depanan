@@ -37,19 +37,19 @@ export const useAdminFormTransaksiNotaSalesStore = defineStore(
         bayar: false,
         terbayar: 0,
         carabayarrinci: '',
-        keteranganrinci: '',
+        keteranganrinci: ''
       },
       dateDisplay: {
-        tgl: date.formatDate(Date.now(), 'DD MMMM YYYY'),
+        tgl: date.formatDate(Date.now(), 'DD MMMM YYYY')
       },
-      nonota: '',
+      nonota: ''
     }),
     actions: {
       async listnotapiutang() {
         this.loadingcarinota = true
         try {
           const res = await api.get('/v1/transaksi/notasales/list', {
-            params: this.params,
+            params: this.params
           })
           this.items = res.data.data
           this.meta = res.data.meta
@@ -66,10 +66,13 @@ export const useAdminFormTransaksiNotaSalesStore = defineStore(
         this.isError = false
         this.loading = true
         const params = {
-          params: this.params,
+          params: this.params
         }
         try {
-          const { data } = await api.get('/v1/transaksi/pembayaranhutang/list', params)
+          const { data } = await api.get(
+            '/v1/transaksi/pembayaranhutang/list',
+            params
+          )
           console.log('get master barang', data)
           this.meta = data
           this.olahdata(data?.data)
@@ -88,13 +91,16 @@ export const useAdminFormTransaksiNotaSalesStore = defineStore(
         const params = {
           params: {
             kdsales: this.form.kdsales,
-            keterangan: val,
-          },
+            keterangan: val
+          }
         }
         try {
-          const { data } = await api.get('/v1/transaksi/notasales/caripiutang', params)
+          const { data } = await api.get(
+            '/v1/transaksi/notasales/caripiutang',
+            params
+          )
           console.log('asdasdasdasd', data)
-          const itemspiutang = data.map((item) => ({
+          const itemspiutang = data.map(item => ({
             ...item,
             bayarx: false, // toggle bayar
             yangakandibayar: 0, // nilai input bayar
@@ -102,15 +108,21 @@ export const useAdminFormTransaksiNotaSalesStore = defineStore(
             keteranganrinci: '',
             terbayarx: item?.cicilan[0]?.jumlah,
             dp: item?.bayar,
-            subtotal: item?.detail.reduce((a, b) => parseFloat(a) + parseFloat(b.subtotal), 0),
+            subtotal: item?.detail.reduce(
+              (a, b) => parseFloat(a) + parseFloat(b.subtotal),
+              0
+            ),
             sisax: Number(
-              (item?.detail.reduce((a, b) => parseFloat(a) + parseFloat(b.subtotal), 0) ?? 0) -
+              (item?.detail.reduce(
+                (a, b) => parseFloat(a) + parseFloat(b.subtotal),
+                0
+              ) ?? 0) -
                 (item?.cicilan[0]?.jumlah ?? 0) -
                 (item?.bayar ?? 0) -
-                (item?.nilairetur ?? 0),
-            ),
+                (item?.nilairetur ?? 0)
+            )
           }))
-          const hasil = itemspiutang.filter((item) => item.sisax > 0)
+          const hasil = itemspiutang.filter(item => item.sisax > 0)
           this.itemspiutang = hasil
           console.log('this.itemspiutang', this.itemspiutang)
           this.allItemspiutang = hasil
@@ -124,12 +136,17 @@ export const useAdminFormTransaksiNotaSalesStore = defineStore(
         this.loadingsimpan = true
         console.log('form', this.loadingsimpan)
         try {
-          const { data } = await api.post('/v1/transaksi/notasales/simpan', this.form)
+          const { data } = await api.post(
+            '/v1/transaksi/notasales/simpan',
+            this.form
+          )
           // console.log('data', this.items)
           this.form.notrans = data?.data[0]?.notrans
           // console.log('this.form.notrans', this.form.notrans)
           const notrans = data?.notapenjualan
-          const arr = this.itemspiutang.filter((item) => item.no_penjualan !== notrans)
+          const arr = this.itemspiutang.filter(
+            item => item.no_penjualan !== notrans
+          )
           this.itemspiutang = arr
           const list = useAdminListTransaksiNotaSalesstore()
           list.olahdata(data?.data)
@@ -146,7 +163,10 @@ export const useAdminFormTransaksiNotaSalesStore = defineStore(
         this.loadingkunci = true
         const param = { notrans: value }
         try {
-          const { data } = await api.post('/v1/transaksi/notasales/kunci', param)
+          const { data } = await api.post(
+            '/v1/transaksi/notasales/kunci',
+            param
+          )
           this.form.kunci = data?.result[0]?.kunci
           // const notrans = data?.notapenjualan
           // const arr = this.itemspiutang.filter((item) => item.no_penjualan !== notrans)
@@ -157,7 +177,7 @@ export const useAdminFormTransaksiNotaSalesStore = defineStore(
           this.itemCetak = data?.result[0]
           this.itemCetak.totalhutang = data?.result[0]?.rinci.reduce(
             (a, b) => parseFloat(a) + parseFloat(b.total),
-            0,
+            0
           )
           // console.log('data ssssskunci', this.itemCetak)
           notifSuccess('Data berhasil Dikunci')
@@ -167,7 +187,7 @@ export const useAdminFormTransaksiNotaSalesStore = defineStore(
           notifError(error?.response?.data?.message)
           this.loadingkunci = false
         }
-      },
-    },
-  },
+      }
+    }
+  }
 )

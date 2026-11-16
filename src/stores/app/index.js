@@ -8,7 +8,13 @@ import { useAdminMasterSatuanSelectStore } from '../admin/master/satuan/select'
 import { useAdminMasterBrandSelectStore } from '../admin/master/brand/select'
 import { useProfilStore } from '../admin/profil'
 
-const activityEvents = ['mousemove', 'mousedown', 'keypress', 'touchstart', 'scroll']
+const activityEvents = [
+  'mousemove',
+  'mousedown',
+  'keypress',
+  'touchstart',
+  'scroll'
+]
 let activityHandler = null
 let lastActivityReset = 0
 
@@ -23,10 +29,10 @@ export const useAppStore = defineStore('app-store', {
     inactivityTimer: null,
     inactivityTimeout: 3 * 60 * 1000, // 3 menit dalam milidetik
     isLoggingOut: false, // Flag untuk mencegah logout berulang
-    isResettingTimer: false, // Flag untuk mencegah rekursi tak terbatas
+    isResettingTimer: false // Flag untuk mencegah rekursi tak terbatas
   }),
   persist: {
-    pick: ['dark', 'auth', 'user', 'token'],
+    pick: ['dark', 'auth', 'user', 'token']
   },
 
   // getters: {
@@ -51,7 +57,9 @@ export const useAppStore = defineStore('app-store', {
       this.inactivityTimer = setTimeout(() => {
         // Logout otomatis setelah timeout
         this.logout()
-        notifError('Anda telah logout otomatis karena tidak aktif selama beberapa menit')
+        notifError(
+          'Anda telah logout otomatis karena tidak aktif selama beberapa menit'
+        )
       }, this.inactivityTimeout)
     },
 
@@ -103,7 +111,7 @@ export const useAppStore = defineStore('app-store', {
       }
 
       // Tambahkan event listener untuk setiap event
-      activityEvents.forEach((event) => {
+      activityEvents.forEach(event => {
         document.addEventListener(event, activityHandler, { passive: true })
       })
     },
@@ -112,7 +120,7 @@ export const useAppStore = defineStore('app-store', {
     removeActivityListeners() {
       if (!activityHandler) return
 
-      activityEvents.forEach((event) => {
+      activityEvents.forEach(event => {
         document.removeEventListener(event, activityHandler)
       })
       activityHandler = null
@@ -163,36 +171,40 @@ export const useAppStore = defineStore('app-store', {
       this.titleLoading = 'SEDANG SINKRON DATA'
       try {
         const resp = await api.post('/login', payload)
-            const responseData = resp.data?.data ?? resp.data
-            const sessionToken = responseData?.token ?? responseData?.access_token
-            const sessionUser = responseData?.user ?? resp.data?.user
-            if (!sessionToken || !sessionUser) {
-              throw new Error(resp.data?.message || 'Response login tidak berisi token dan user')
-            }
-            storage.setLocalToken(sessionToken)
-            storage.setUser(sessionUser)
-            localStorage.setItem('activeTime', new Date().toString())
-            const hdd = storage.getLocalToken()
-            const hddUser = storage.getUser()
-            if (!hdd || !hddUser) throw new Error('Data sesi login tidak lengkap')
-            await this.SET_TOKEN_USER(hdd, hddUser)
-            const adminLeftMenu = useLeftDrawerStore()
-            const selectSatuan = useAdminMasterSatuanSelectStore()
-            const selectBrands = useAdminMasterBrandSelectStore()
-            const profiltoko = useProfilStore()
-            void Promise.allSettled([
-              adminLeftMenu.getMenu(),
-              selectSatuan.getDataAll(),
-              selectBrands.getDataAll(),
-              profiltoko.getProfil(),
-            ])
-            this.initInactivityTimer()
-            this.setupActivityListeners()
-            await routerInstance.push('/')
-            return resp
+        const responseData = resp.data?.data ?? resp.data
+        const sessionToken = responseData?.token ?? responseData?.access_token
+        const sessionUser = responseData?.user ?? resp.data?.user
+        if (!sessionToken || !sessionUser) {
+          throw new Error(
+            resp.data?.message || 'Response login tidak berisi token dan user'
+          )
+        }
+        storage.setLocalToken(sessionToken)
+        storage.setUser(sessionUser)
+        localStorage.setItem('activeTime', new Date().toString())
+        const hdd = storage.getLocalToken()
+        const hddUser = storage.getUser()
+        if (!hdd || !hddUser) throw new Error('Data sesi login tidak lengkap')
+        await this.SET_TOKEN_USER(hdd, hddUser)
+        const adminLeftMenu = useLeftDrawerStore()
+        const selectSatuan = useAdminMasterSatuanSelectStore()
+        const selectBrands = useAdminMasterBrandSelectStore()
+        const profiltoko = useProfilStore()
+        void Promise.allSettled([
+          adminLeftMenu.getMenu(),
+          selectSatuan.getDataAll(),
+          selectBrands.getDataAll(),
+          profiltoko.getProfil()
+        ])
+        this.initInactivityTimer()
+        this.setupActivityListeners()
+        await routerInstance.push('/')
+        return resp
       } catch (error) {
         console.error('Login error:', error)
-        notifError(error.response?.data?.message || error.message || 'Login Gagal')
+        notifError(
+          error.response?.data?.message || error.message || 'Login Gagal'
+        )
         throw error
       } finally {
         this.loading = false
@@ -212,7 +224,7 @@ export const useAppStore = defineStore('app-store', {
     },
 
     logout() {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         if (!this.auth || this.isLoggingOut) {
           resolve()
           return
@@ -229,7 +241,7 @@ export const useAppStore = defineStore('app-store', {
 
         api
           .post('/logout')
-          .catch((error) => {
+          .catch(error => {
             console.log('Logout error:', error)
             // Tetap lanjutkan proses logout meskipun API error
           })
@@ -252,8 +264,8 @@ export const useAppStore = defineStore('app-store', {
             resolve()
           })
       })
-    },
-  },
+    }
+  }
 })
 
 if (import.meta.hot) {

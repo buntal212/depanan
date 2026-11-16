@@ -10,7 +10,9 @@
           <q-card-section class="full-height q-pa-lg scroll">
             <div class="row justify-around">
               <div class="col-12 col-md-6">
-                <div class="text-h6 q-mb-md">{{ props.data ? 'Edit Brand' : 'Tambah Brand' }}</div>
+                <div class="text-h6 q-mb-md">{{
+                  props.data ? 'Edit Brand' : 'Tambah Brand'
+                }}</div>
                 <app-input
                   v-model="store.form.brand"
                   label="Nama Brand"

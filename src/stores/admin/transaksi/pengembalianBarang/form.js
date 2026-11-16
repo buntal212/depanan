@@ -16,16 +16,17 @@ export const useFormPengembalianStore = defineStore('pengembalian-form-store', {
     setForm(penjualan) {
       this.item = penjualan
       this.keterangan = ''
-      this.details = penjualan?.detail?.map(d => ({
-        id: d.id,
-        barang_id: d.master_barang.id,
-        kodebarang: d.kodebarang,
-        motif: d.motif,
-        master_barang: d.master_barang,
-        jumlah: d.jumlah,
-        qty_retur: 0,
-        keterangan: ''
-      })) || []
+      this.details =
+        penjualan?.detail?.map(d => ({
+          id: d.id,
+          barang_id: d.master_barang.id,
+          kodebarang: d.kodebarang,
+          motif: d.motif,
+          master_barang: d.master_barang,
+          jumlah: d.jumlah,
+          qty_retur: 0,
+          keterangan: ''
+        })) || []
     },
 
     resetForm() {
@@ -56,7 +57,10 @@ export const useFormPengembalianStore = defineStore('pengembalian-form-store', {
           }))
         }
 
-        const { data } = await api.post('/v1/transaksi/pengembalianbarang/store', payload)
+        const { data } = await api.post(
+          '/v1/transaksi/pengembalianbarang/store',
+          payload
+        )
         return data
       } catch (error) {
         console.error('Error saving pengembalian:', error)
@@ -69,7 +73,9 @@ export const useFormPengembalianStore = defineStore('pengembalian-form-store', {
     async approve(id) {
       this.loading = true
       try {
-        const { data } = await api.post(`/v1/transaksi/pengembalianbarang/approve/${id}`)
+        const { data } = await api.post(
+          `/v1/transaksi/pengembalianbarang/approve/${id}`
+        )
 
         // Update list
         const list = useListPengembalianStore()
@@ -82,7 +88,9 @@ export const useFormPengembalianStore = defineStore('pengembalian-form-store', {
         return data
       } catch (error) {
         console.error('Error approving pengembalian:', error)
-        notifError(error?.response?.data?.message || 'Gagal menyetujui pengembalian')
+        notifError(
+          error?.response?.data?.message || 'Gagal menyetujui pengembalian'
+        )
         throw error
       } finally {
         this.loading = false
@@ -92,7 +100,9 @@ export const useFormPengembalianStore = defineStore('pengembalian-form-store', {
     async reject(id) {
       this.loading = true
       try {
-        const { data } = await api.post(`/v1/transaksi/pengembalianbarang/reject/${id}`)
+        const { data } = await api.post(
+          `/v1/transaksi/pengembalianbarang/reject/${id}`
+        )
 
         // Update list
         const list = useListPengembalianStore()
@@ -105,7 +115,9 @@ export const useFormPengembalianStore = defineStore('pengembalian-form-store', {
         return data
       } catch (error) {
         console.error('Error rejecting pengembalian:', error)
-        notifError(error?.response?.data?.message || 'Gagal menolak pengembalian')
+        notifError(
+          error?.response?.data?.message || 'Gagal menolak pengembalian'
+        )
         throw error
       } finally {
         this.loading = false
@@ -115,5 +127,7 @@ export const useFormPengembalianStore = defineStore('pengembalian-form-store', {
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useFormPengembalianStore, import.meta.hot))
+  import.meta.hot.accept(
+    acceptHMRUpdate(useFormPengembalianStore, import.meta.hot)
+  )
 }

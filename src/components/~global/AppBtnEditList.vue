@@ -6,10 +6,9 @@
 <script setup>
 import { tabEdit } from 'quasar-extras-svg-icons/tabler-icons-v2'
 defineProps({
-  tooltip:{
-    type:String,
+  tooltip: {
+    type: String,
     default: 'Edit data'
   }
 })
-
 </script>

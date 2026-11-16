@@ -21,16 +21,16 @@ export const useAdminListTransaksiPembayaranHutangStore = defineStore(
         page: 0,
         per_page: 15,
         from: date.formatDate(Date.now(), 'YYYY-MM-01'),
-        to: date.formatDate(Date.now(), 'YYYY-MM-DD'),
+        to: date.formatDate(Date.now(), 'YYYY-MM-DD')
       },
       getorderan: {
-        noorder: null,
+        noorder: null
       },
       getorderhasil: [],
       dateDisplay: {
         from: date.formatDate(Date.now(), '01 MMMM YYYY'),
-        to: date.formatDate(Date.now(), 'DD MMMM YYYY'),
-      },
+        to: date.formatDate(Date.now(), 'DD MMMM YYYY')
+      }
     }),
 
     actions: {
@@ -41,10 +41,13 @@ export const useAdminListTransaksiPembayaranHutangStore = defineStore(
         this.isError = false
         this.loading = true
         const params = {
-          params: this.params,
+          params: this.params
         }
         try {
-          const { data } = await api.get('/v1/transaksi/pembayaranhutang/list', params)
+          const { data } = await api.get(
+            '/v1/transaksi/pembayaranhutang/list',
+            params
+          )
           console.log('get master barang', data)
           this.meta = data
           this.olahdata(data?.data)
@@ -61,12 +64,12 @@ export const useAdminListTransaksiPembayaranHutangStore = defineStore(
         this.isError = false
         this.params.page = index
         const params = {
-          params: this.params,
+          params: this.params
         }
 
         // console.log('load more', index)
 
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           api
             .get('/v1/transaksi/pembayaranhutang/list', params)
             .then(({ data }) => {
@@ -88,8 +91,11 @@ export const useAdminListTransaksiPembayaranHutangStore = defineStore(
       olahdata(val) {
         console.log('aslipembayaran hutang', val)
         // const hasilglobal = []
-        val?.forEach((x) => {
-          const totalhutang = x.rinci.reduce((a, b) => parseFloat(a) + parseFloat(b.total), 0)
+        val?.forEach(x => {
+          const totalhutang = x.rinci.reduce(
+            (a, b) => parseFloat(a) + parseFloat(b.total),
+            0
+          )
           const hasil = {
             id: x?.id,
             notrans: x?.notrans,
@@ -99,12 +105,12 @@ export const useAdminListTransaksiPembayaranHutangStore = defineStore(
             totalhutang: totalhutang,
             rinci: x?.rinci,
             jenis_pembayaran: x?.cara_bayar,
-            keterangan: x?.keterangan,
+            keterangan: x?.keterangan
           }
           console.log('hasilccccc', hasil)
           // hasilglobal.push(hasil)
           console.log('this.itemsa', this.items)
-          const index = this.items.findIndex((q) => q.id === x?.id)
+          const index = this.items.findIndex(q => q.id === x?.id)
           console.log('index', index)
           if (index >= 0) {
             console.log('aaaa')
@@ -119,13 +125,16 @@ export const useAdminListTransaksiPembayaranHutangStore = defineStore(
       },
       async deleteData(id, notrans) {
         this.loadingrincian = true
-        this.items = this.items.filter((item) => item.id !== id)
+        this.items = this.items.filter(item => item.id !== id)
         const params = { id, notrans }
         try {
-          const resp = await api.post(`/v1/transaksi/pembayaranhutang/hapusrincian`, params)
+          const resp = await api.post(
+            `/v1/transaksi/pembayaranhutang/hapusrincian`,
+            params
+          )
           // console.log(resp)
           if (resp.status === 200) {
-            const newArr = this.rinci?.filter((item) => item?.id !== id)
+            const newArr = this.rinci?.filter(item => item?.id !== id)
             this.rinci = newArr
             this.olahdata(resp?.data?.data)
 
@@ -137,13 +146,13 @@ export const useAdminListTransaksiPembayaranHutangStore = defineStore(
           this.loadingrincian = false
           notifError('Terjadi Kesalahan')
         }
-      },
-    },
-  },
+      }
+    }
+  }
 )
 
 if (import.meta.hot) {
   import.meta.hot.accept(
-    acceptHMRUpdate(useAdminListTransaksiPembayaranHutangStore, import.meta.hot),
+    acceptHMRUpdate(useAdminListTransaksiPembayaranHutangStore, import.meta.hot)
   )
 }

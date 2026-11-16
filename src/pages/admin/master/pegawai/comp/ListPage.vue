@@ -15,7 +15,7 @@
                       style="min-width: 250px"
                       :debounce="300"
                       @update:model-value="
-                        (e) => {
+                        e => {
                           infiniteScroll.reset()
                           store.getList()
                         }
@@ -60,12 +60,16 @@
                   @mouseleave="hoveredId = null"
                 >
                   <q-item-section avatar>
-                    <q-avatar color="yellow-9" text-color="white">{{ item.nama[0] }}</q-avatar>
+                    <q-avatar color="yellow-9" text-color="white">{{
+                      item.nama[0]
+                    }}</q-avatar>
                   </q-item-section>
                   <q-item-section>
                     <q-item-label lines="1">{{ item?.nama }}</q-item-label>
                     <q-item-label caption lines="2">
-                      <span class="text-weight-bold">{{ item?.jabatan }} - {{ item?.nohp }} </span>
+                      <span class="text-weight-bold"
+                        >{{ item?.jabatan }} - {{ item?.nohp }}
+                      </span>
                     </q-item-label>
                   </q-item-section>
                   <q-item-section v-if="hoveredId === item?.id" side>
@@ -75,8 +79,12 @@
                     </div>
                   </q-item-section>
                   <q-item-section v-else side top>
-                    <q-item-label caption>{{ humanDate(item?.created_at) }}</q-item-label>
-                    <q-item-label caption>{{ jamTnpDetik(item?.created_at) }}</q-item-label>
+                    <q-item-label caption>{{
+                      humanDate(item?.created_at)
+                    }}</q-item-label>
+                    <q-item-label caption>{{
+                      jamTnpDetik(item?.created_at)
+                    }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator inset="item" />
@@ -116,15 +124,15 @@ onBeforeMount(() => {
   //   store.getList(null)
   // ])
 })
-const edit = (item) => {
+const edit = item => {
   console.log('item', item)
   emits('edit', item)
 }
-const del = (item) => {
+const del = item => {
   $q.dialog({
     title: 'Peringatan',
     message: 'Apakah Data ini akan dihapus?',
-    cancel: true,
+    cancel: true
     // persistent: true
   })
     .onOk(() => {

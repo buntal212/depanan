@@ -57,19 +57,33 @@ const resetCounter = () => {
 
 // Daftar event yang akan di-monitor untuk reset counter
 const setupActivityListeners = () => {
-  const events = ['mousemove', 'mousedown', 'keypress', 'touchstart', 'scroll', 'click']
+  const events = [
+    'mousemove',
+    'mousedown',
+    'keypress',
+    'touchstart',
+    'scroll',
+    'click'
+  ]
 
   // Tambahkan event listener untuk setiap event
-  events.forEach((event) => {
+  events.forEach(event => {
     document.addEventListener(event, resetCounter)
   })
 }
 
 // Hapus event listeners
 const removeActivityListeners = () => {
-  const events = ['mousemove', 'mousedown', 'keypress', 'touchstart', 'scroll', 'click']
+  const events = [
+    'mousemove',
+    'mousedown',
+    'keypress',
+    'touchstart',
+    'scroll',
+    'click'
+  ]
 
-  events.forEach((event) => {
+  events.forEach(event => {
     document.removeEventListener(event, resetCounter)
   })
 }

@@ -29,7 +29,11 @@
     </template>
     <template v-if="props.type === 'password'" #append>
       <q-icon
-        :name="typeInput === 'password' ? 'icon-mat-visibility_off' : 'icon-mat-visibility'"
+        :name="
+          typeInput === 'password'
+            ? 'icon-mat-visibility_off'
+            : 'icon-mat-visibility'
+        "
         size="18px"
         class="cursor-pointer"
         @click="changeType"
@@ -44,32 +48,32 @@ import { ref, onMounted } from 'vue'
 const props = defineProps({
   icon: {
     type: String,
-    default: null,
+    default: null
   },
   label: {
     type: String,
-    default: 'label',
+    default: 'label'
   },
   placeholder: {
     type: String,
-    default: '',
+    default: ''
   },
   type: {
     type: String,
-    default: 'text',
+    default: 'text'
   },
   mask: {
     type: String,
     // default: '#.###.###.###.###.###.###,##'
-    default: '#.###.###.###.###.###.###',
+    default: '#.###.###.###.###.###.###'
   },
   fillMask: {
     type: String,
-    default: '#',
+    default: '#'
   },
   validator: {
     type: String,
-    default: null,
+    default: null
   },
   dense: { type: Boolean, default: false },
   error: { type: Boolean, default: false },
@@ -81,14 +85,14 @@ const props = defineProps({
   readonly: { type: Boolean, default: false },
   reverseFillMask: { type: Boolean, default: false },
   currency: { type: Boolean, default: false },
-  errMessage: { type: String, default: 'error, data tidak valid' },
+  errMessage: { type: String, default: 'error, data tidak valid' }
 })
 
 const refInput = ref(null)
 const typeInput = ref(props.type)
 
 defineExpose({
-  refInput,
+  refInput
 })
 
 onMounted(() => {

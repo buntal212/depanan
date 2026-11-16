@@ -15,7 +15,10 @@
         <q-form class="full-height" @submit="onSubmit">
           <q-card-section class="full-height q-pa-lg scroll">
             <div class="row q-col-gutter-md justify-around">
-              <div :class="`col-${isMobile ? 12 : 6}`" class="row q-col-gutter-md">
+              <div
+                :class="`col-${isMobile ? 12 : 6}`"
+                class="row q-col-gutter-md"
+              >
                 <div class="full-width">
                   Pilih Kategori :
                   <q-radio
@@ -54,7 +57,11 @@
                     </div>
                     <div
                       class="row q-mt-md q-gutter-sm custom-scrollbar"
-                      style="height: 105px; overflow-y: auto; white-space: nowrap"
+                      style="
+                        height: 105px;
+                        overflow-y: auto;
+                        white-space: nowrap;
+                      "
                     >
                       <div
                         v-for="(image, index) in store.form.rincians"
@@ -64,7 +71,12 @@
                         <q-img
                           :src="getImageUrl(image.gambar)"
                           class="cursor-pointer"
-                          style="width: 100px; height: 100px; object-fit: cover; border-radius: 5px"
+                          style="
+                            width: 100px;
+                            height: 100px;
+                            object-fit: cover;
+                            border-radius: 5px;
+                          "
                         />
                         <q-btn
                           round
@@ -78,11 +90,18 @@
                         <q-btn
                           round
                           dense
-                          :color="image.flag_thumbnail === '1' ? 'green' : 'grey-5'"
+                          :color="
+                            image.flag_thumbnail === '1' ? 'green' : 'grey-5'
+                          "
                           icon="task_alt"
                           class="absolute-center"
                           size="sm"
-                          @click="setThumbnail(image.tempId || image.id, !!image.tempId)"
+                          @click="
+                            setThumbnail(
+                              image.tempId || image.id,
+                              !!image.tempId
+                            )
+                          "
                         />
                       </div>
                     </div>
@@ -94,7 +113,7 @@
                     label="Nama Barang"
                     :valid="{ required: false }"
                     @update:model-value="
-                      (val) => {
+                      val => {
                         store.form.namabarang = val
                       }
                     "
@@ -144,13 +163,15 @@
                     label="Isi Barang"
                     :valid="{ number: true }"
                     @update:model-value="
-                      (val) => {
+                      val => {
                         //untuk hapus o dipean angka pake ini yaa
                         const _removedZeros = val?.replace(/^0+/, '')
                         if (val > 1) store.form.isi = _removedZeros
                         const isix = val
-                        store.form.hargajual1 = olahUang(store.form.hargajual1besar) / isix
-                        store.form.hargajual2 = olahUang(store.form.hargajual2besar) / isix
+                        store.form.hargajual1 =
+                          olahUang(store.form.hargajual1besar) / isix
+                        store.form.hargajual2 =
+                          olahUang(store.form.hargajual2besar) / isix
                       }
                     "
                   />
@@ -196,7 +217,7 @@
                     outlined
                     :autofocus="false"
                     @update:model-value="
-                      (val) => {
+                      val => {
                         const _removedZeros = val?.replace(/^0+/, '')
                         if (val > 1) store.form.hargajual1besar = _removedZeros
                         const jual = olahUang(val)
@@ -227,7 +248,7 @@
                     outlined
                     :autofocus="false"
                     @update:model-value="
-                      (val) => {
+                      val => {
                         const _removedZeros = val?.replace(/^0+/, '')
                         if (val > 1) store.form.hargajual2besar = _removedZeros
                         const jual = olahUang(val)
@@ -241,7 +262,7 @@
                     label="Harga Beli Barang"
                     :valid="{ number: true }"
                     @update:model-value="
-                      (val) => {
+                      val => {
                         //untuk hapus o dipean angka pake ini yaa
                         const _removedZeros = val?.replace(/^0+/, '')
                         if (val > 1) store.form.hargabeli = _removedZeros
@@ -254,7 +275,7 @@
                     label="Bonus Cash per satuan kecil"
                     :valid="{ number: true }"
                     @update:model-value="
-                      (val) => {
+                      val => {
                         //untuk hapus o dipean angka pake ini yaa
                         const _removedZeros = val?.replace(/^0+/, '')
                         if (val > 1) store.form.bonus_cash = _removedZeros
@@ -267,7 +288,7 @@
                     label="Bonus Hutang per satuan kecil"
                     :valid="{ number: true }"
                     @update:model-value="
-                      (val) => {
+                      val => {
                         //untuk hapus o dipean angka pake ini yaa
                         const _removedZeros = val?.replace(/^0+/, '')
                         if (val > 1) store.form.bonus_hutang = _removedZeros
@@ -328,9 +349,9 @@ const selectJenis = useAdminMasterJenisSelectStore()
 const props = defineProps({
   data: {
     type: Object,
-    default: null,
+    default: null
   },
-  valid: { type: Boolean, default: false },
+  valid: { type: Boolean, default: false }
 })
 
 onMounted(() => {
@@ -343,7 +364,7 @@ onMounted(() => {
 const HargaKecil1 = computed(() => {
   return new Intl.NumberFormat('id-ID', {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 0
   }).format(store.form.hargajual1)
 })
 const HargaPengguna = computed(() => {
@@ -353,7 +374,7 @@ const HargaPengguna = computed(() => {
 const HargaKecil2 = computed(() => {
   return new Intl.NumberFormat('id-ID', {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 0
   }).format(store.form.hargajual2)
 })
 const HargaToko = computed(() => {
@@ -371,18 +392,18 @@ const generateRandomId = () => {
   return Math.random().toString(36).substring(2, 15) // Random string
 }
 // Fungsi untuk menangani upload gambar
-const tambahGambar = (files) => {
+const tambahGambar = files => {
   const maxSize = 2 * 1024 * 1024 // 2MB dalam bytes
-  const invalidFiles = files.filter((file) => file.size > maxSize)
+  const invalidFiles = files.filter(file => file.size > maxSize)
 
   if (invalidFiles.length > 0) {
     notifError('Ukuran Foto Tidak Boleh Lebih dari 2MB')
     return
   }
-  const newRincians = files.map((file) => ({
+  const newRincians = files.map(file => ({
     gambar: file,
     tempId: generateRandomId(), // Gunakan timestamp sebagai identifier sementara
-    flag_thumbnail: null, // Default thumbnail tidak dipilih
+    flag_thumbnail: null // Default thumbnail tidak dipilih
   }))
   store.form.rincians = [...store.form.rincians, ...newRincians]
 }
@@ -411,17 +432,17 @@ async function setThumbnail(identifier, isTemp = false) {
   try {
     if (isTemp) {
       // Kasus gambar belum tersimpan di server (menggunakan tempId)
-      store.form.rincians = store.form.rincians.map((image) => ({
+      store.form.rincians = store.form.rincians.map(image => ({
         ...image,
-        flag_thumbnail: image.tempId === identifier ? '1' : null,
+        flag_thumbnail: image.tempId === identifier ? '1' : null
       }))
     } else {
       // Kasus gambar sudah tersimpan di server (menggunakan id)
       const success = await store.setthumbnail(identifier)
       if (success) {
-        store.form.rincians = store.form.rincians.map((image) => ({
+        store.form.rincians = store.form.rincians.map(image => ({
           ...image,
-          flag_thumbnail: image.id === identifier ? '1' : null,
+          flag_thumbnail: image.id === identifier ? '1' : null
         }))
       }
     }
@@ -432,8 +453,13 @@ async function setThumbnail(identifier, isTemp = false) {
 }
 
 // Fungsi untuk mendapatkan URL gambar (preview)
-const getImageUrl = (image) => {
-  if (image && typeof image === 'object' && !(image instanceof File) && !(image instanceof Blob)) {
+const getImageUrl = image => {
+  if (
+    image &&
+    typeof image === 'object' &&
+    !(image instanceof File) &&
+    !(image instanceof Blob)
+  ) {
     image = image.gambar || image.image || image.path || image.url
   }
 
@@ -445,7 +471,9 @@ const getImageUrl = (image) => {
   if (/^https?:\/\//i.test(image)) return image
 
   const cleanPath = String(image).replace(/^\/+/, '')
-  return cleanPath.startsWith('storage/') ? `${pathImg.replace(/storage\/$/, '')}/${cleanPath}` : `${pathImg}${cleanPath}`
+  return cleanPath.startsWith('storage/')
+    ? `${pathImg.replace(/storage\/$/, '')}/${cleanPath}`
+    : `${pathImg}${cleanPath}`
 }
 
 // Fungsi untuk submit form
@@ -456,7 +484,9 @@ function onSubmit() {
   }
   // Periksa apakah rincians tidak kosong dan tidak ada thumbnail yang dipilih
   if (store.form.rincians.length > 0) {
-    const hasThumbnail = store.form.rincians.some((image) => image.flag_thumbnail === '1')
+    const hasThumbnail = store.form.rincians.some(
+      image => image.flag_thumbnail === '1'
+    )
     if (!hasThumbnail) {
       notifError('Silakan Centang Gambar untuk Pilih Thumbnail Terlebih Dahulu')
       return // Hentikan proses submit jika tidak ada thumbnail
@@ -466,15 +496,15 @@ function onSubmit() {
   store
     .save({
       ...store.form, // Kirim semua data form
-      rincians: store.form.rincians.map((image) => ({
+      rincians: store.form.rincians.map(image => ({
         gambar: image.gambar,
-        flag_thumbnail: image.flag_thumbnail, // Pastikan flag_thumbnail dikirim
-      })),
+        flag_thumbnail: image.flag_thumbnail // Pastikan flag_thumbnail dikirim
+      }))
     })
     .then(() => {
       console.log('Data berhasil disimpan')
     })
-    .catch((error) => {
+    .catch(error => {
       if (error.response && error.response.status === 422) {
         // Handle validation errors
         const errors = error.response.data.errors

@@ -10,11 +10,11 @@ export const useLaporanArusKas = defineStore('laporan-aruskas-store', {
       page: 0,
       per_page: 15,
       tahun: date.formatDate(Date.now(), 'YYYY'),
-      bulan: date.formatDate(Date.now(), 'MM'),
+      bulan: date.formatDate(Date.now(), 'MM')
     },
     dateDisplay: {
       from: date.formatDate(Date.now(), 'DD MMMM YYYY'),
-      to: date.formatDate(Date.now(), 'DD MMMM YYYY'),
+      to: date.formatDate(Date.now(), 'DD MMMM YYYY')
     },
     bulans: [
       { nama: 'Januari', value: '01' },
@@ -28,13 +28,13 @@ export const useLaporanArusKas = defineStore('laporan-aruskas-store', {
       { nama: 'September', value: '09' },
       { nama: 'Oktober', value: '10' },
       { nama: 'November', value: '11' },
-      { nama: 'Desember', value: '12' },
+      { nama: 'Desember', value: '12' }
     ],
     tahuns: [],
     loading: false,
     dialogCetak: false,
 
-    items: [],
+    items: []
   }),
 
   actions: {
@@ -47,7 +47,7 @@ export const useLaporanArusKas = defineStore('laporan-aruskas-store', {
     },
     initReset(data) {
       if (data) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           for (const key in this.params) {
             // console.log(`${key}: ${this.form[key]}`);
             // console.log(`${key}`);
@@ -68,7 +68,7 @@ export const useLaporanArusKas = defineStore('laporan-aruskas-store', {
     async getdata() {
       this.loading = true
       const params = {
-        params: this.params,
+        params: this.params
       }
       // console.log('params', params)
       return new Promise((resolve, reject) => {
@@ -80,13 +80,13 @@ export const useLaporanArusKas = defineStore('laporan-aruskas-store', {
             this.loading = false
             resolve(data)
           })
-          .catch((err) => {
+          .catch(err => {
             this.loading = false
             reject(err)
           })
       })
-    },
-  },
+    }
+  }
 })
 
 if (import.meta.hot) {

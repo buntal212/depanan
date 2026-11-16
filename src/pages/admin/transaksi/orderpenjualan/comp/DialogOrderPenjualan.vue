@@ -3,14 +3,26 @@
     <q-card
       flat
       class="fit column order-dialog"
-      style="min-width: 92vw; max-width: 92vw; min-height: 95vh; max-height: 95vh"
+      style="
+        min-width: 92vw;
+        max-width: 92vw;
+        min-height: 95vh;
+        max-height: 95vh;
+      "
     >
       <q-card-section class="col-auto dialog-heading q-px-lg q-py-md">
         <div class="row items-center no-wrap">
-          <q-avatar color="primary" text-color="white" icon="receipt_long" size="42px" />
+          <q-avatar
+            color="primary"
+            text-color="white"
+            icon="receipt_long"
+            size="42px"
+          />
           <div class="q-ml-md col">
             <div class="text-overline text-primary">Detail order penjualan</div>
-            <div class="text-subtitle1 text-weight-bold">#{{ order?.noorder || '-' }}</div>
+            <div class="text-subtitle1 text-weight-bold"
+              >#{{ order?.noorder || '-' }}</div
+            >
           </div>
           <q-badge
             rounded
@@ -18,7 +30,14 @@
             :color="statusMeta.color"
             :label="statusMeta.label"
           />
-          <q-btn v-close-popup icon="close" flat round class="q-ml-sm" aria-label="Tutup detail order" />
+          <q-btn
+            v-close-popup
+            icon="close"
+            flat
+            round
+            class="q-ml-sm"
+            aria-label="Tutup detail order"
+          />
         </div>
       </q-card-section>
       <q-card-section
@@ -27,7 +46,9 @@
       >
         <div class="column full-height">
           <div class="col-auto">
-            <div class="order-action-bar row items-center q-col-gutter-sm q-pa-md q-mb-md">
+            <div
+              class="order-action-bar row items-center q-col-gutter-sm q-pa-md q-mb-md"
+            >
               <div class="col-12 col-sm">
                 <div class="text-caption text-grey-7">Total setelah diskon</div>
                 <div class="text-h6 text-weight-bold text-primary">
@@ -46,17 +67,31 @@
                 <app-btn
                   v-if="parseInt(order?.status_order) < 6"
                   :label="pelabelan"
-                  :icon-right="parseInt(order?.status_order) === 3 ? 'check_circle' : 'arrow_forward'"
+                  :icon-right="
+                    parseInt(order?.status_order) === 3
+                      ? 'check_circle'
+                      : 'arrow_forward'
+                  "
                   @click="lanjutkanStep"
                   :loading="loading || sedangMenyimpan"
-                  :disable="loading || sedangMenyimpan || parseInt(order?.status_order) === 3"
+                  :disable="
+                    loading ||
+                    sedangMenyimpan ||
+                    parseInt(order?.status_order) === 3
+                  "
                 />
               </div>
-              <div v-if="order?.status_order === '9'" class="col-12 text-negative text-weight-bold">
+              <div
+                v-if="order?.status_order === '9'"
+                class="col-12 text-negative text-weight-bold"
+              >
                 Order ini dibatalkan
               </div>
             </div>
-            <div v-if="order?.status_order !== '9'" class="row full-width overflow-hidden q-mb-md">
+            <div
+              v-if="order?.status_order !== '9'"
+              class="row full-width overflow-hidden q-mb-md"
+            >
               <div class="col-12">
                 <q-stepper
                   v-model="step"
@@ -68,7 +103,13 @@
                   inactive-color="grey-6"
                   class="status-stepper"
                 >
-                  <q-step :name="1" title="Draf" caption="Order dibuat" icon="edit_note" :done="step > 1" />
+                  <q-step
+                    :name="1"
+                    title="Draf"
+                    caption="Order dibuat"
+                    icon="edit_note"
+                    :done="step > 1"
+                  />
 
                   <q-step
                     :name="3"
@@ -103,7 +144,9 @@
                 <div class="col-12 col-md-4">
                   <q-card flat bordered class="order-info-card">
                     <q-card-section>
-                      <div class="text-body text-weight-bold">Data Pelanggan</div>
+                      <div class="text-body text-weight-bold"
+                        >Data Pelanggan</div
+                      >
                       <q-separator class="q-my-sm"></q-separator>
                       <div class="flex q-gutter-sm items-center">
                         <q-icon name="person_2" size="16px"> </q-icon>
@@ -136,7 +179,9 @@
                     <q-card-section class="">
                       <div class="flex q-gutter-sm items-center">
                         <q-icon name="add_shopping_cart" size="20px"> </q-icon>
-                        <div class="text-body text-weight-bold">Informasi Order</div>
+                        <div class="text-body text-weight-bold"
+                          >Informasi Order</div
+                        >
                       </div>
                       <q-separator class="q-my-sm"></q-separator>
                       <div class="flex q-gutter-sm items-center q-mb-sm">
@@ -153,29 +198,51 @@
                       </div>
                       <div class="flex q-gutter-sm items-center q-mt-sm">
                         <q-icon name="payments" size="16px"> </q-icon>
-                        <div>Status bayar: {{ paymentStatusLabel(order?.status_pembayaran) }}</div>
+                        <div
+                          >Status bayar:
+                          {{
+                            paymentStatusLabel(order?.status_pembayaran)
+                          }}</div
+                        >
                       </div>
                       <div class="flex q-gutter-sm items-center q-mt-sm">
                         <q-icon name="local_shipping" size="16px"> </q-icon>
-                        <div>Kirim: {{ formatDateTime(order?.tanggal_kirim) }}</div>
+                        <div
+                          >Kirim:
+                          {{ formatDateTime(order?.tanggal_kirim) }}</div
+                        >
                       </div>
                       <div class="flex q-gutter-sm items-center q-mt-sm">
                         <q-icon name="inventory" size="16px"> </q-icon>
-                        <div>Terima: {{ formatDateTime(order?.tanggal_terima) }}</div>
+                        <div
+                          >Terima:
+                          {{ formatDateTime(order?.tanggal_terima) }}</div
+                        >
                       </div>
-                      <div class="q-mt-sm text-caption">Catatan: {{ order?.catatan || '-' }}</div>
-                      <div v-if="order?.status_order === '9'" class="q-mt-sm text-negative">
+                      <div class="q-mt-sm text-caption"
+                        >Catatan: {{ order?.catatan || '-' }}</div
+                      >
+                      <div
+                        v-if="order?.status_order === '9'"
+                        class="q-mt-sm text-negative"
+                      >
                         Batal order: {{ order?.alasan_batal || '-' }}
                       </div>
                     </q-card-section>
                   </q-card>
                 </div>
                 <div class="col-12 col-md-4">
-                  <q-card flat bordered class="order-info-card summary-order-card">
+                  <q-card
+                    flat
+                    bordered
+                    class="order-info-card summary-order-card"
+                  >
                     <q-card-section>
                       <div class="flex q-gutter-sm items-center">
                         <q-icon name="paid" size="22px"> </q-icon>
-                        <div class="text-body text-weight-bold">Summary Order</div>
+                        <div class="text-body text-weight-bold"
+                          >Summary Order</div
+                        >
                       </div>
 
                       <q-separator class="q-my-sm"></q-separator>
@@ -230,7 +297,9 @@
                       </q-markup-table>
                       <div class="summary-total q-mt-sm">
                         <span>Total setelah diskon</span
-                        ><strong>Rp {{ formatRp(order?.total_harga || 0) }}</strong>
+                        ><strong
+                          >Rp {{ formatRp(order?.total_harga || 0) }}</strong
+                        >
                       </div>
                     </q-card-section>
                   </q-card>
@@ -242,12 +311,20 @@
             <q-list class="column full-height rincian-list">
               <q-item class="col-auto q-px-md q-py-sm">
                 <q-item-section>
-                  <q-item-label class="text-subtitle2 text-weight-bold">Daftar item</q-item-label>
-                  <q-item-label caption>Rincian barang pada order penjualan.</q-item-label>
+                  <q-item-label class="text-subtitle2 text-weight-bold"
+                    >Daftar item</q-item-label
+                  >
+                  <q-item-label caption
+                    >Rincian barang pada order penjualan.</q-item-label
+                  >
                 </q-item-section>
 
                 <q-item-section side top>
-                  <q-badge outline color="primary" :label="`${jumlahItem} item`" />
+                  <q-badge
+                    outline
+                    color="primary"
+                    :label="`${jumlahItem} item`"
+                  />
                 </q-item-section>
               </q-item>
               <q-separator spaced />
@@ -259,31 +336,42 @@
                     @mouseleave="hoveredId = null"
                   >
                     <q-item-section avatar>
-                      <q-avatar color="grey-2" text-color="primary" icon="inventory_2" />
+                      <q-avatar
+                        color="grey-2"
+                        text-color="primary"
+                        icon="inventory_2"
+                      />
                     </q-item-section>
                     <q-item-section>
                       <q-item-label class="text-weight-bold">{{
                         item?.barang?.namagabung || item?.barang?.namabarang
                       }}</q-item-label>
-                      <q-item-label caption>{{ item?.barang?.kodebarang || '-' }}</q-item-label>
+                      <q-item-label caption>{{
+                        item?.barang?.kodebarang || '-'
+                      }}</q-item-label>
                       <q-item-label
                         >{{ formatRp(item?.harga) }} x {{ item?.jumlah }}
                         <span class="text-grey"
-                          >( {{ item?.barang?.satuan_k || 'Satuan Kecil' }} )</span
+                          >(
+                          {{ item?.barang?.satuan_k || 'Satuan Kecil' }} )</span
                         >
                       </q-item-label>
                       <q-item-label caption>
-                        Total sebelum diskon: Rp {{ formatRp(totalSebelumDiskonItem(item)) }}
+                        Total sebelum diskon: Rp
+                        {{ formatRp(totalSebelumDiskonItem(item)) }}
                       </q-item-label>
                       <q-item-label caption class="text-negative">
-                        Diskon rincian: -Rp {{ formatRp(diskonRincianItem(item)) }}
+                        Diskon rincian: -Rp
+                        {{ formatRp(diskonRincianItem(item)) }}
                       </q-item-label>
                       <q-item-label caption class="text-negative">
                         Diskon: Rp {{ formatRp(diskonPerSatuan(item)) }}/{{
                           item?.satuan || item?.barang?.satuan_k || 'PCS'
                         }}
                         · Rp {{ formatRp(diskonPerSatuanBesar(item)) }}/{{
-                          item?.satuans?.satuan_b || item?.barang?.satuan_b || 'DUS'
+                          item?.satuans?.satuan_b ||
+                          item?.barang?.satuan_b ||
+                          'DUS'
                         }}
                       </q-item-label>
                       <q-item-label>
@@ -291,7 +379,10 @@
                           Pemesanan Aktual Dalam Satuan {{ item.satuan || '-' }}
                         </span>
                         <span v-if="item?.satuan === item?.barang?.satuan_b">
-                          ( {{ parseInt(item.jumlah) / parseInt(item.barang?.isi) }}
+                          (
+                          {{
+                            parseInt(item.jumlah) / parseInt(item.barang?.isi)
+                          }}
                           {{ item?.satuan }})
                         </span>
                       </q-item-label>
@@ -326,15 +417,20 @@ import { formatRp } from 'src/modules/formatter'
 const props = defineProps({
   order: {
     type: Object,
-    default: null,
+    default: null
   },
   loading: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 })
 
-const emit = defineEmits(['updateRincian', 'deleteRincian', 'updateStatus', 'setujuiDraft'])
+const emit = defineEmits([
+  'updateRincian',
+  'deleteRincian',
+  'updateStatus',
+  'setujuiDraft'
+])
 
 const $q = useQuasar()
 // const step = ref(1)
@@ -351,14 +447,17 @@ const totalSebelumDiskon = computed(() => {
 
   return (props.order?.rincians || []).reduce(
     (total, item) => total + totalSebelumDiskonItem(item),
-    0,
+    0
   )
 })
 const totalDiskonRincian = computed(() =>
-  (props.order?.rincians || []).reduce((total, item) => total + diskonRincianItem(item), 0),
+  (props.order?.rincians || []).reduce(
+    (total, item) => total + diskonRincianItem(item),
+    0
+  )
 )
 const totalDiskon = computed(
-  () => totalDiskonRincian.value + (Number(props.order?.diskon_kuitansi) || 0),
+  () => totalDiskonRincian.value + (Number(props.order?.diskon_kuitansi) || 0)
 )
 const jumlahItem = computed(() => props.order?.rincians?.length || 0)
 const statusMeta = computed(() => {
@@ -370,13 +469,16 @@ const statusMeta = computed(() => {
     4: { label: 'Menunggu kirim', color: 'blue-8' },
     5: { label: 'Dikirim', color: 'teal-7' },
     6: { label: 'Selesai', color: 'positive' },
-    9: { label: 'Dibatalkan', color: 'negative' },
+    9: { label: 'Dibatalkan', color: 'negative' }
   }
 
-  return daftarStatus[status] || { label: 'Status tidak diketahui', color: 'grey-7' }
+  return (
+    daftarStatus[status] || { label: 'Status tidak diketahui', color: 'grey-7' }
+  )
 })
 const sisaPembayaran = computed(() => {
-  const pembayaranAwal = Number(props.order?.down_payment || props.order?.bayar) || 0
+  const pembayaranAwal =
+    Number(props.order?.down_payment || props.order?.bayar) || 0
   return Math.max(0, (Number(props.order?.total_harga) || 0) - pembayaranAwal)
 })
 
@@ -384,14 +486,20 @@ const sisaPembayaran = computed(() => {
 
 // console.log('order', props.order);
 function totalSebelumDiskonItem(item) {
-  if (item?.total_sebelum_diskon !== null && item?.total_sebelum_diskon !== undefined) {
+  if (
+    item?.total_sebelum_diskon !== null &&
+    item?.total_sebelum_diskon !== undefined
+  ) {
     return Number(item.total_sebelum_diskon) || 0
   }
 
   return Math.round((Number(item?.jumlah) || 0) * (Number(item?.harga) || 0))
 }
 function diskonRincianItem(item) {
-  return Math.max(0, totalSebelumDiskonItem(item) - (Number(item?.subtotal) || 0))
+  return Math.max(
+    0,
+    totalSebelumDiskonItem(item) - (Number(item?.subtotal) || 0)
+  )
 }
 function diskonPerSatuan(item) {
   const jumlah = Number(item?.jumlah) || 0
@@ -405,9 +513,11 @@ function paymentLabel(order) {
   const sistem = {
     lunas: 'Lunas',
     dp: 'Down Payment (DP)',
-    tempo: 'Tempo',
+    tempo: 'Tempo'
   }[order?.sistem_bayar]
-  const cara = order?.cara_bayar ? ' · ' + (order.cara_bayar === 'cash' ? 'Cash' : 'Transfer') : ''
+  const cara = order?.cara_bayar
+    ? ' · ' + (order.cara_bayar === 'cash' ? 'Cash' : 'Transfer')
+    : ''
 
   return (sistem || order?.metode_bayar || '-') + cara
 }
@@ -419,7 +529,7 @@ function formatDateTime(value) {
 
   return new Intl.DateTimeFormat('id-ID', {
     dateStyle: 'medium',
-    timeStyle: 'short',
+    timeStyle: 'short'
   }).format(new Date(value))
 }
 // eslint-disable-next-line no-unused-vars
@@ -434,7 +544,7 @@ function edit(index, item) {
 function hapus(item) {
   // console.log('delete', item);
 
-  const rincians = props.order?.rincians?.filter((x) => x.id !== item?.id) || 0
+  const rincians = props.order?.rincians?.filter(x => x.id !== item?.id) || 0
   let totalRincians = 0
   for (let i = 0; i < rincians.length; i++) {
     const el = rincians[i]
@@ -448,13 +558,13 @@ function hapus(item) {
   const payload = {
     id: item?.id,
     order_id: props.order?.id,
-    total_harga_order: totalRincians,
+    total_harga_order: totalRincians
   }
 
   $q.dialog({
     title: 'Pemberitahuan',
     message: `Apakah Item dengan Nama ${item?.barang?.namabarang} Akan dihapus ?`,
-    cancel: true,
+    cancel: true
   })
     .onOk(() => {
       emit('deleteRincian', payload)
@@ -490,7 +600,7 @@ function simpanEdit() {
     satuan: item?.satuan,
     subtotal: parseInt(item?.jumlah || 0) * parseInt(item?.harga || 0),
     order_id: props.order?.id,
-    total_harga_order: totalRincians,
+    total_harga_order: totalRincians
   }
   console.log('simpan Edit', payload)
 
@@ -501,7 +611,7 @@ function simpanEdit() {
 
 const step = computed({
   get: () => parseInt(props.order?.status_order) || 1,
-  set: (value) => parseInt(value),
+  set: value => parseInt(value)
 })
 
 const pelabelan = computed(() => {
@@ -546,7 +656,12 @@ function lihatStep() {
 }
 
 function lanjutkanStep() {
-  if (props.loading || sedangMenyimpan.value || parseInt(props.order?.status_order) === 3) return
+  if (
+    props.loading ||
+    sedangMenyimpan.value ||
+    parseInt(props.order?.status_order) === 3
+  )
+    return
 
   sedangMenyimpan.value = true
   console.log('lanjutka step')
@@ -567,7 +682,7 @@ function lanjutkanStep() {
 
   const payload = {
     order_id: props?.order?.id,
-    status_order: status,
+    status_order: status
   }
 
   if (parseInt(props?.order?.status_order) < 3) {
@@ -580,18 +695,18 @@ function lanjutkanStep() {
 
 watch(
   () => props.loading,
-  (sedangMemuat) => {
+  sedangMemuat => {
     if (!sedangMemuat && parseInt(props.order?.status_order) !== 3) {
       sedangMenyimpan.value = false
     }
-  },
+  }
 )
 function batalkanOrder() {
   console.log('batalkan order')
 
   const payload = {
     order_id: props?.order?.id,
-    status_order: '9',
+    status_order: '9'
   }
 
   $q.dialog({
@@ -601,11 +716,12 @@ function batalkanOrder() {
     prompt: {
       model: '',
       type: 'text',
-      label: 'Alasan pembatalan (opsional)',
-    },
+      label: 'Alasan pembatalan (opsional)'
+    }
   })
-    .onOk((alasanBatal) => {
-      payload.alasan_batal = String(alasanBatal || '').trim() || 'Dibatalkan oleh admin'
+    .onOk(alasanBatal => {
+      payload.alasan_batal =
+        String(alasanBatal || '').trim() || 'Dibatalkan oleh admin'
       emit('updateStatus', payload)
       // console.log('OK', payload)
     })

@@ -10,10 +10,10 @@ export const useSelectBebanStore = defineStore('admin-select-beban-store', {
     params: {
       q: null,
       page: 0,
-      per_page: 15,
+      per_page: 15
     },
     expand: false,
-    dialog: false,
+    dialog: false
   }),
   // persist: true,
   // getters: {
@@ -30,7 +30,7 @@ export const useSelectBebanStore = defineStore('admin-select-beban-store', {
       this.isError = false
       this.loading = true
       const params = {
-        params: this.params,
+        params: this.params
       }
       try {
         const { data } = await api.get('/v1/master/select/master-beban', params)
@@ -50,12 +50,12 @@ export const useSelectBebanStore = defineStore('admin-select-beban-store', {
       this.isError = false
       this.params.page = index
       const params = {
-        params: this.params,
+        params: this.params
       }
 
       console.log('load more', index)
 
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         api
           .get('/v1/master/select/master-beban', params)
           .then(({ data }) => {
@@ -72,8 +72,8 @@ export const useSelectBebanStore = defineStore('admin-select-beban-store', {
             resolve()
           })
       })
-    },
-  },
+    }
+  }
 })
 
 if (import.meta.hot) {

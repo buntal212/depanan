@@ -16,7 +16,7 @@
                       :debounce="300"
                       :loading="storelist.loading"
                       @update:model-value="
-                        (e) => {
+                        e => {
                           infiniteScroll?.reset()
                           storelist.getList()
                         }
@@ -29,12 +29,12 @@
                       outlined
                       :debounce="300"
                       @set-model="
-                        (val) => {
+                        val => {
                           storelist.dateDisplay.from = val
                         }
                       "
                       @db-model="
-                        (val) => {
+                        val => {
                           storelist.params.from = val
                         }
                       "
@@ -46,12 +46,12 @@
                       outlined
                       :debounce="300"
                       @set-model="
-                        (val) => {
+                        val => {
                           storelist.dateDisplay.to = val
                         }
                       "
                       @db-model="
-                        (val) => {
+                        val => {
                           storelist.params.to = val
                         }
                       "
@@ -84,7 +84,9 @@
             <q-infinite-scroll
               @load="storelist.loadMore"
               ref="infiniteScroll"
-              :disable="storelist?.isError || storelist?.meta?.next_page_url === null"
+              :disable="
+                storelist?.isError || storelist?.meta?.next_page_url === null
+              "
               :scroll-target="scrollTarget"
               :offset="150"
               :initial-index="storelist.params.page"
@@ -108,8 +110,13 @@
                   </q-item-section>
                   <q-item-section>
                     <q-item-label lines="1"
-                      >No. Pembayaran Piutang : {{ item?.nopembayaran }} || Cara Bayar :
-                      {{ item?.jenis_pembayaran === '' ? 'Tagihan Sales' : item?.jenis_pembayaran }}
+                      >No. Pembayaran Piutang : {{ item?.nopembayaran }} || Cara
+                      Bayar :
+                      {{
+                        item?.jenis_pembayaran === ''
+                          ? 'Tagihan Sales'
+                          : item?.jenis_pembayaran
+                      }}
                       || Keterangan :
                       {{ item?.keterangan }}
                     </q-item-label>
@@ -122,9 +129,11 @@
                         :class="app?.dark ? 'text-yellow-3' : 'text-orange-9'"
                       >
                         || TOTAL Pembayaran Hutang : </span
-                      ><q-badge outline :color="app?.dark ? 'yellow-3' : 'orange-9'">{{
-                        formatRpDouble(item?.totalhutang)
-                      }}</q-badge>
+                      ><q-badge
+                        outline
+                        :color="app?.dark ? 'yellow-3' : 'orange-9'"
+                        >{{ formatRpDouble(item?.totalhutang) }}</q-badge
+                      >
                     </q-item-label>
                   </q-item-section>
                   <q-item-section v-if="hoveredId === item?.id" side>
@@ -161,7 +170,9 @@
                     </div>
                   </q-item-section>
                   <q-item-section v-else side top>
-                    <q-item-label caption>{{ humanDate(item?.tgl) }}</q-item-label>
+                    <q-item-label caption>{{
+                      humanDate(item?.tgl)
+                    }}</q-item-label>
                     <!-- <q-item-label caption>{{ jamTnpDetik(item?.tgl) }}</q-item-label> -->
                   </q-item-section>
                 </q-item>
@@ -199,7 +210,7 @@ const app = useAppStore()
 
 const emits = defineEmits(['add', 'edit'])
 
-const lihatdetail = (item) => {
+const lihatdetail = item => {
   emits('edit', item)
 }
 

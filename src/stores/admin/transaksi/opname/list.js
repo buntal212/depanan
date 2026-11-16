@@ -15,9 +15,9 @@ export const useAdminListTransaksiStokOpnameStore = defineStore(
         page: 0,
         per_page: 15,
         bulan: date.formatDate(Date.now(), 'MM'),
-        tahun: date.formatDate(Date.now(), 'YYYY'),
+        tahun: date.formatDate(Date.now(), 'YYYY')
       },
-      optionBulan:[
+      optionBulan: [
         { label: 'Januari', value: '01' },
         { label: 'Februari', value: '02' },
         { label: 'Maret', value: '03' },
@@ -29,9 +29,8 @@ export const useAdminListTransaksiStokOpnameStore = defineStore(
         { label: 'September', value: '09' },
         { label: 'Oktober', value: '10' },
         { label: 'November', value: '11' },
-        { label: 'Desember', value: '12' },
+        { label: 'Desember', value: '12' }
       ]
-
     }),
     // persist: true,
     // getters: {
@@ -39,12 +38,12 @@ export const useAdminListTransaksiStokOpnameStore = defineStore(
     // },
 
     actions: {
-      init(){
-        const now = new Date();
-        const month = now.getMonth(); // getMonth() = 0 untuk Jan, jadi ini sudah otomatis "bulan kemarin"
-        const lastMonth = month === 0 ? '01' : (month<10 ? '0' + month : month.toString()) // jika bulan = 0 (Jan), maka bulan kemarin = 11 (Des)
+      init() {
+        const now = new Date()
+        const month = now.getMonth() // getMonth() = 0 untuk Jan, jadi ini sudah otomatis "bulan kemarin"
+        const lastMonth =
+          month === 0 ? '01' : month < 10 ? '0' + month : month.toString() // jika bulan = 0 (Jan), maka bulan kemarin = 11 (Des)
         this.params.bulan = lastMonth
-
       },
       async getList() {
         console.log('get master barang')
@@ -53,7 +52,7 @@ export const useAdminListTransaksiStokOpnameStore = defineStore(
         this.isError = false
         this.loading = true
         const params = {
-          params: this.params,
+          params: this.params
         }
         try {
           const { data } = await api.get('/v1/transaksi/opname/list', params)
@@ -74,11 +73,10 @@ export const useAdminListTransaksiStokOpnameStore = defineStore(
         this.isError = false
         this.params.page = index
         const params = {
-          params: this.params,
+          params: this.params
         }
 
-
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           api
             .get('/v1/transaksi/opname/list', params)
             .then(({ data }) => {
@@ -93,11 +91,13 @@ export const useAdminListTransaksiStokOpnameStore = defineStore(
               resolve()
             })
         })
-      },
-    },
-  },
+      }
+    }
+  }
 )
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useAdminListTransaksiStokOpnameStore, import.meta.hot))
+  import.meta.hot.accept(
+    acceptHMRUpdate(useAdminListTransaksiStokOpnameStore, import.meta.hot)
+  )
 }

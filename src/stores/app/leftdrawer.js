@@ -10,7 +10,7 @@ import {
   tabSettings,
   tabUsers,
   tabShoppingCartPlus,
-  tabShoppingBag,
+  tabShoppingBag
 } from 'quasar-extras-svg-icons/tabler-icons-v2'
 import { api } from 'src/boot/axios'
 import { useRoute } from 'vue-router'
@@ -71,15 +71,15 @@ export const useLeftDrawerStore = defineStore('left-drawer', {
         name: 'profile',
         label: 'Profile',
         icon: tabUserEdit,
-        link: '/admin/profile',
+        link: '/admin/profile'
       },
       {
         name: 'notification',
         label: 'Notification',
-        icon: tabBell,
-      },
+        icon: tabBell
+      }
     ],
-    tab: 'dashboard',
+    tab: 'dashboard'
   }),
   persist: true,
 
@@ -97,18 +97,18 @@ export const useLeftDrawerStore = defineStore('left-drawer', {
       if (apps.user.username === 'sa') {
         this.tabs = data
       } else {
-        const rowmenu = data.hakakses.map((menu) => menu.menu_id)
+        const rowmenu = data.hakakses.map(menu => menu.menu_id)
         // console.log('rowmenu', rowmenu)
 
         const menu = [...new Set(rowmenu)]
-          .map((x) => data.hakakses.find((f) => f.menu_id === x)?.menus)
+          .map(x => data.hakakses.find(f => f.menu_id === x)?.menus)
           .sort((a, b) => a.urut - b.urut)
 
         if (menu.length > 0) {
-          menu.forEach((x) => {
+          menu.forEach(x => {
             const subs = data.hakakses
-              .filter((f) => f.menu_id === x.id)
-              .flatMap((menu) => menu.subs)
+              .filter(f => f.menu_id === x.id)
+              .flatMap(menu => menu.subs)
 
             // console.log('subs', subs)
 
@@ -129,19 +129,19 @@ export const useLeftDrawerStore = defineStore('left-drawer', {
       // console.log('route', route)
 
       if (route) {
-        const ketemu = this.tabs?.find((x) => x?.link === route)?.name ?? null
+        const ketemu = this.tabs?.find(x => x?.link === route)?.name ?? null
         if (ketemu) {
           this.tab = ketemu
         } else {
           // console.log('gak ketemu', route)
           const caridikedalaman =
-            this?.tabs?.find((x) => x?.subs?.find((y) => y?.link === route)) ?? null
+            this?.tabs?.find(x => x?.subs?.find(y => y?.link === route)) ?? null
           // console.log('caridikedalaman', caridikedalaman)
           this.tab = caridikedalaman ? caridikedalaman?.name : 'dashboard'
         }
       }
-    },
-  },
+    }
+  }
 })
 
 if (import.meta.hot) {

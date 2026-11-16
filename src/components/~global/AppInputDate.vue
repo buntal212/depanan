@@ -2,7 +2,7 @@
   <q-input
     ref="refInputDate"
     :dense="dense"
-    :filled="!outlined?filled:!filled"
+    :filled="!outlined ? filled : !filled"
     :outlined="outlined"
     :label="label"
     :hide-bottom-space="true"
@@ -17,15 +17,8 @@
     :model-value="modelProp"
     @click="showDate"
   >
-    <template
-      v-if="icon!==null"
-      #append
-    >
-      <q-icon
-        :name="icon"
-        size="18px"
-        @click="showDate"
-      />
+    <template v-if="icon !== null" #append>
+      <q-icon :name="icon" size="18px" @click="showDate" />
     </template>
     <template #prepend>
       <q-popup-proxy
@@ -44,26 +37,12 @@
           @update:model-value="closeDate()"
         >
           <div class="row items-center justify-end">
-            <q-btn
-              label="Close"
-              color="primary"
-              flat
-              @click="closeDate()"
-            />
+            <q-btn label="Close" color="primary" flat @click="closeDate()" />
           </div>
         </q-date>
-        <q-time
-          v-else
-          v-model="modelProp"
-          format24h
-        >
+        <q-time v-else v-model="modelProp" format24h>
           <div class="row items-center justify-end">
-            <q-btn
-              v-close-popup
-              label="Close"
-              color="primary"
-              flat
-            />
+            <q-btn v-close-popup label="Close" color="primary" flat />
           </div>
         </q-time>
         <!-- </q-menu> -->
@@ -118,38 +97,31 @@ const props = defineProps({
 })
 
 const modelProp = computed({
-  get () { return props.model },
-  set (val) {
+  get() {
+    return props.model
+  },
+  set(val) {
     const temp = val.split(' ')
     let newTgl = ''
     if (temp[1] === 'Mei') {
       newTgl = temp[0] + ' May ' + temp[2]
-    }
-    else if (temp[1] === 'Oktober') {
+    } else if (temp[1] === 'Oktober') {
       newTgl = temp[0] + ' October ' + temp[2]
-    }
-    else if (temp[1] === 'Agustus') {
+    } else if (temp[1] === 'Agustus') {
       newTgl = temp[0] + ' August ' + temp[2]
-    }
-    else if (temp[1] === 'Desember') {
+    } else if (temp[1] === 'Desember') {
       newTgl = temp[0] + ' December ' + temp[2]
-    }
-    else if (temp[1] === 'Juli') {
+    } else if (temp[1] === 'Juli') {
       newTgl = temp[0] + ' July ' + temp[2]
-    }
-    else if (temp[1] === 'Juni') {
+    } else if (temp[1] === 'Juni') {
       newTgl = temp[0] + ' June ' + temp[2]
-    }
-    else if (temp[1] === 'Januari') {
+    } else if (temp[1] === 'Januari') {
       newTgl = temp[0] + ' January ' + temp[2]
-    }
-    else if (temp[1] === 'Februari') {
+    } else if (temp[1] === 'Februari') {
       newTgl = temp[0] + ' February ' + temp[2]
-    }
-    else if (temp[1] === 'Maret') {
+    } else if (temp[1] === 'Maret') {
       newTgl = temp[0] + ' March ' + temp[2]
-    }
-    else {
+    } else {
       newTgl = val
     }
     emits('setModel', newTgl)
@@ -170,25 +142,25 @@ const refDate = ref(null)
 // const modelProxy = ref()
 
 onMounted(() => {
-//   console.log(refInputDate.value.modelValue)
+  //   console.log(refInputDate.value.modelValue)
   // modelProxy.value = refInputDate.value.modelValue
 })
 
-function anotherValid (val) {
+function anotherValid(val) {
   if (props.valid) {
     return true
   }
   return (val !== null && val !== '') || 'Harap diisi'
 }
 
-function closeDate () {
+function closeDate() {
   // console.log('hide', refPopup.value)
   refPopup.value.hide()
 }
-function showDate () {
+function showDate() {
   // console.log('show', refPopup.value)
   refPopup.value.show()
-//   showing.value = true
+  //   showing.value = true
 }
 
 // function coba (val) {
@@ -198,14 +170,17 @@ function showDate () {
 
 <style lang="scss" scoped>
 .q-field--dense .q-field__bottom {
-    display:none;
+  display: none;
 }
 
 .q-field--error .q-field--highligted {
   background: none;
 }
 .q-field--standout.q-field--highlighted .q-field__control {
-    box-shadow: 0 1px 5px rgb(0 0 0 / 20%), 0 2px 2px rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 12%);
-    background: rgb(250, 173, 173);
+  box-shadow:
+    0 1px 5px rgb(0 0 0 / 20%),
+    0 2px 2px rgb(0 0 0 / 14%),
+    0 3px 1px -2px rgb(0 0 0 / 12%);
+  background: rgb(250, 173, 173);
 }
 </style>

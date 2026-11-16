@@ -10,7 +10,7 @@ export default defineBoot(({ router, store }) => {
   router.beforeEach((to, from, next) => {
     const token = storage.getLocalToken()
     const user = storage.getUser()
-    const requireAuth = to.matched.some((route) => route.meta.requireAuth)
+    const requireAuth = to.matched.some(route => route.meta.requireAuth)
 
     const isTokenExpired = () => {
       const activeTime = localStorage.getItem('activeTime')

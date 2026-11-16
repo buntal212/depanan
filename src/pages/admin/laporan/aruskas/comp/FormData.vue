@@ -9,7 +9,7 @@
           style="min-width: 300px"
           :debounce="300"
           @update:model-value="
-            (e) => {
+            e => {
               store.getdata()
             }
           "
@@ -23,7 +23,7 @@
           option-value="value"
           :valid="store.params.bulan === ''"
           @update:model-value="
-            (e) => {
+            e => {
               store.supplier = null
             }
           "
@@ -36,7 +36,7 @@
           option-value="value"
           :valid="store.params.tahun === ''"
           @update:model-value="
-            (e) => {
+            e => {
               store.supplier = null
             }
           "
@@ -64,7 +64,13 @@
     <q-separator />
   </div>
   <div v-if="store.items" class="row justify-end q-pr-md">
-    <q-btn icon="print" class="text-yellow-8" color="grey-10" round dense @click="cetakData()"
+    <q-btn
+      icon="print"
+      class="text-yellow-8"
+      color="grey-10"
+      round
+      dense
+      @click="cetakData()"
       ><q-tooltip>Cetak</q-tooltip></q-btn
     >
   </div>
@@ -74,7 +80,9 @@
 import { useLaporanArusKas } from 'src/stores/admin/laporan/aruskas/storedata'
 import { defineAsyncComponent, onMounted, shallowRef } from 'vue'
 
-const DialogCetak = shallowRef(defineAsyncComponent(() => import('./DialogCetak.vue')))
+const DialogCetak = shallowRef(
+  defineAsyncComponent(() => import('./DialogCetak.vue'))
+)
 const store = useLaporanArusKas()
 onMounted(() => {
   store.getdata()

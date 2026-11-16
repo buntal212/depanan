@@ -78,7 +78,9 @@
             </div>
             <div class="row">
               <div class="col-4">No Penjualan</div>
-              <div class="col-8">: {{ selectedItem.penjualan?.no_penjualan }}</div>
+              <div class="col-8"
+                >: {{ selectedItem.penjualan?.no_penjualan }}</div
+              >
             </div>
             <div class="row">
               <div class="col-4">Tanggal</div>
@@ -198,19 +200,19 @@ const columns = [
     name: 'no_penjualan',
     label: 'No Penjualan',
     field: row => row.no_penjualan,
-    align: 'left',
+    align: 'left'
   },
   {
     name: 'status',
     label: 'Status',
     field: 'status',
-    align: 'center',
+    align: 'center'
   },
   {
     name: 'actions',
     label: 'Actions',
     field: 'actions',
-    align: 'center',
+    align: 'center'
   }
 ]
 

@@ -11,10 +11,10 @@ export const useSelectStockStore = defineStore('admin-select-stock-store', {
     params: {
       q: null,
       page: 0,
-      per_page: 15,
+      per_page: 15
     },
     expand: false,
-    dialog: false,
+    dialog: false
   }),
   // persist: true,
   // getters: {
@@ -31,10 +31,13 @@ export const useSelectStockStore = defineStore('admin-select-stock-store', {
       this.isError = false
       this.loading = true
       const params = {
-        params: this.params,
+        params: this.params
       }
       try {
-        const { data } = await api.get('/v1/transaksi/penyesuaian/selectstok', params)
+        const { data } = await api.get(
+          '/v1/transaksi/penyesuaian/selectstok',
+          params
+        )
         // console.log('get master barang', data)
         this.meta = data
         this.items = data?.data
@@ -51,12 +54,12 @@ export const useSelectStockStore = defineStore('admin-select-stock-store', {
       this.isError = false
       this.params.page = index
       const params = {
-        params: this.params,
+        params: this.params
       }
 
       console.log('load more', index)
 
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         api
           .get('/v1/transaksi/penyesuaian/selectstok', params)
           .then(({ data }) => {
@@ -73,8 +76,8 @@ export const useSelectStockStore = defineStore('admin-select-stock-store', {
             resolve()
           })
       })
-    },
-  },
+    }
+  }
 })
 
 if (import.meta.hot) {

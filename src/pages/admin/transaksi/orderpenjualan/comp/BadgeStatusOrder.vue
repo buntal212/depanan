@@ -13,17 +13,21 @@ import { computed } from 'vue'
 // import { getCssVar } from 'quasar'
 
 const props = defineProps({
-  status: String,
+  status: String
 })
 
 const statusMap = {
   1: { label: 'Draf', bg: 'bg-grey-3', color: 'text-grey-9' },
   2: { label: 'Diproses', bg: 'bg-yellow-2', color: 'text-yellow-10' },
-  3: { label: 'Disetujui', bg: 'bg-deep-purple-2', color: 'text-deep-purple-10' },
+  3: {
+    label: 'Disetujui',
+    bg: 'bg-deep-purple-2',
+    color: 'text-deep-purple-10'
+  },
   4: { label: 'Tunggu Pengiriman', bg: 'bg-blue-2', color: 'text-blue-10' },
   5: { label: 'Dikirim', bg: 'bg-teal-2', color: 'text-teal-10' },
   6: { label: 'Selesai', bg: 'bg-cyan-2', color: 'text-cyan-10' },
-  9: { label: 'Batal Order', bg: 'bg-red-2', color: 'text-red-10' },
+  9: { label: 'Batal Order', bg: 'bg-red-2', color: 'text-red-10' }
 }
 
 const statusLabel = computed(() => {
@@ -35,7 +39,7 @@ const badgeStyle = computed(() => {
   const map = statusMap[props.status] || { bg: '#E5E7EB', color: '#6B7280' }
   return {
     backgroundColor: map.bg,
-    color: map.color,
+    color: map.color
   }
 })
 const badgeClass = computed(() => {

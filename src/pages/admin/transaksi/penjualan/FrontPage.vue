@@ -1,9 +1,12 @@
 <template>
   <div v-if="isList">
-    <HistoryPenjualanPage @add="()=>{
-      store.resetPembayaran()
-      isList = false
-      }"
+    <HistoryPenjualanPage
+      @add="
+        () => {
+          store.resetPembayaran()
+          isList = false
+        }
+      "
       @use-nota="useNota"
       @bayar="bayar"
       @tempo="tempo"
@@ -15,8 +18,13 @@
         <app-btn-back @click="isList = true" />
       </div>
       <div class="col-10">
-        <div class="row justify-center text-weight-bold text-h5 q-my-xs">Penjualan</div>
-        <div v-if="dariOrder" class="row justify-center text-primary text-weight-medium q-mb-xs">
+        <div class="row justify-center text-weight-bold text-h5 q-my-xs"
+          >Penjualan</div
+        >
+        <div
+          v-if="dariOrder"
+          class="row justify-center text-primary text-weight-medium q-mb-xs"
+        >
           Melanjutkan Order # {{ dariOrder }}
         </div>
         <div class="row justify-center text-weight-bold q-my-xs">
@@ -24,7 +32,9 @@
             <div class="row justify-center q-col-gutter-x-xs">
               <div class="col-auto text-right">Nota :</div>
               <div class="col-auto">
-                {{ store.noNota ?? 'nota tersedia setelah diisimpan satu data' }}
+                {{
+                  store.noNota ?? 'nota tersedia setelah diisimpan satu data'
+                }}
               </div>
             </div>
           </div>
@@ -57,7 +67,10 @@
     <q-separator />
 
     <div class="q-my-xs">
-      <div v-if="store.loading" class="row full-width justify-between items-center q-pa-xs">
+      <div
+        v-if="store.loading"
+        class="row full-width justify-between items-center q-pa-xs"
+      >
         <div class="col-auto">
           <q-spinner-pie color="grey-5" size="20px" />
           <q-spinner-pie color="grey-5" size="30px" />
@@ -83,7 +96,9 @@
       <div class="col-2 text-weight-bold text-right">
         {{ formatDouble(totalDiskonItem) }}
       </div>
-      <div class="col-2 text-weight-bold text-right">{{ formatDouble(subtotalBarang) }}</div>
+      <div class="col-2 text-weight-bold text-right">{{
+        formatDouble(subtotalBarang)
+      }}</div>
     </div>
     <q-separator v-if="store?.item != null" />
   </div>
@@ -99,27 +114,41 @@ import { useListPenjualanStore } from 'src/stores/admin/transaksi/penjualan/list
 import { computed, defineAsyncComponent, ref, shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
 
-const FormPage = shallowRef(defineAsyncComponent(() => import('./comp/FormPage.vue')))
-const ListPage = shallowRef(defineAsyncComponent(() => import('./comp/ListPage.vue')))
+const FormPage = shallowRef(
+  defineAsyncComponent(() => import('./comp/FormPage.vue'))
+)
+const ListPage = shallowRef(
+  defineAsyncComponent(() => import('./comp/ListPage.vue'))
+)
 const HistoryPenjualanPage = shallowRef(
-  defineAsyncComponent(() => import('./comp/HistoryPenjualanPage.vue')),
+  defineAsyncComponent(() => import('./comp/HistoryPenjualanPage.vue'))
 )
 const DialogPembayaranPage = shallowRef(
-  defineAsyncComponent(() => import('./comp/DialogPembayaranPage.vue')),
+  defineAsyncComponent(() => import('./comp/DialogPembayaranPage.vue'))
 )
-const DialogCetak = shallowRef(defineAsyncComponent(() => import('./comp/cetak/DialogCetak.vue')))
-const DialogTempo = shallowRef(defineAsyncComponent(() => import('./comp/DialogTempo.vue')))
+const DialogCetak = shallowRef(
+  defineAsyncComponent(() => import('./comp/cetak/DialogCetak.vue'))
+)
+const DialogTempo = shallowRef(
+  defineAsyncComponent(() => import('./comp/DialogTempo.vue'))
+)
 
 const subtotalBarang = computed(() => {
   if (Array.isArray(store?.item?.detail) && store.item.detail.length > 0) {
-    return store.item.detail.reduce((acc, row) => acc + (Number(row.subtotal) || 0), 0)
+    return store.item.detail.reduce(
+      (acc, row) => acc + (Number(row.subtotal) || 0),
+      0
+    )
   }
   return Number(store?.item?.subtotal || 0)
 })
 
 const totalDiskonItem = computed(() => {
   if (Array.isArray(store?.item?.detail) && store.item.detail.length > 0) {
-    return store.item.detail.reduce((acc, row) => acc + (Number(row.diskon) || 0), 0)
+    return store.item.detail.reduce(
+      (acc, row) => acc + (Number(row.diskon) || 0),
+      0
+    )
   }
   return Number(store?.item?.total_diskon || 0)
 })
@@ -135,7 +164,8 @@ store.getSales()
 function useNota(val) {
   // console.log('use nota',  val);
   isList.value = false
-  store.dariOrder = Boolean(val?.noorder) || String(val?.no_penjualan || '').startsWith('OPJ-')
+  store.dariOrder =
+    Boolean(val?.noorder) || String(val?.no_penjualan || '').startsWith('OPJ-')
   store.form.sales_id = val?.sales_id
   store.noNota = val?.no_penjualan
   store.item = val
@@ -151,18 +181,18 @@ function bukaPembayaran(item) {
   store.openPembayaran = true
 }
 function tempo(item) {
-  store.formTempo.jml_tempo=30
-  const nextMth=date.addToDate(Date.now(),{day:store.formTempo.jml_tempo})
+  store.formTempo.jml_tempo = 30
+  const nextMth = date.addToDate(Date.now(), { day: store.formTempo.jml_tempo })
 
   store.formTempo.tgl_kirim = date.formatDate(Date.now(), 'YYYY-MM-DD')
   store.dispTempo = date.formatDate(Date.now(), 'DD MMMM YYYY')
   store.formTempo.tempo = date.formatDate(nextMth, 'YYYY-MM-DD')
-  store.formTempo.id=item.id
-  store.item=item
+  store.formTempo.id = item.id
+  store.item = item
   store.openDialogTempo = true
   setTimeout(() => {
-    if(item?.expand) delete item.expand
-  },100)
+    if (item?.expand) delete item.expand
+  }, 100)
 }
 // function lihatCetak(item) {
 //   console.log('item', item)

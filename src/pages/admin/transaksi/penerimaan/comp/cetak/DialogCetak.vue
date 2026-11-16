@@ -20,7 +20,12 @@
                   <div class="q-pr-md" v-if="profil.fotoProfil">
                     <q-img
                       :src="profil.fotoProfil"
-                      style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover"
+                      style="
+                        width: 100px;
+                        height: 100px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                      "
                       spinner-color="primary"
                     />
                   </div>
@@ -32,8 +37,12 @@
                       {{ profil.profilData?.alamat || '-' }}
                     </div>
                     <div>
-                      <span class="q-pr-sm">Telp : {{ profil.profilData?.telepon || '-' }}</span>
-                      <span>Email : {{ profil.profilData?.email || '-' }} </span>
+                      <span class="q-pr-sm"
+                        >Telp : {{ profil.profilData?.telepon || '-' }}</span
+                      >
+                      <span
+                        >Email : {{ profil.profilData?.email || '-' }}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -41,7 +50,9 @@
               <div class="col flex-end q-pl-xl q-py-sm content-center">
                 <div class="col full-width">
                   <div class="col">Penerimaan dari</div>
-                  <div class="col text-bold">{{ store.dataprops?.suplier }}</div>
+                  <div class="col text-bold">{{
+                    store.dataprops?.suplier
+                  }}</div>
                 </div>
 
                 <div class="row full-width">
@@ -60,7 +71,10 @@
             </div>
             <div class="full-width justify-center">
               <q-separator />
-              <div class="text-center text-bold q-pt-sm" style="font-size: medium">
+              <div
+                class="text-center text-bold q-pt-sm"
+                style="font-size: medium"
+              >
                 NOTA ORDER BARANG
               </div>
               <div class="q-px-md q-pt-sm">
@@ -81,14 +95,22 @@
                       <td>{{ item.namabarang }}</td>
                       <td class="text-center">{{ item.jumlahorder }}</td>
                       <td class="text-center">{{ item.jumlahterima }}</td>
-                      <td class="text-right">{{ formatRpDouble(item.hargafaktur) }}</td>
-                      <td class="text-right">{{ formatRpDouble(item.subtotalfix) }}</td>
+                      <td class="text-right">{{
+                        formatRpDouble(item.hargafaktur)
+                      }}</td>
+                      <td class="text-right">{{
+                        formatRpDouble(item.subtotalfix)
+                      }}</td>
                     </tr>
                     <tr>
                       <td colspan="5">
                         <div class="row justify-between">
                           <div class="flex-start">
-                            Terbilang : {{ terbilangRupiah(store.dataprops?.total) }} Rupiah,
+                            Terbilang :
+                            {{
+                              terbilangRupiah(store.dataprops?.total)
+                            }}
+                            Rupiah,
                           </div>
                           <div class="text-bold flex-end q-pl-sm">TOTAL</div>
                         </div>
@@ -109,7 +131,10 @@
                 <div>{{ store.dataprops?.suplier?.nama }}</div>
               </div>
               <div class="col flex-end content-center text-center">
-                <div>Probolinggo, {{ dateFullFormat(store.dataprops?.tglorder) }}</div>
+                <div
+                  >Probolinggo,
+                  {{ dateFullFormat(store.dataprops?.tglorder) }}</div
+                >
                 <div>{{ profil.profilData?.namatoko || 'Nama Toko' }}</div>
                 <div style="height: 50px"></div>
                 <div>{{ profil.profilData.pemilik }}</div>
@@ -122,8 +147,17 @@
           <q-card-section class="q-pa-none bg-black text-white">
             <div class="q-pa-md row justify-end items-end">
               <div class="items-end">
-                <q-btn v-print="printObj" unelevated color="dark" round size="sm" icon="print">
-                  <q-tooltip class="primary" :offset="[10, 10]"> Print </q-tooltip>
+                <q-btn
+                  v-print="printObj"
+                  unelevated
+                  color="dark"
+                  round
+                  size="sm"
+                  icon="print"
+                >
+                  <q-tooltip class="primary" :offset="[10, 10]">
+                    Print
+                  </q-tooltip>
                 </q-btn>
               </div>
             </div>
@@ -135,7 +169,11 @@
 </template>
 
 <script setup>
-import { dateDbFormat, dateFullFormat, formatRpDouble } from 'src/modules/formatter'
+import {
+  dateDbFormat,
+  dateFullFormat,
+  formatRpDouble
+} from 'src/modules/formatter'
 import { terbilangRupiah } from 'src/modules/utils'
 import { useProfilStore } from 'src/stores/admin/profil'
 import { useAdminFormTransaksiPenerimaanBarangStore } from 'src/stores/admin/transaksi/penerimaan/form'
@@ -169,7 +207,7 @@ const printObj = {
   closeCallback() {
     printed.value = false
     console.log('closePrint')
-  },
+  }
 }
 
 // const rinciterima = store.itemPenerimaan?.rinci

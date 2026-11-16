@@ -12,7 +12,9 @@
   <div v-else class="q-pa-md">
     <div class="row items-center">
       <div class="col-10">
-        <div class="row justify-center text-weight-bold text-h5 q-my-xs">Pembayaran Cicilan</div>
+        <div class="row justify-center text-weight-bold text-h5 q-my-xs"
+          >Pembayaran Cicilan</div
+        >
         <div class="row justify-center text-weight-bold q-my-xs">
           <div class="col-6">
             <div class="row justify-between">
@@ -48,7 +50,10 @@
     <q-separator />
 
     <div class="q-my-xs">
-      <div v-if="store.loading" class="row full-width justify-between items-center q-pa-xs">
+      <div
+        v-if="store.loading"
+        class="row full-width justify-between items-center q-pa-xs"
+      >
         <div class="col-auto">
           <q-spinner-pie color="grey-5" size="20px" />
           <q-spinner-pie color="grey-5" size="30px" />
@@ -68,7 +73,9 @@
     <div v-if="store?.item != null" class="row q-py-md">
       <div class="col-4"></div>
       <div class="col-5 text-weight-bold">Total</div>
-      <div class="col-2 text-weight-bold text-right">{{ store?.item?.total }}</div>
+      <div class="col-2 text-weight-bold text-right">{{
+        store?.item?.total
+      }}</div>
     </div>
     <q-separator v-if="store?.item != null" />
   </div>
@@ -82,15 +89,21 @@ import { useCicilanPenjualanFormStore } from 'src/stores/admin/transaksi/cicilan
 import { useListCicilanPenjualanStore } from 'src/stores/admin/transaksi/cicilan/list'
 import { defineAsyncComponent, ref, shallowRef } from 'vue'
 
-const FormPage = shallowRef(defineAsyncComponent(() => import('./comp/FormPage.vue')))
+const FormPage = shallowRef(
+  defineAsyncComponent(() => import('./comp/FormPage.vue'))
+)
 const ListPenjualanPage = shallowRef(
-  defineAsyncComponent(() => import('./comp/ListPenjualanPage.vue')),
+  defineAsyncComponent(() => import('./comp/ListPenjualanPage.vue'))
 )
-const DialogCicilan = shallowRef(defineAsyncComponent(() => import('./comp/DialogCicilanPage.vue')))
+const DialogCicilan = shallowRef(
+  defineAsyncComponent(() => import('./comp/DialogCicilanPage.vue'))
+)
 const DialogListCicilan = shallowRef(
-  defineAsyncComponent(() => import('./comp/DialogListCicilan.vue')),
+  defineAsyncComponent(() => import('./comp/DialogListCicilan.vue'))
 )
-const DialogPelunasan = shallowRef(defineAsyncComponent(() => import('./comp/DialogPelunasan.vue')))
+const DialogPelunasan = shallowRef(
+  defineAsyncComponent(() => import('./comp/DialogPelunasan.vue'))
+)
 
 const isList = ref(true)
 
@@ -119,13 +132,13 @@ function cicilNota(val) {
         'Jumlah Total HUTANG dan CICILAN munkin tidak akan akurat karena tidak semua nota ditampilkan',
       ok: {
         label: 'Lanjutkan',
-        color: 'primary',
+        color: 'primary'
       },
       cancel: {
         label: 'Batal',
-        color: 'negative',
+        color: 'negative'
       },
-      persistent: true,
+      persistent: true
     }).onOk(() => {
       store.item = val
       store.setForm('pelanggan_id', val.pelanggan_id)

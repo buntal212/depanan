@@ -17,11 +17,15 @@
             <q-form class="full-height" @submit="onSubmit">
               <q-card-section class="full-height q-pa-lg scroll">
                 <div class="row q-col-gutter-md justify-around">
-                  <div :class="`col-${isMobile ? 12 : 6}`" class="row q-col-gutter-md items-center">
+                  <div
+                    :class="`col-${isMobile ? 12 : 6}`"
+                    class="row q-col-gutter-md items-center"
+                  >
                     <div v-if="store?.item != null" class="col-12 q-py-md">
                       <div class="row justify-between items-start f-16">
                         <div class="col-auto text-weight-bold">
-                          Total Nota Nomor : {{ store.formPembayaran.no_penjualan }}
+                          Total Nota Nomor :
+                          {{ store.formPembayaran.no_penjualan }}
                         </div>
                         <div class="col-auto">
                           <div
@@ -29,20 +33,26 @@
                             class="row justify-between items-center q-gutter-x-md text-caption text-grey-4"
                           >
                             <span>Total Kotor Barang :</span>
-                            <span class="text-right">Rp {{ formatDouble(totalKotorBarang) }}</span>
+                            <span class="text-right"
+                              >Rp {{ formatDouble(totalKotorBarang) }}</span
+                            >
                           </div>
                           <div
                             v-if="totalDiskonItem > 0"
                             class="row justify-between items-center q-gutter-x-md text-caption text-amber-3"
                           >
                             <span>Diskon Item :</span>
-                            <span class="text-right">- Rp {{ formatDouble(totalDiskonItem) }}</span>
+                            <span class="text-right"
+                              >- Rp {{ formatDouble(totalDiskonItem) }}</span
+                            >
                           </div>
                           <div
                             class="row justify-between items-center q-gutter-x-md text-subtitle1 text-weight-bold text-white"
                           >
                             <span>Subtotal Barang :</span>
-                            <span class="text-right">Rp {{ formatDouble(subtotalBarang) }}</span>
+                            <span class="text-right"
+                              >Rp {{ formatDouble(subtotalBarang) }}</span
+                            >
                           </div>
                         </div>
                       </div>
@@ -56,7 +66,9 @@
                       option-label="label"
                       option-value="value"
                       @update:model-value="selectCaraBayar"
-                      :disable="store.loadingPembayaran || pembayaranOrderTerkunci"
+                      :disable="
+                        store.loadingPembayaran || pembayaranOrderTerkunci
+                      "
                       :loading="store.loadingPembayaran"
                     />
                     <app-select
@@ -65,7 +77,9 @@
                       v-model="store.formPembayaran.cara_bayar"
                       label="Pilih Cara Bayar"
                       :options="['cash', 'transfer']"
-                      :disable="store.loadingPembayaran || pembayaranOrderTerkunci"
+                      :disable="
+                        store.loadingPembayaran || pembayaranOrderTerkunci
+                      "
                       :loading="store.loadingPembayaran"
                     />
                     <app-select-server
@@ -75,32 +89,54 @@
                       v-model="store.formPembayaran.pelanggan_id"
                       url="v1/transaksi/penjualan/list-pelanggan"
                       option-value="id"
-                      :option-label="(opt) => opt.nama + ' ' + opt?.alamat"
+                      :option-label="opt => opt.nama + ' ' + opt?.alamat"
                       label="Cari Pelanggan"
                       :filter-min="3"
                       clearable
                       :rules="[
-                        (val) =>
-                          (store.formPembayaran.cara_bayar == '2' ? !!val : true) || 'Harap di isi',
+                        val =>
+                          (store.formPembayaran.cara_bayar == '2'
+                            ? !!val
+                            : true) || 'Harap di isi'
                       ]"
                       :disable="store.loadingPembayaran"
                       @update:model-value="setPelanggan"
                     />
-                    <div v-if="store.formPembayaran.pelanggan_id" class="col-12">
+                    <div
+                      v-if="store.formPembayaran.pelanggan_id"
+                      class="col-12"
+                    >
                       <q-card flat bordered class="q-pa-sm">
-                        <div class="text-caption text-grey-6">Pelanggan dari order</div>
+                        <div class="text-caption text-grey-6"
+                          >Pelanggan dari order</div
+                        >
                         <div class="text-weight-bold">
-                          {{ store?.item?.pelanggan?.nama || store.formPembayaran.dataPelanggan.nama || '-' }}
+                          {{
+                            store?.item?.pelanggan?.nama ||
+                            store.formPembayaran.dataPelanggan.nama ||
+                            '-'
+                          }}
                         </div>
                         <div class="text-caption">
-                          {{ store?.item?.pelanggan?.telepon || store.formPembayaran.dataPelanggan.tlp || '-' }}
-                          · {{ store?.item?.pelanggan?.alamat || store.formPembayaran.dataPelanggan.alamat || '-' }}
+                          {{
+                            store?.item?.pelanggan?.telepon ||
+                            store.formPembayaran.dataPelanggan.tlp ||
+                            '-'
+                          }}
+                          ·
+                          {{
+                            store?.item?.pelanggan?.alamat ||
+                            store.formPembayaran.dataPelanggan.alamat ||
+                            '-'
+                          }}
                         </div>
                       </q-card>
                     </div>
                     <template v-if="!store.formPembayaran.pelanggan_id">
                       <div class="col-12 q-mb-md">
-                        <div class="row text-weight-bold q-mb-sm justify-center">
+                        <div
+                          class="row text-weight-bold q-mb-sm justify-center"
+                        >
                           Data Pelanggan
                         </div>
                         <div class="row">
@@ -125,7 +161,9 @@
                         <div class="row">
                           <div class="col-12">
                             <app-input
-                              v-model="store.formPembayaran.dataPelanggan.alamat"
+                              v-model="
+                                store.formPembayaran.dataPelanggan.alamat
+                              "
                               label="Alamat Pelanggan"
                               :disable="store.loadingPembayaran"
                             />
@@ -151,19 +189,30 @@
                       </div>
 
                       <!-- Ringkasan Ringkas Tema Gelap -->
-                      <div class="q-mt-sm q-pa-sm bg-grey-10 text-grey-3 rounded-borders text-caption">
+                      <div
+                        class="q-mt-sm q-pa-sm bg-grey-10 text-grey-3 rounded-borders text-caption"
+                      >
                         <div class="row justify-between q-py-xs">
                           <span>Subtotal Barang:</span>
-                          <span class="text-weight-medium">{{ formatDouble(subtotalBarang) }}</span>
+                          <span class="text-weight-medium">{{
+                            formatDouble(subtotalBarang)
+                          }}</span>
                         </div>
-                        <div v-if="diskonNota > 0" class="row justify-between q-py-xs text-amber-3">
+                        <div
+                          v-if="diskonNota > 0"
+                          class="row justify-between q-py-xs text-amber-3"
+                        >
                           <span>Diskon Nota:</span>
                           <span>- {{ formatDouble(diskonNota) }}</span>
                         </div>
                         <q-separator dark class="q-my-xs" />
-                        <div class="row justify-between q-py-xs text-weight-bold text-subtitle2 text-white">
+                        <div
+                          class="row justify-between q-py-xs text-weight-bold text-subtitle2 text-white"
+                        >
                           <span>Total Sementara:</span>
-                          <span class="text-amber-4">{{ formatDouble(totalSementara) }}</span>
+                          <span class="text-amber-4">{{
+                            formatDouble(totalSementara)
+                          }}</span>
                         </div>
                       </div>
                     </div>
@@ -190,11 +239,23 @@
 
       <!-- Dialog Konfirmasi PPN -->
       <q-dialog v-model="openDialogKonfirmasiPpn" persistent>
-        <q-card style="min-width: 480px; max-width: 95vw;" class="q-pa-md bg-grey-10 text-white">
+        <q-card
+          style="min-width: 480px; max-width: 95vw"
+          class="q-pa-md bg-grey-10 text-white"
+        >
           <q-card-section class="row items-center q-pb-none">
-            <div class="text-h6 text-weight-bold">Konfirmasi PPN & Pembayaran</div>
+            <div class="text-h6 text-weight-bold"
+              >Konfirmasi PPN & Pembayaran</div
+            >
             <q-space />
-            <q-btn icon="close" flat round dense v-close-popup :disable="store.loadingPembayaran" />
+            <q-btn
+              icon="close"
+              flat
+              round
+              dense
+              v-close-popup
+              :disable="store.loadingPembayaran"
+            />
           </q-card-section>
 
           <q-separator dark class="q-my-sm" />
@@ -210,44 +271,77 @@
                 color="primary"
                 class="text-grey-2 text-weight-medium"
               />
-              <div v-if="!ppnConfigAktif || tarifPpnPersen <= 0" class="text-caption text-negative q-ml-md">
+              <div
+                v-if="!ppnConfigAktif || tarifPpnPersen <= 0"
+                class="text-caption text-negative q-ml-md"
+              >
                 * Konfigurasi PPN backend saat ini nonaktif.
               </div>
             </div>
 
             <!-- Rincian Informasi Reaktif -->
-            <div class="q-pa-sm bg-grey-9 text-grey-2 rounded-borders text-body2">
+            <div
+              class="q-pa-sm bg-grey-9 text-grey-2 rounded-borders text-body2"
+            >
               <div class="row justify-between q-py-xs">
                 <span>Subtotal Barang:</span>
-                <span class="text-weight-bold">{{ formatDouble(subtotalBarang) }}</span>
+                <span class="text-weight-bold">{{
+                  formatDouble(subtotalBarang)
+                }}</span>
               </div>
               <div class="row justify-between q-py-xs text-amber-3">
                 <span>Diskon Nota (read-only):</span>
-                <span>{{ diskonNota > 0 ? '- ' + formatDouble(diskonNota) : 'Rp 0' }}</span>
+                <span>{{
+                  diskonNota > 0 ? '- ' + formatDouble(diskonNota) : 'Rp 0'
+                }}</span>
               </div>
               <div class="row justify-between q-py-xs">
                 <span>DPP (Dasar Pengenaan Pajak):</span>
                 <span class="text-weight-bold">{{ formatDouble(dpp) }}</span>
               </div>
-              <div class="row justify-between q-py-xs" :class="store.formPembayaran.kena_ppn ? 'text-primary' : 'text-grey-5'">
-                <span>PPN ({{ store.formPembayaran.kena_ppn ? tarifPpnPersen : 0 }}%):</span>
-                <span class="text-weight-bold">{{ formatDouble(ppnNominal) }}</span>
+              <div
+                class="row justify-between q-py-xs"
+                :class="
+                  store.formPembayaran.kena_ppn ? 'text-primary' : 'text-grey-5'
+                "
+              >
+                <span
+                  >PPN ({{
+                    store.formPembayaran.kena_ppn ? tarifPpnPersen : 0
+                  }}%):</span
+                >
+                <span class="text-weight-bold">{{
+                  formatDouble(ppnNominal)
+                }}</span>
               </div>
               <q-separator dark class="q-my-xs" />
-              <div class="row justify-between q-py-xs text-h6 text-weight-bolder text-white">
+              <div
+                class="row justify-between q-py-xs text-h6 text-weight-bolder text-white"
+              >
                 <span>Total Tagihan:</span>
-                <span class="text-amber-4">{{ formatDouble(totalTagihanFinal) }}</span>
+                <span class="text-amber-4">{{
+                  formatDouble(totalTagihanFinal)
+                }}</span>
               </div>
             </div>
 
-            <div class="q-mt-sm q-pa-sm bg-grey-9 text-grey-2 rounded-borders text-body2">
+            <div
+              class="q-mt-sm q-pa-sm bg-grey-9 text-grey-2 rounded-borders text-body2"
+            >
               <div class="row justify-between q-py-xs">
                 <span>Jenis Pembayaran:</span>
-                <span class="text-weight-bold text-white">{{ labelJenisPembayaran }}</span>
+                <span class="text-weight-bold text-white">{{
+                  labelJenisPembayaran
+                }}</span>
               </div>
-              <div v-if="['5', '7'].includes(store.formPembayaran.flag)" class="row justify-between q-py-xs">
+              <div
+                v-if="['5', '7'].includes(store.formPembayaran.flag)"
+                class="row justify-between q-py-xs"
+              >
                 <span>Cara Bayar:</span>
-                <span class="text-weight-bold text-uppercase text-white">{{ store.formPembayaran.cara_bayar || 'cash' }}</span>
+                <span class="text-weight-bold text-uppercase text-white">{{
+                  store.formPembayaran.cara_bayar || 'cash'
+                }}</span>
               </div>
 
               <!-- Kasus Lunas (flag == '5') -->
@@ -263,9 +357,12 @@
                         currency
                         label="Nominal Bayar"
                         :rules="[
-                          (val) => {
+                          val => {
                             const b = Number(olahUang(val)) || 0
-                            return b >= totalTagihanFinal || `Kurang bayar (Min: Rp ${formatDouble(totalTagihanFinal)})`
+                            return (
+                              b >= totalTagihanFinal ||
+                              `Kurang bayar (Min: Rp ${formatDouble(totalTagihanFinal)})`
+                            )
                           }
                         ]"
                         @update:model-value="updateBayar"
@@ -290,19 +387,27 @@
                   <span>Kembalian:</span>
                   <span
                     class="text-weight-bold text-h6"
-                    :class="kembalianFinal >= 0 ? 'text-positive' : 'text-negative'"
+                    :class="
+                      kembalianFinal >= 0 ? 'text-positive' : 'text-negative'
+                    "
                   >
                     Rp {{ formatDouble(Math.max(0, kembalianFinal)) }}
                   </span>
                 </div>
 
-                <div v-if="nominalBayarFinal < totalTagihanFinal" class="text-caption text-negative text-center q-mt-xs text-weight-bold">
-                  ⚠️ Pembayaran kurang Rp {{ formatDouble(totalTagihanFinal - nominalBayarFinal) }}!
+                <div
+                  v-if="nominalBayarFinal < totalTagihanFinal"
+                  class="text-caption text-negative text-center q-mt-xs text-weight-bold"
+                >
+                  ⚠️ Pembayaran kurang Rp
+                  {{ formatDouble(totalTagihanFinal - nominalBayarFinal) }}!
                 </div>
               </template>
 
               <!-- Kasus Down Payment / DP (flag == '7' atau '8') -->
-              <template v-else-if="['7', '8'].includes(store.formPembayaran.flag)">
+              <template
+                v-else-if="['7', '8'].includes(store.formPembayaran.flag)"
+              >
                 <div class="q-my-sm">
                   <app-input-rp
                     ref="refBayar"
@@ -313,10 +418,11 @@
                     valid
                     label="Nominal Down Payment (DP)"
                     :rules="[
-                      (val) => {
+                      val => {
                         const b = Number(olahUang(val)) || 0
                         if (b < 0) return 'Nominal DP tidak boleh negatif'
-                        if (totalTagihanFinal > 0 && b >= totalTagihanFinal) return 'Nominal DP harus kurang dari total tagihan'
+                        if (totalTagihanFinal > 0 && b >= totalTagihanFinal)
+                          return 'Nominal DP harus kurang dari total tagihan'
                         return true
                       }
                     ]"
@@ -333,10 +439,19 @@
                   </span>
                 </div>
 
-                <div v-if="totalTagihanFinal > 0 && nominalBayarFinal >= totalTagihanFinal" class="text-caption text-negative text-center q-mt-xs text-weight-bold">
+                <div
+                  v-if="
+                    totalTagihanFinal > 0 &&
+                    nominalBayarFinal >= totalTagihanFinal
+                  "
+                  class="text-caption text-negative text-center q-mt-xs text-weight-bold"
+                >
                   ⚠️ Nominal DP harus kurang dari total tagihan!
                 </div>
-                <div v-else-if="nominalBayarFinal < 0" class="text-caption text-negative text-center q-mt-xs text-weight-bold">
+                <div
+                  v-else-if="nominalBayarFinal < 0"
+                  class="text-caption text-negative text-center q-mt-xs text-weight-bold"
+                >
                   ⚠️ Nominal DP tidak boleh negatif!
                 </div>
               </template>
@@ -358,7 +473,13 @@
           </q-card-section>
 
           <q-card-actions align="right" class="q-pt-md">
-            <q-btn flat label="Kembali / Ubah" color="grey-5" v-close-popup :disable="store.loadingPembayaran" />
+            <q-btn
+              flat
+              label="Kembali / Ubah"
+              color="grey-5"
+              v-close-popup
+              :disable="store.loadingPembayaran"
+            />
             <q-btn
               label="Simpan Transaksi"
               color="primary"
@@ -382,7 +503,9 @@ import { notifError } from 'src/modules/notifs'
 import { useFromPenjualanStore } from 'src/stores/admin/transaksi/penjualan/form'
 import { computed, defineAsyncComponent, ref, shallowRef, watch } from 'vue'
 
-const DialogCetak = shallowRef(defineAsyncComponent(() => import('./cetak/DialogCetak.vue')))
+const DialogCetak = shallowRef(
+  defineAsyncComponent(() => import('./cetak/DialogCetak.vue'))
+)
 const $q = useQuasar()
 const isMobile = computed(() => {
   return $q.screen.lt.sm // Quasar screen size helper
@@ -392,9 +515,11 @@ const store = useFromPenjualanStore()
 const optionCaraBayar = computed(() => [
   { label: 'Lunas', value: '5' },
   { label: 'Down Payment (DP)', value: '7' },
-  { label: 'Tempo', value: '2' },
+  { label: 'Tempo', value: '2' }
 ])
-const pembayaranOrderTerkunci = computed(() => Boolean(store?.item?.order_sumber?.sistem_bayar))
+const pembayaranOrderTerkunci = computed(() =>
+  Boolean(store?.item?.order_sumber?.sistem_bayar)
+)
 const refPelanggan = ref(null)
 const refBayar = ref(null)
 
@@ -405,7 +530,10 @@ const tarifPpnPersen = ref(Number(store?.item?.ppn_persen || 0))
 // 1. Subtotal barang dari detail penjualan
 const subtotalBarang = computed(() => {
   if (Array.isArray(store?.item?.detail) && store.item.detail.length > 0) {
-    return store.item.detail.reduce((acc, row) => acc + (Number(row.subtotal) || 0), 0)
+    return store.item.detail.reduce(
+      (acc, row) => acc + (Number(row.subtotal) || 0),
+      0
+    )
   }
   return Number(store?.item?.subtotal || 0)
 })
@@ -413,7 +541,10 @@ const subtotalBarang = computed(() => {
 // Total diskon item dari rincian barang
 const totalDiskonItem = computed(() => {
   if (Array.isArray(store?.item?.detail) && store.item.detail.length > 0) {
-    return store.item.detail.reduce((acc, row) => acc + (Number(row.diskon) || 0), 0)
+    return store.item.detail.reduce(
+      (acc, row) => acc + (Number(row.diskon) || 0),
+      0
+    )
   }
   return Number(store?.item?.total_diskon || 0)
 })
@@ -429,25 +560,43 @@ const diskonNota = computed(() => {
   return Math.max(0, Number(raw) || 0)
 })
 
-// 3. Total Sementara untuk Dialog Pertama (HANYA Subtotal Barang - Diskon Nota, TANPA PPN)
+// 3. Total setelah diskon nota. Harga jual sudah termasuk PPN.
 const totalSementara = computed(() => {
-  return Math.max(0, Math.round((subtotalBarang.value - diskonNota.value) * 100) / 100)
+  return Math.max(
+    0,
+    Math.round((subtotalBarang.value - diskonNota.value) * 100) / 100
+  )
 })
 
-// 4. Perhitungan Khusus Dialog Konfirmasi Kedua (PPN & Final)
+// 4. Pecah total termasuk PPN menjadi DPP dan PPN.
 const dpp = computed(() => {
+  if (
+    store.formPembayaran.kena_ppn &&
+    tarifPpnPersen.value > 0 &&
+    ppnConfigAktif.value
+  ) {
+    return (
+      Math.round(
+        (totalSementara.value / (1 + tarifPpnPersen.value / 100)) * 100
+      ) / 100
+    )
+  }
   return totalSementara.value
 })
 
 const ppnNominal = computed(() => {
-  if (store.formPembayaran.kena_ppn && tarifPpnPersen.value > 0 && ppnConfigAktif.value) {
-    return Math.round(dpp.value * tarifPpnPersen.value) / 100
+  if (
+    store.formPembayaran.kena_ppn &&
+    tarifPpnPersen.value > 0 &&
+    ppnConfigAktif.value
+  ) {
+    return Math.round((totalSementara.value - dpp.value) * 100) / 100
   }
   return 0
 })
 
 const totalTagihanFinal = computed(() => {
-  return Math.round((dpp.value + ppnNominal.value) * 100) / 100
+  return totalSementara.value
 })
 
 const labelJenisPembayaran = computed(() => {
@@ -508,7 +657,10 @@ async function muatPengaturanPpn() {
     tarifPpnPersen.value = Number(config?.persen || 0)
 
     if (ppnConfigAktif.value) {
-      if (store.formPembayaran.kena_ppn === undefined || store.formPembayaran.kena_ppn === null) {
+      if (
+        store.formPembayaran.kena_ppn === undefined ||
+        store.formPembayaran.kena_ppn === null
+      ) {
         store.formPembayaran.kena_ppn = true
       }
     } else {
@@ -530,7 +682,7 @@ async function muatPengaturanPpn() {
 
 watch(
   () => store.openPembayaran,
-  async (buka) => {
+  async buka => {
     if (buka) {
       openDialogKonfirmasiPpn.value = false
       await muatPengaturanPpn()
@@ -542,7 +694,10 @@ watch(
         store.formPembayaran.bayar = 0
         store.formPembayaran.kembali = 0
       } else if (['7', '8'].includes(store.formPembayaran.flag)) {
-        if (store.formPembayaran.bayar === undefined || store.formPembayaran.bayar === null) {
+        if (
+          store.formPembayaran.bayar === undefined ||
+          store.formPembayaran.bayar === null
+        ) {
           store.formPembayaran.bayar = 0
         }
         store.formPembayaran.kembali = 0
@@ -554,7 +709,7 @@ watch(
 
 watch(
   () => openDialogKonfirmasiPpn.value,
-  (buka) => {
+  buka => {
     if (buka) {
       setTimeout(() => {
         refBayar.value?.refInput?.focus?.()
@@ -592,7 +747,11 @@ function validasiAwal() {
 }
 
 function onSubmit() {
-  console.log('submit form pembayaran', refPelanggan.value, store.formPembayaran)
+  console.log(
+    'submit form pembayaran',
+    refPelanggan.value,
+    store.formPembayaran
+  )
 
   if (validasiAwal()) {
     if (store.formPembayaran.flag === '5') {
@@ -605,7 +764,10 @@ function onSubmit() {
       store.formPembayaran.bayar = 0
       store.formPembayaran.kembali = 0
     } else if (['7', '8'].includes(store.formPembayaran.flag)) {
-      if (store.formPembayaran.bayar === undefined || store.formPembayaran.bayar === null) {
+      if (
+        store.formPembayaran.bayar === undefined ||
+        store.formPembayaran.bayar === null
+      ) {
         store.formPembayaran.bayar = 0
       }
       store.formPembayaran.kembali = 0
@@ -624,7 +786,9 @@ function simpanTransaksiFinal() {
 
   if (store.formPembayaran.flag === '5') {
     if (bayar < finalTotal) {
-      notifError(`Nominal pembayaran kurang! Total tagihan final adalah ${formatDouble(finalTotal)}`)
+      notifError(
+        `Nominal pembayaran kurang! Total tagihan final adalah ${formatDouble(finalTotal)}`
+      )
       return
     }
     store.formPembayaran.kembali = Math.max(0, bayar - finalTotal)
@@ -634,7 +798,9 @@ function simpanTransaksiFinal() {
       return
     }
     if (finalTotal > 0 && bayar >= finalTotal) {
-      notifError(`Nominal DP (${formatDouble(bayar)}) harus kurang dari total tagihan final (${formatDouble(finalTotal)})`)
+      notifError(
+        `Nominal DP (${formatDouble(bayar)}) harus kurang dari total tagihan final (${formatDouble(finalTotal)})`
+      )
       return
     }
     store.formPembayaran.kembali = 0
@@ -645,20 +811,21 @@ function simpanTransaksiFinal() {
 
   store
     .simpanPembayaran()
-    .then((res) => {
+    .then(res => {
       if (res?.status == 200) {
         openDialogKonfirmasiPpn.value = false
         store.openPembayaran = false
         store.opendialogCetak = true
       }
     })
-    .catch((err) => {
+    .catch(err => {
       console.error('Gagal simpan pembayaran', err)
     })
 }
 
 function setNamaPelanggan() {
-  if (store.formPembayaran.pelanggan_id) store.formPembayaran.pelanggan_id = null
+  if (store.formPembayaran.pelanggan_id)
+    store.formPembayaran.pelanggan_id = null
 }
 
 function setPelanggan() {
@@ -666,7 +833,7 @@ function setPelanggan() {
     store.formPembayaran.dataPelanggan = {
       nama: '',
       tlp: '',
-      alamat: '',
+      alamat: ''
     }
   }
 }

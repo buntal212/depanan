@@ -6,7 +6,9 @@
       </div>
       <div class="text-center col-10 q-pr-xl">Form Pembayaran Hutang</div>
     </div>
-    <div class="text-center">No. Pembayaran : {{ storeform.form.nopembayaran }}</div>
+    <div class="text-center"
+      >No. Pembayaran : {{ storeform.form.nopembayaran }}</div
+    >
     <div class="row full-width q-px-xl q-gutter-x-sm">
       <div class="col-3">
         <app-input-date
@@ -16,12 +18,12 @@
           outlined
           :disable="storeform.form.nopembayaran !== ''"
           @set-model="
-            (val) => {
+            val => {
               storeform.dateDisplay.tgl = val
             }
           "
           @db-model="
-            (val) => {
+            val => {
               storeform.form.tgl = val
             }
           "
@@ -90,7 +92,9 @@
 
         <template v-slot:bottom-row>
           <q-tr>
-            <q-td colspan="4" class="text-right text-weight-bold text-red"> Total </q-td>
+            <q-td colspan="4" class="text-right text-weight-bold text-red">
+              Total
+            </q-td>
             <q-td class="text-right text-weight-bold text-red">
               {{ formatRpDouble(totalJumlah) }}
             </q-td>
@@ -135,24 +139,29 @@ const $q = useQuasar()
 const props = defineProps({
   data: {
     type: Object,
-    default: null,
-  },
+    default: null
+  }
 })
 
 const semuaRinci = computed(() => {
-  return storelist.rinci.map((item) => ({
+  return storelist.rinci.map(item => ({
     id: item.id,
     nopenerimaan: item.nopenerimaan,
     noorder: item.penerimaan?.noorder || '-',
     nofaktur: item.penerimaan?.nofaktur || '-',
     total: Number(item.total) || 0,
-    _deleting: false, // ← ini tambahan
+    _deleting: false // ← ini tambahan
   }))
 })
 
 const columns = [
   { name: 'no', label: 'No.', field: 'no', align: 'left' },
-  { name: 'nopenerimaan', label: 'No. Penerimaan', field: 'nopenerimaan', align: 'left' },
+  {
+    name: 'nopenerimaan',
+    label: 'No. Penerimaan',
+    field: 'nopenerimaan',
+    align: 'left'
+  },
   { name: 'noorder', label: 'No. Orderan', field: 'noorder', align: 'left' },
   { name: 'nofaktur', label: 'No. Faktur', field: 'nofaktur', align: 'left' },
   {
@@ -160,18 +169,21 @@ const columns = [
     label: 'Jumlah',
     field: 'total',
     align: 'right',
-    format: (val) => formatRpDouble(val),
+    format: val => formatRpDouble(val)
   },
   {
     name: 'aksi',
     label: 'Aksi',
     field: 'aksi',
-    align: 'center',
-  },
+    align: 'center'
+  }
 ]
 
 const totalJumlah = computed(() => {
-  return semuaRinci.value.reduce((sum, item) => sum + (parseFloat(item.total) || 0), 0)
+  return semuaRinci.value.reduce(
+    (sum, item) => sum + (parseFloat(item.total) || 0),
+    0
+  )
 })
 
 function carihutang() {
@@ -195,7 +207,7 @@ function hapusData(item) {
     title: 'Peringatan',
     message: 'Apakah Data ini akan dihapus?',
     cancel: true,
-    persistent: true,
+    persistent: true
   })
     .onOk(async () => {
       // console.log('OK')
@@ -229,7 +241,10 @@ onMounted(() => {
   } else {
     storeform.form.nopembayaran = props?.data?.notrans
     storeform.form.tgl = props?.data?.tgl
-    storeform.dateDisplay.tgl = date.formatDate(props?.data?.tgl, 'DD MMMM YYYY')
+    storeform.dateDisplay.tgl = date.formatDate(
+      props?.data?.tgl,
+      'DD MMMM YYYY'
+    )
     storeform.form.kdsuplier = props?.data?.kdsuplier
     storeform.form.carabayar = props?.data?.jenis_pembayaran
     storeform.form.keterangan = props?.data?.keterangan

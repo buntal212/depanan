@@ -9,7 +9,7 @@ const formKosong = () => ({
   jenis: 'izin',
   tanggal_mulai: date.formatDate(Date.now(), 'YYYY-MM-DD'),
   tanggal_selesai: date.formatDate(Date.now(), 'YYYY-MM-DD'),
-  keterangan: '',
+  keterangan: ''
 })
 
 export const useTransaksiAbsensiStore = defineStore('transaksi-absensi-store', {
@@ -20,7 +20,7 @@ export const useTransaksiAbsensiStore = defineStore('transaksi-absensi-store', {
     filter: { q: '', jenis: null },
     loading: false,
     saving: false,
-    deletingId: null,
+    deletingId: null
   }),
   actions: {
     resetForm() {
@@ -33,23 +33,25 @@ export const useTransaksiAbsensiStore = defineStore('transaksi-absensi-store', {
         jenis: item.jenis,
         tanggal_mulai: item.tanggal_mulai,
         tanggal_selesai: item.tanggal_selesai,
-        keterangan: item.keterangan || '',
+        keterangan: item.keterangan || ''
       }
     },
     async getPegawai() {
       const { data } = await api.get('/v1/master/users/getdata', {
-        params: { page: 1, per_page: 200 },
+        params: { page: 1, per_page: 200 }
       })
-      this.pegawai = (data?.data || []).map((item) => ({
+      this.pegawai = (data?.data || []).map(item => ({
         label: item.nama || item.username || `Pegawai #${item.id}`,
         value: item.id,
-        jabatan: item.jabatan,
+        jabatan: item.jabatan
       }))
     },
     async getData() {
       this.loading = true
       try {
-        const { data } = await api.get('/v1/transaksi/absensi', { params: this.filter })
+        const { data } = await api.get('/v1/transaksi/absensi', {
+          params: this.filter
+        })
         this.items = data?.data || []
       } catch (error) {
         notifError(error.response?.data?.message || 'Data absensi gagal dimuat')
@@ -67,7 +69,9 @@ export const useTransaksiAbsensiStore = defineStore('transaksi-absensi-store', {
         return true
       } catch (error) {
         const errors = error.response?.data?.errors
-        const message = errors ? Object.values(errors).flat()[0] : error.response?.data?.message
+        const message = errors
+          ? Object.values(errors).flat()[0]
+          : error.response?.data?.message
         notifError(message || 'Permohonan tidak dapat disimpan')
         return false
       } finally {
@@ -86,8 +90,11 @@ export const useTransaksiAbsensiStore = defineStore('transaksi-absensi-store', {
       } finally {
         this.deletingId = null
       }
-    },
-  },
+    }
+  }
 })
 
-if (import.meta.hot) import.meta.hot.accept(acceptHMRUpdate(useTransaksiAbsensiStore, import.meta.hot))
+if (import.meta.hot)
+  import.meta.hot.accept(
+    acceptHMRUpdate(useTransaksiAbsensiStore, import.meta.hot)
+  )

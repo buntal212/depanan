@@ -7,7 +7,7 @@
     :outlined="outlined"
     hide-bottom-space
     no-error-icon
-    :input-debounce="!filterred?500:0"
+    :input-debounce="!filterred ? 500 : 0"
     emit-value
     map-options
     use-input
@@ -22,15 +22,13 @@
     behavior="menu"
     transition-show="jump-up"
     transition-hide="jump-down"
-    :bottom-slots="hint !== null "
+    :bottom-slots="hint !== null"
     @filter="filterFn"
     @new-value="createValue"
   >
     <template #no-option>
       <q-item>
-        <q-item-section class="text-grey">
-          No results
-        </q-item-section>
+        <q-item-section class="text-grey"> No results </q-item-section>
       </q-item>
     </template>
     <template v-if="hint" #hint>
@@ -63,7 +61,7 @@ const optionx = ref([])
 
 defineExpose({ refAuto })
 
-async function filterFn (val, update, abort) {
+async function filterFn(val, update, abort) {
   if (val.length < props.filterMin) {
     abort()
     return
@@ -76,23 +74,22 @@ async function filterFn (val, update, abort) {
 
   const params = { params: param }
 
-  const {data} = await api.get(props.url, params)
+  const { data } = await api.get(props.url, params)
   // console.log('data', data);
 
   update(() => {
     optionx.value = data
   })
-
 }
 
-function anotherValid (val) {
+function anotherValid(val) {
   if (props.valid) {
     return true
   }
   return (val !== null && val !== '') || 'Harap diisi'
 }
 
-function createValue (val, done) {
+function createValue(val, done) {
   if (!props.filterred) {
     emits('onEnter', val)
     done(val)
@@ -106,5 +103,4 @@ function createValue (val, done) {
     min-height: 39px !important;
   }
 }
-
 </style>

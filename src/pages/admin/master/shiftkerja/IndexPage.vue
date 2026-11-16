@@ -12,7 +12,7 @@ const ListPage = defineAsyncComponent(() => import('./comp/ListPage.vue'))
 const FormPage = defineAsyncComponent(() => import('./comp/FormPage.vue'))
 const isList = ref(true)
 const item = ref(null)
-const openForm = (data) => {
+const openForm = data => {
   item.value = data
   isList.value = false
 }

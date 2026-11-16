@@ -15,20 +15,25 @@
         <q-form class="full-height">
           <q-card-section class="full-height q-pa-lg scroll">
             <div class="row q-col-gutter-md justify-around">
-              <div :class="`col-${isMobile ? 12 : 6}`" class="row q-col-gutter-md">
+              <div
+                :class="`col-${isMobile ? 12 : 6}`"
+                class="row q-col-gutter-md"
+              >
                 <app-input-date
-                  :disable="store.form.notrans !== '' && store.form.notrans !== null"
+                  :disable="
+                    store.form.notrans !== '' && store.form.notrans !== null
+                  "
                   :model="store.dateDisplay.tgl"
                   class="col-12"
                   label="Tanggal"
                   outlined
                   @set-model="
-                    (val) => {
+                    val => {
                       store.dateDisplay.tgl = val
                     }
                   "
                   @db-model="
-                    (val) => {
+                    val => {
                       store.form.tgl = val
                     }
                   "
@@ -38,7 +43,9 @@
                   v-model="store.form.keterangan"
                   label="Keterangan"
                   :valid="{ required: false }"
-                  :disable="store.form.notrans !== '' && store.form.notrans !== null"
+                  :disable="
+                    store.form.notrans !== '' && store.form.notrans !== null
+                  "
                 />
 
                 <div class="col-12">
@@ -118,8 +125,8 @@ const store = useFormTransaksiBebanStore()
 const props = defineProps({
   data: {
     type: Object,
-    default: null,
-  },
+    default: null
+  }
 })
 onMounted(() => {
   console.log('props', props.data)
@@ -171,12 +178,12 @@ function kuncitrans() {
       title: 'Peringatan',
       message: 'Apakah Anda yakin akan Mengunci Data?',
       cancel: true,
-      persistent: true,
+      persistent: true
     })
       .onOk(() => {
         const payload = {
           notrans: store.form.notrans,
-          flaging: store.form.flaging,
+          flaging: store.form.flaging
         }
         console.log('payload', payload)
         store.kunci(payload)

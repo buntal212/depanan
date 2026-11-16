@@ -15,7 +15,7 @@
                       style="min-width: 250px"
                       :debounce="300"
                       @update:model-value="
-                        (e) => {
+                        e => {
                           infiniteScroll.reset()
                           store.getList()
                         }
@@ -64,15 +64,19 @@
                   </q-item-section> -->
                   <q-item-section>
                     <q-item-label lines="1">
-                      <span class="text-weight-bold"> {{ item?.nopenyesuaian }} ||</span>
+                      <span class="text-weight-bold">
+                        {{ item?.nopenyesuaian }} ||</span
+                      >
                       <span class="text-yellow-7">
-                        Nama Barang : {{ item?.namabarang }} {{ item?.motif }}</span
+                        Nama Barang : {{ item?.namabarang }}
+                        {{ item?.motif }}</span
                       >
                     </q-item-label>
                     <q-item-label caption lines="2">
                       <span class="text-weight-bold"
                         ><q-badge class="q-pa-xs" rounded outline>
-                          Jumlah {{ item?.keterangan }} ({{ item?.jumlah_k }} {{ item?.satuan_k }})
+                          Jumlah {{ item?.keterangan }} ({{ item?.jumlah_k }}
+                          {{ item?.satuan_k }})
                         </q-badge></span
                       >
                     </q-item-label>
@@ -83,8 +87,12 @@
                     </div>
                   </q-item-section> -->
                   <q-item-section side top>
-                    <q-item-label caption>{{ humanDate(item?.created_at) }}</q-item-label>
-                    <q-item-label caption>{{ jamTnpDetik(item?.created_at) }}</q-item-label>
+                    <q-item-label caption>{{
+                      humanDate(item?.created_at)
+                    }}</q-item-label>
+                    <q-item-label caption>{{
+                      jamTnpDetik(item?.created_at)
+                    }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator />

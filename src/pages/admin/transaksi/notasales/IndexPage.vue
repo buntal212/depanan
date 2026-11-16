@@ -9,7 +9,7 @@
         }
       "
       @edit="
-        (data) => {
+        data => {
           storelist.itemNotaSales = data
           isList = false
         }

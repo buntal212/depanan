@@ -15,7 +15,7 @@
                       style="min-width: 250px"
                       :debounce="300"
                       @update:model-value="
-                        (e) => {
+                        e => {
                           infiniteScroll.reset()
                           store.getList()
                         }
@@ -28,12 +28,12 @@
                       outlined
                       :debounce="300"
                       @set-model="
-                        (val) => {
+                        val => {
                           store.dateDisplay.from = val
                         }
                       "
                       @db-model="
-                        (val) => {
+                        val => {
                           store.params.from = val
                         }
                       "
@@ -45,12 +45,12 @@
                       outlined
                       :debounce="300"
                       @set-model="
-                        (val) => {
+                        val => {
                           store.dateDisplay.to = val
                         }
                       "
                       @db-model="
-                        (val) => {
+                        val => {
                           store.params.to = val
                         }
                       "
@@ -102,20 +102,26 @@
                   @mouseleave="hoveredId = null"
                 >
                   <q-item-section avatar>
-                    <q-avatar color="yellow-9" text-color="white">{{ i + 1 }}</q-avatar>
+                    <q-avatar color="yellow-9" text-color="white">{{
+                      i + 1
+                    }}</q-avatar>
                   </q-item-section>
                   <q-item-section>
                     <q-item-label lines="1" class="row"
                       ><span class="col-4 text-weight-bold"
                         >{{ item?.notrans }}
-                        <span class="text-grey-7"> ({{ humanDate(item?.tgl) }}) </span>
+                        <span class="text-grey-7">
+                          ({{ humanDate(item?.tgl) }})
+                        </span>
                       </span>
                       <span class="col-2 text-weight-bold text-right">
                         {{ formatDenganRp(item?.total) }}
                       </span>
                     </q-item-label>
                     <q-item-label caption lines="2">
-                      <span class="text-weight-bold">Keterangan : {{ item?.keterangan }} </span>
+                      <span class="text-weight-bold"
+                        >Keterangan : {{ item?.keterangan }}
+                      </span>
                     </q-item-label>
                   </q-item-section>
                   <q-item-section v-if="hoveredId === item?.id" side>
@@ -125,8 +131,12 @@
                     </div>
                   </q-item-section>
                   <q-item-section v-else side top>
-                    <q-item-label caption>{{ humanDate(item?.created_at) }}</q-item-label>
-                    <q-item-label caption>{{ jamTnpDetik(item?.created_at) }}</q-item-label>
+                    <q-item-label caption>{{
+                      humanDate(item?.created_at)
+                    }}</q-item-label>
+                    <q-item-label caption>{{
+                      jamTnpDetik(item?.created_at)
+                    }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator inset="item" />
@@ -165,7 +175,7 @@ const emits = defineEmits(['add', 'edit'])
 onBeforeMount(() => {
   Promise.all([store.getList(null)])
 })
-const edit = (item) => {
+const edit = item => {
   emits('edit', item)
   console.log('edit', item)
   formdata.rincian = item.rincian

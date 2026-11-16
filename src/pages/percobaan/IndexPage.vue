@@ -10,7 +10,13 @@
 
     <!-- Content -->
     <q-page-container class="q-px-md">
-      <q-drawer show-if-above v-model="drawer" side="left" width="250px" bordered>
+      <q-drawer
+        show-if-above
+        v-model="drawer"
+        side="left"
+        width="250px"
+        bordered
+      >
         <div class="q-pa-md">
           <div class="text-h6">Filters</div>
           <q-separator class="q-my-sm" />
@@ -23,12 +29,24 @@
           </q-list>
           <!-- Price Range -->
           <div class="text-subtitle2 q-mt-md">Price Range</div>
-          <q-range v-model="priceRange" :min="0" :max="1000" label="Price" class="q-my-md" />
+          <q-range
+            v-model="priceRange"
+            :min="0"
+            :max="1000"
+            label="Price"
+            class="q-my-md"
+          />
         </div>
       </q-drawer>
 
       <q-page class="q-pa-md">
-        <q-card v-for="product in products" :key="product.id" class="q-mb-lg" flat bordered>
+        <q-card
+          v-for="product in products"
+          :key="product.id"
+          class="q-mb-lg"
+          flat
+          bordered
+        >
           <q-card-section>
             <q-img :src="product.image" ratio="4:3" />
           </q-card-section>
@@ -56,32 +74,32 @@ export default {
   data() {
     return {
       drawer: true,
-      categories: ["Electronics", "Fashion", "Home & Living", "Books", "Toys"],
+      categories: ['Electronics', 'Fashion', 'Home & Living', 'Books', 'Toys'],
       priceRange: [0, 500],
       products: [
         {
           id: 1,
-          name: "Product 1",
-          price: "$100",
-          image: "https://via.placeholder.com/300",
+          name: 'Product 1',
+          price: '$100',
+          image: 'https://via.placeholder.com/300'
         },
         {
           id: 2,
-          name: "Product 2",
-          price: "$150",
-          image: "https://via.placeholder.com/300",
+          name: 'Product 2',
+          price: '$150',
+          image: 'https://via.placeholder.com/300'
         },
         {
           id: 3,
-          name: "Product 3",
-          price: "$200",
-          image: "https://via.placeholder.com/300",
-        },
+          name: 'Product 3',
+          price: '$200',
+          image: 'https://via.placeholder.com/300'
+        }
       ],
-      page: 1,
-    };
-  },
-};
+      page: 1
+    }
+  }
+}
 </script>
 
 <style>

@@ -15,7 +15,7 @@
                       style="min-width: 250px"
                       :debounce="300"
                       @update:model-value="
-                        (e) => {
+                        e => {
                           reload()
                         }
                       "
@@ -30,7 +30,7 @@
                     option-value="value"
                     :options="store.flagOptions"
                     @update:model-value="
-                      (e) => {
+                      e => {
                         reload()
                       }
                     "
@@ -44,7 +44,7 @@
                     style="min-width: 250px"
                     :debounce="300"
                     @update:model-value="
-                      (e) => {
+                      e => {
                         reload()
                       }
                     "
@@ -58,7 +58,7 @@
                     style="min-width: 250px"
                     :debounce="300"
                     @update:model-value="
-                      (e) => {
+                      e => {
                         reload()
                       }
                     "
@@ -87,50 +87,74 @@
               :disable="store?.isError || store?.meta?.next_page_url === null"
               :offset="150"
               :initial-index="store.params.page"
-              >
+            >
               <!-- scroll-target="#scrltrgt" -->
               <!-- <q-item> -->
-                <q-expansion-item expand-icon-toggle>
-                  <template v-slot:header>
-                    <q-item-section>
-                      <q-item-label lines="1">
-                        <div class="row text-weight-bold q-col-gutter-x-sm">
-                          <div class="col-auto" style="width: calc(100% / 7)">No Penjualan</div>
-                          <div class="col-auto" style="width: calc(100% / 7)">Total</div>
-                          <div class="col-auto" style="width: calc(100% / 7)">DP / Pembayaran</div>
-                          <div class="col-auto" style="width: calc(100% / 7)">
-                            Total Diskon<span class="text-italic f-10 q-ml-xs">(jika ada)</span>
-                          </div>
-                          <div class="col-auto" style="width: calc(100% / 7)">
-                            Total Retur <span class="text-italic f-10 q-ml-xs">(jika ada)</span>
-                          </div>
-                          <div class="col-auto" style="width: calc(100% / 7)">
-                            Total - Diskon - Retur
-                            <span class="text-italic f-10 q-ml-xs">(jika ada)</span>
-                          </div>
-                          <div class="col-auto text-right" style="width: calc(100% / 7)">Status</div>
+              <q-expansion-item expand-icon-toggle>
+                <template v-slot:header>
+                  <q-item-section>
+                    <q-item-label lines="1">
+                      <div class="row text-weight-bold q-col-gutter-x-sm">
+                        <div class="col-auto" style="width: calc(100% / 7)"
+                          >No Penjualan</div
+                        >
+                        <div class="col-auto" style="width: calc(100% / 7)"
+                          >Total</div
+                        >
+                        <div class="col-auto" style="width: calc(100% / 7)"
+                          >DP / Pembayaran</div
+                        >
+                        <div class="col-auto" style="width: calc(100% / 7)">
+                          Total Diskon<span class="text-italic f-10 q-ml-xs"
+                            >(jika ada)</span
+                          >
                         </div>
-                      </q-item-label>
-                      <q-item-label lines="1">
-                        <div class="row text-weight-bold">
-                          <div class="col-3 text-weight-bold">Nama Pelanggan</div>
-                          <div class="col-2 q-ml-sm">Nama Sales</div>
-                          <div class="col-2 q-ml-sm">
-                            Total cicilan <span class="text-italic f-10 q-ml-xs">(jika ada)</span>
-                          </div>
+                        <div class="col-auto" style="width: calc(100% / 7)">
+                          Total Retur
+                          <span class="text-italic f-10 q-ml-xs"
+                            >(jika ada)</span
+                          >
                         </div>
-                      </q-item-label>
-                    </q-item-section>
-                    <q-item-section side top>
-                      <q-item-label caption>Tanngal</q-item-label>
-                      <q-item-label caption>Jam</q-item-label>
-                    </q-item-section>
-
-                  </template>
-                </q-expansion-item>
+                        <div class="col-auto" style="width: calc(100% / 7)">
+                          Total - Diskon - Retur
+                          <span class="text-italic f-10 q-ml-xs"
+                            >(jika ada)</span
+                          >
+                        </div>
+                        <div
+                          class="col-auto text-right"
+                          style="width: calc(100% / 7)"
+                          >Status</div
+                        >
+                      </div>
+                    </q-item-label>
+                    <q-item-label lines="1">
+                      <div class="row text-weight-bold">
+                        <div class="col-3 text-weight-bold">Nama Pelanggan</div>
+                        <div class="col-2 q-ml-sm">Nama Sales</div>
+                        <div class="col-2 q-ml-sm">
+                          Total cicilan
+                          <span class="text-italic f-10 q-ml-xs"
+                            >(jika ada)</span
+                          >
+                        </div>
+                      </div>
+                    </q-item-label>
+                  </q-item-section>
+                  <q-item-section side top>
+                    <q-item-label caption>Tanngal</q-item-label>
+                    <q-item-label caption>Jam</q-item-label>
+                  </q-item-section>
+                </template>
+              </q-expansion-item>
               <!-- </q-item> -->
               <q-separator />
-              <q-intersection v-for="(item, i) in store.items" :key="i" transition="fade" class="example-item">
+              <q-intersection
+                v-for="(item, i) in store.items"
+                :key="i"
+                transition="fade"
+                class="example-item"
+              >
                 <q-expansion-item
                   v-model="item.expand"
                   clickable
@@ -149,7 +173,9 @@
                           </div>
                           <div class="col-auto" style="width: calc(100% / 7)">
                             {{ formatDouble(item?.total + item?.total_diskon)
-                            }}<span class="text-italic f-10 q-ml-xs">(total)</span>
+                            }}<span class="text-italic f-10 q-ml-xs"
+                              >(total)</span
+                            >
                           </div>
                           <div class="col-auto" style="width: calc(100% / 7)">
                             <span v-if="item?.bayar > 0">
@@ -159,31 +185,44 @@
                                   : formatDouble(item?.bayar)
                               }}
                               <span class="text-italic f-10 q-ml-xs">{{
-                                parseInt(item?.kembali) < 0 ? '(DP)' : '(Pembayaran)'
+                                parseInt(item?.kembali) < 0
+                                  ? '(DP)'
+                                  : '(Pembayaran)'
                               }}</span></span
                             >
                           </div>
                           <div class="col-auto" style="width: calc(100% / 7)">
                             <span v-if="item?.total_diskon > 0">
                               {{ formatDouble(item?.total_diskon) }}
-                              <span class="text-italic f-10 q-ml-xs">(diskon)</span></span
+                              <span class="text-italic f-10 q-ml-xs"
+                                >(diskon)</span
+                              ></span
                             >
                           </div>
                           <div class="col-auto" style="width: calc(100% / 7)">
                             <span v-if="totalRetur(item) > 0">
                               {{ formatDouble(totalRetur(item))
-                              }}<span class="text-italic f-10 q-ml-xs">(retur)</span></span
+                              }}<span class="text-italic f-10 q-ml-xs"
+                                >(retur)</span
+                              ></span
                             >
                           </div>
                           <div class="col-auto" style="width: calc(100% / 7)">
-                            <span v-if="item?.total_diskon > 0 || totalRetur(item) > 0">
+                            <span
+                              v-if="
+                                item?.total_diskon > 0 || totalRetur(item) > 0
+                              "
+                            >
                               {{ formatDouble(item?.total - totalRetur(item))
                               }}<span class="text-italic f-10 q-ml-xs"
                                 >(total - diskon - retur)</span
                               ></span
                             >
                           </div>
-                          <div class="col-auto text-right" style="width: calc(100% / 7)">
+                          <div
+                            class="col-auto text-right"
+                            style="width: calc(100% / 7)"
+                          >
                             {{ statusFlag(item?.flag) }}
                           </div>
                         </div>
@@ -191,39 +230,63 @@
                       <q-item-label lines="1">
                         <div class="row">
                           <div class="col-3 text-weight-bold">
-                            Pelanggan: {{ item?.pelanggan?.nama??item?.keterangan?.nama }}
+                            Pelanggan:
+                            {{
+                              item?.pelanggan?.nama ?? item?.keterangan?.nama
+                            }}
                           </div>
-                          <div class="col-2 q-ml-sm">{{ item?.sales?.nama }}</div>
-                          <div v-if="item?.cicilan?.length > 0" class="col-2 q-ml-sm">
+                          <div class="col-2 q-ml-sm">{{
+                            item?.sales?.nama
+                          }}</div>
+                          <div
+                            v-if="item?.cicilan?.length > 0"
+                            class="col-2 q-ml-sm"
+                          >
                             Total cicilan :
                             {{
                               formatDouble(
-                                item?.cicilan?.reduce((total, item) => total + item?.jumlah, 0),
+                                item?.cicilan?.reduce(
+                                  (total, item) => total + item?.jumlah,
+                                  0
+                                )
                               )
                             }}
                           </div>
                         </div>
                       </q-item-label>
-                      <q-item-label v-if="item?.flag!='5' && item?.tempo" lines="1">
+                      <q-item-label
+                        v-if="item?.flag != '5' && item?.tempo"
+                        lines="1"
+                      >
                         <div class="row f-10 text-italic">
-                          <div  class="col-2 "/>
-                          <div  class="col-4 ">
-                            tempo : {{ dateFullFormat(item?.tempo) }} <span v-if="item?.jml_tempo" class="q-ml-xs"> || {{ item?.jml_tempo }} hari</span>
+                          <div class="col-2" />
+                          <div class="col-4">
+                            tempo : {{ dateFullFormat(item?.tempo) }}
+                            <span v-if="item?.jml_tempo" class="q-ml-xs">
+                              || {{ item?.jml_tempo }} hari</span
+                            >
                           </div>
 
-                            <div v-if="item?.tgl_kirim" class="col-4">
-                              tgl kirim : {{ dateFullFormat(item?.tgl_kirim) }} ||  umur nota : {{ umurNota(item) }} hari
-                            </div>
-                            <div v-if="item?.tgl_kirim && item?.jml_tempo" class="col-2">
-                               {{ item?.jml_tempo - umurNota(item) }} hari lagi
-                            </div>
+                          <div v-if="item?.tgl_kirim" class="col-4">
+                            tgl kirim : {{ dateFullFormat(item?.tgl_kirim) }} ||
+                            umur nota : {{ umurNota(item) }} hari
+                          </div>
+                          <div
+                            v-if="item?.tgl_kirim && item?.jml_tempo"
+                            class="col-2"
+                          >
+                            {{ item?.jml_tempo - umurNota(item) }} hari lagi
+                          </div>
                         </div>
                       </q-item-label>
                     </q-item-section>
                     <q-item-section v-if="hoveredId === item?.id" side>
                       <div class="flex q-gutter-sm">
                         <app-btn
-                          v-if="(item?.flag == '2' || item?.flag == '3') && item?.tempo"
+                          v-if="
+                            (item?.flag == '2' || item?.flag == '3') &&
+                            item?.tempo
+                          "
                           icon="card_travel"
                           color="orange"
                           tooltip="Di bawa Sales"
@@ -302,8 +365,12 @@
                       </div>
                     </q-item-section>
                     <q-item-section v-else side top>
-                      <q-item-label caption>{{ humanDate(item?.tgl) }}</q-item-label>
-                      <q-item-label caption>{{ jamTnpDetik(item?.tgl) }}</q-item-label>
+                      <q-item-label caption>{{
+                        humanDate(item?.tgl)
+                      }}</q-item-label>
+                      <q-item-label caption>{{
+                        jamTnpDetik(item?.tgl)
+                      }}</q-item-label>
                     </q-item-section>
                   </template>
                   <q-separator />
@@ -327,26 +394,35 @@
                       <div class="col-5">
                         {{
                           (detail?.master_barang?.namabarang ?? '') +
-                            ' '   + (detail?.motif ? detail?.motif + ' ':'')
+                          ' ' +
+                          (detail?.motif ? detail?.motif + ' ' : '')
                         }}
                       </div>
-                      <div class="col-1 text-right">{{ formatDouble(detail?.jumlah) }}</div>
+                      <div class="col-1 text-right">{{
+                        formatDouble(detail?.jumlah)
+                      }}</div>
                       <div class="col-1 text-right">
                         {{ formatDouble(detailRetur(item, detail)) }}
                       </div>
-                      <div class="col-1 text-right">{{ formatDouble(detail?.harga_jual) }}</div>
-                      <div class="col-1 text-right">{{ formatDouble(detail?.diskon) }}</div>
+                      <div class="col-1 text-right">{{
+                        formatDouble(detail?.harga_jual)
+                      }}</div>
+                      <div class="col-1 text-right">{{
+                        formatDouble(detail?.diskon)
+                      }}</div>
                       <div class="col-1 text-right">
                         {{
                           formatDouble(
                             item?.header_retur
-                              ?.flatMap((m) => m.detail)
-                              .filter((m) => m.kodebarang === detail?.kodebarang)
-                              ?.reduce((acc, it) => acc + it.subtotal, 0),
+                              ?.flatMap(m => m.detail)
+                              .filter(m => m.kodebarang === detail?.kodebarang)
+                              ?.reduce((acc, it) => acc + it.subtotal, 0)
                           )
                         }}
                       </div>
-                      <div class="col-2 text-right">{{ formatDouble(subtotal(item, detail)) }}</div>
+                      <div class="col-2 text-right">{{
+                        formatDouble(subtotal(item, detail))
+                      }}</div>
                     </div>
                   </div>
                 </q-expansion-item>
@@ -394,11 +470,11 @@ function reload() {
   store.getList()
   infiniteScroll.value?.reset()
 }
-function umurNota(item){
-  const kirim=new Date(item?.tgl_kirim)
-  const skr=new Date()
-  const diff=date.getDateDiff(skr,kirim,  'days')
-  return diff>0?diff:0
+function umurNota(item) {
+  const kirim = new Date(item?.tgl_kirim)
+  const skr = new Date()
+  const diff = date.getDateDiff(skr, kirim, 'days')
+  return diff > 0 ? diff : 0
 }
 
 function statusFlag(flag) {
@@ -450,8 +526,8 @@ function detailRetur(item, detail) {
   let total = 0
   if (item?.header_retur?.length > 0) {
     total = item?.header_retur
-      ?.flatMap((m) => m?.detail)
-      .filter((f) => f?.kodebarang === detail?.kodebarang)
+      ?.flatMap(m => m?.detail)
+      .filter(f => f?.kodebarang === detail?.kodebarang)
       ?.reduce((total, item) => total + item?.jumlah, 0)
   }
   return total
@@ -461,8 +537,8 @@ function subtotal(item, detail) {
   const subtotal = detail?.subtotal ?? 0
   if (item?.header_retur?.length > 0) {
     total = item?.header_retur
-      ?.flatMap((m) => m?.detail)
-      .filter((f) => f?.kodebarang === detail?.kodebarang)
+      ?.flatMap(m => m?.detail)
+      .filter(f => f?.kodebarang === detail?.kodebarang)
       ?.reduce((total, item) => total + item?.subtotal, 0)
   }
   return subtotal - total

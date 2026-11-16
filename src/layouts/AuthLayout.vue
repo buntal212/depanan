@@ -1,6 +1,5 @@
 <template>
   <q-layout view="lHr LpR lfr">
-
     <q-page-container>
       <q-page class="fit column">
         <div class="col full-height relative-position">
@@ -14,9 +13,9 @@
 </template>
 
 <script setup>
-import { useQuasar } from 'quasar';
-import { useAppStore } from 'src/stores/app';
-import { onMounted } from 'vue';
+import { useQuasar } from 'quasar'
+import { useAppStore } from 'src/stores/app'
+import { onMounted } from 'vue'
 
 const $q = useQuasar()
 const app = useAppStore()
@@ -24,5 +23,4 @@ const app = useAppStore()
 onMounted(() => {
   $q.dark.set(app?.dark)
 })
-
 </script>

@@ -12,12 +12,12 @@ export const useAdminListTransaksiStokBarangStore = defineStore(
       params: {
         q: null,
         page: 0,
-        per_page: 15,
+        per_page: 15
       },
       getorderan: {
-        noorder: null,
+        noorder: null
       },
-      getorderhasil: [],
+      getorderhasil: []
     }),
     // persist: true,
     // getters: {
@@ -32,7 +32,7 @@ export const useAdminListTransaksiStokBarangStore = defineStore(
         this.isError = false
         this.loading = true
         const params = {
-          params: this.params,
+          params: this.params
         }
         try {
           const { data } = await api.get('/v1/transaksi/stok/lihatstok', params)
@@ -53,12 +53,12 @@ export const useAdminListTransaksiStokBarangStore = defineStore(
         this.isError = false
         this.params.page = index
         const params = {
-          params: this.params,
+          params: this.params
         }
 
         console.log('load more', index)
 
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           api
             .get('/v1/transaksi/stok/lihatstok', params)
             .then(({ data }) => {
@@ -73,11 +73,13 @@ export const useAdminListTransaksiStokBarangStore = defineStore(
               resolve()
             })
         })
-      },
-    },
-  },
+      }
+    }
+  }
 )
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useAdminListTransaksiStokBarangStore, import.meta.hot))
+  import.meta.hot.accept(
+    acceptHMRUpdate(useAdminListTransaksiStokBarangStore, import.meta.hot)
+  )
 }

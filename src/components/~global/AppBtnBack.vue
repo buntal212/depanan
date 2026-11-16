@@ -1,10 +1,5 @@
 <template>
-  <q-btn 
-      round
-      :icon="tabArrowBack"
-      dense 
-      :type="type"
-    >
+  <q-btn round :icon="tabArrowBack" dense :type="type">
     <q-tooltip v-if="tooltip">{{ tooltip }}</q-tooltip>
   </q-btn>
 </template>
@@ -21,5 +16,4 @@ defineProps({
     default: 'button'
   }
 })
-
 </script>

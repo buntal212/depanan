@@ -4,10 +4,15 @@
       <q-card flat bordered square class="full-height" style="overflow: hidden">
         <!-- <q-avatar size="33px" color="dark" text-color="white">-</q-avatar> -->
 
-        <q-card-section class="q-px-md q-py-xs bg-yellow-8 text-black col-auto full-width">
+        <q-card-section
+          class="q-px-md q-py-xs bg-yellow-8 text-black col-auto full-width"
+        >
           <div class="row items-center justify-between">
             <div class="f-12 text-weight-bold" style="height: 23px">
-              <span> Data Penerimaan || No. Penerimaan : {{ props?.data?.nopenerimaan }} || </span>
+              <span>
+                Data Penerimaan || No. Penerimaan :
+                {{ props?.data?.nopenerimaan }} ||
+              </span>
               <span
                 ><q-toggle
                   v-model="value"
@@ -40,7 +45,8 @@
                       <div class="col-11">
                         <span class="text-grey-8">{{ n + 1 }}. </span>
                         <span class="text-weight-medium"
-                          >{{ item?.mbarang?.namabarang }} Seri {{ item?.motif }}</span
+                          >{{ item?.mbarang?.namabarang }} Seri
+                          {{ item?.motif }}</span
                         >
                         <span class="text-grey-8"> ({{ item?.kdbarang }})</span>
                       </div>
@@ -93,7 +99,7 @@
                             item?.id,
                             storeform.form.nopenerimaan,
                             item?.noorder,
-                            item?.kdbarang,
+                            item?.kdbarang
                           )
                         "
                       />
@@ -124,8 +130,8 @@ const storeform = useAdminFormTransaksiPenerimaanBarangStore()
 const props = defineProps({
   data: {
     type: Object,
-    default: null,
-  },
+    default: null
+  }
 })
 const value = ref(false)
 function hapusrincian(id, nopenerimaan, noorder, kdbarang) {
@@ -134,7 +140,7 @@ function hapusrincian(id, nopenerimaan, noorder, kdbarang) {
     title: 'Peringatan',
     message: 'Apakah Data ini akan dihapus?',
     cancel: true,
-    persistent: true,
+    persistent: true
   })
     .onOk(() => {
       // console.log('OK')
