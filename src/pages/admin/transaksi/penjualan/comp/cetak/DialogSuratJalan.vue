@@ -50,8 +50,11 @@
                         />
                       </div>
                       <div class="col content-center">
-                        <div class="text-bold" style="font-size: large">
-                          {{ profil.profilData?.namatoko || 'Nama Toko' }}
+                        <div class="text-bold text-uppercase" style="font-size: x-large">
+                          {{ profil.profilData?.namatoko || 'Jangur Keramik' }}
+                        </div>
+                        <div class="text-weight-medium" style="font-size: medium">
+                          CV. PUTRA BANGKIT KERAMINDO
                         </div>
                         <div>
                           {{ profil.profilData?.alamat || '-' }}

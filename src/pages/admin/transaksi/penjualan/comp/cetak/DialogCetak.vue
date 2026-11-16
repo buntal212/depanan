@@ -55,10 +55,13 @@
                 />
               </div>
               <div
-                class="row full-width text-center text-bold flex-center"
-                style="font-size: medium"
+                class="row full-width text-center text-bold text-uppercase flex-center"
+                style="font-size: large"
               >
-                {{ profil.profilData?.namatoko || 'Nama Toko' }}
+                {{ profil.profilData?.namatoko || 'Jangur Keramik' }}
+              </div>
+              <div class="row full-width text-center text-weight-medium flex-center">
+                CV. PUTRA BANGKIT KERAMINDO
               </div>
               <div class="row full-width text-center flex-center" style="">
                 {{ profil.profilData?.alamat || '-' }}
@@ -339,8 +342,11 @@
                       />
                     </div>
                     <div class="col content-center">
-                      <div class="text-bold" style="font-size: large">
-                        {{ profil.profilData?.namatoko || 'Nama Toko' }}
+                      <div class="text-bold text-uppercase" style="font-size: x-large">
+                        {{ profil.profilData?.namatoko || 'Jangur Keramik' }}
+                      </div>
+                      <div class="text-weight-medium" style="font-size: medium">
+                        CV. PUTRA BANGKIT KERAMINDO
                       </div>
                       <div>
                         {{ profil.profilData?.alamat || '-' }}
