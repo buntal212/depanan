@@ -40,11 +40,14 @@
                 option-label="label"
                 option-value="value"
               />
-              <app-input
+              <app-select
                 v-model="store.params.tahun"
                 class="col-3"
                 label="Tahun"
                 outlined
+                :options="pilihanTahun"
+                option-label="label"
+                option-value="value"
               />
               <app-btn
                 class="bg-yellow-8 text-black"
@@ -65,6 +68,7 @@
                     <th class="text-center">No</th>
                     <th class="text-center">Tanggal</th>
                     <th class="text-center">Transaksi</th>
+                    <th class="text-center">HPP</th>
                     <th class="text-center">Penerimaan</th>
                     <th class="text-center">Pengeluaran</th>
                     <th class="text-center">Total Stok</th>
@@ -78,6 +82,7 @@
                       {{ item.notransaksi }}
                       <span v-if="item?.seri">|| Seri : {{ item?.seri }}</span>
                     </td>
+                    <td class="text-right">{{ formatHpp(item?.hpp) }}</td>
                     <td>
                       <span
                         v-if="
@@ -195,7 +200,7 @@
                     </td>
                   </tr>
                   <tr class="text-bold">
-                    <td class="text-right" colspan="3">Jumlah Stok</td>
+                    <td class="text-right" colspan="4">Jumlah Stok</td>
                     <td>
                       <span
                         v-if="
@@ -413,12 +418,18 @@ import { useProfilStore } from 'src/stores/admin/profil'
 import { onMounted, ref } from 'vue'
 import KopCetak from './KopCetak.vue'
 import { humanDate } from 'src/modules/utils'
+import { formatRpDouble } from 'src/modules/formatter'
 import { useAppStore } from 'src/stores/app'
 // import { usePrint } from 'vue3-print-nb'
 
 const profil = useProfilStore()
 const store = useAdminMasterBarangStore()
 const app = useAppStore()
+const tahunSekarang = new Date().getFullYear()
+const pilihanTahun = Array.from({ length: 6 }, (_, indeks) => {
+  const tahun = String(tahunSekarang - indeks)
+  return { label: tahun, value: tahun }
+})
 onMounted(async () => {})
 
 function ambilData() {
@@ -450,6 +461,10 @@ function totalKredit() {
 
 function totalStok() {
   return totalDebit() - totalKredit()
+}
+
+function formatHpp(nilai) {
+  return Number(nilai || 0) > 0 ? formatRpDouble(nilai) : '-'
 }
 
 const printed = ref(false)

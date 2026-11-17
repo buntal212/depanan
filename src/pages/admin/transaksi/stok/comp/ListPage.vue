@@ -5,6 +5,15 @@
         <q-list class="rounded-borders full-height column">
           <div class="col-auto">
             <q-item-label header>
+              <q-card flat bordered class="q-mb-sm bg-teal-1 text-teal-10">
+                <q-card-section class="row items-center q-py-sm">
+                  <q-icon name="account_balance_wallet" size="24px" class="q-mr-sm" />
+                  <div>
+                    <div class="text-caption text-weight-medium">Total Nilai Aset Stok</div>
+                    <div class="text-h6 text-weight-bold">{{ formatRpDouble(nilaiAsetStok) }}</div>
+                  </div>
+                </q-card-section>
+              </q-card>
               <div class="row full-width items-center">
                 <div class="col-grow">
                   <div class="flex items-center">
@@ -141,6 +150,18 @@
                           item?.satuan_b
                         }})</span
                       >
+                      <span
+                        class="text-weight-bold"
+                        :class="app?.dark ? 'text-cyan-3' : 'text-blue-9'"
+                      >
+                        || Subtotal Stok: {{ formatRpDouble(hitungSubtotalStok(item)) }}</span
+                      >
+                      <span
+                        class="text-weight-bold"
+                        :class="app?.dark ? 'text-purple-3' : 'text-deep-purple-8'"
+                      >
+                        || Lama di Gudang: {{ hitungLamaHariStok(item) }}</span
+                      >
                     </q-item-label>
                   </q-item-section>
                   <!-- <q-item-section v-if="hoveredId === item?.id" side>
@@ -183,6 +204,24 @@ const app = useAppStore()
 const scrollTarget = ref(null)
 const infiniteScroll = ref(null)
 const hoveredId = ref(null)
+const nilaiAsetStok = computed(() => Number(store.meta?.nilai_aset_stok || 0))
+
+function hitungSubtotalStok(item) {
+  return Number(item?.jumlah_k || 0) * Number(item?.harga_beli_k || 0)
+}
+
+function hitungLamaHariStok(item) {
+  const tanggal = item?.tanggal_penerimaan || item?.tanggal_stok
+  if (!tanggal) return '-'
+
+  const [tahun, bulan, hari] = tanggal.slice(0, 10).split('-').map(Number)
+  const tanggalPenerimaan = new Date(tahun, bulan - 1, hari)
+  const hariIni = new Date()
+  hariIni.setHours(0, 0, 0, 0)
+
+  const selisihHari = Math.floor((hariIni - tanggalPenerimaan) / (1000 * 60 * 60 * 24))
+  return `${Math.max(0, selisihHari)} hari`
+}
 
 const emits = defineEmits(['add', 'edit'])
 
