@@ -486,7 +486,7 @@
               </div> -->
 
               <div class="q-px-md">
-                <table class="full-width" style="">
+                <table class="full-width faktur-table" style="">
                   <thead>
                     <tr class="text-center" style="height: min-content">
                       <th>NO</th>
@@ -614,7 +614,7 @@
                     <tr>
                       <td colspan="5">
                         <div class="row justify-between">
-                          <div class="flex-start">
+                          <div class="flex-start terbilang-faktur">
                             Terbilang :
                             {{
                               terbilangRupiah(store.itemCetak?.total)
@@ -886,6 +886,16 @@ td {
 
 .custom-border {
   border: 1px solid black; /* Contoh: border 1px solid hitam */
+}
+
+.faktur-table {
+  font-size: 12px;
+}
+
+.faktur-table th,
+.faktur-table td,
+.terbilang-faktur {
+  white-space: nowrap;
 }
 
 @media print {
