@@ -105,7 +105,10 @@ export const useAdminFormTransaksiPembayaranHutangStore = defineStore(
           }
           hasil.push(datahutang)
         })
-        const filteryanglunas = hasil.filter(item => item.yangakandibayar > 0)
+        // Konsisten dengan dashboard: sisa di bawah satu sen dianggap lunas.
+        const filteryanglunas = hasil.filter(
+          item => Math.round(item.yangakandibayar * 100) / 100 >= 0.01
+        )
         const urut = filteryanglunas.sort(
           (a, b) => new Date(a.tglpenerimaan) - new Date(b.tglpenerimaan)
         )

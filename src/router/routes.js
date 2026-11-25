@@ -164,6 +164,18 @@ const routes = [
           import('pages/admin/laporan/pembayaranpiutang/IndexPage.vue')
       },
       {
+        path: '/admin/laporan/hutang-per-distributor',
+        component: () =>
+          import('pages/admin/laporan/saldoperpihak/IndexPage.vue'),
+        props: { jenis: 'hutang' }
+      },
+      {
+        path: '/admin/laporan/piutang-per-pelanggan',
+        component: () =>
+          import('pages/admin/laporan/saldoperpihak/IndexPage.vue'),
+        props: { jenis: 'piutang' }
+      },
+      {
         path: '/admin/laporan/absensi',
         component: () => import('pages/admin/laporan/absensi/IndexPage.vue')
       },

@@ -130,8 +130,14 @@ export const useAdminDashboardStore = defineStore('admin-dashboard-store', {
         this.recentPurchases = data.recentPurchases
         this.recentDebtPayments = data.recentDebtPayments
         this.recentReceivablePayments = data.recentReceivablePayments
-        this.piutangJatuhTempo = data?.jatuhTempo?.piutang || []
-        this.hutangJatuhTempo = data?.jatuhTempo?.hutang || []
+        // Penyaring tambahan di klien: data yang sisa tagihannya nol tidak
+        // pernah boleh terlihat meskipun respons API lama tersimpan di cache.
+        this.piutangJatuhTempo = (data?.jatuhTempo?.piutang || []).filter(
+          item => Number(item.sisa || 0) >= 0.01
+        )
+        this.hutangJatuhTempo = (data?.jatuhTempo?.hutang || []).filter(
+          item => Number(item.sisa || 0) >= 0.01
+        )
         this.batasJatuhTempo = data?.jatuhTempo?.batasTanggal || null
       } catch (error) {
         console.error('Gagal memuat dashboard:', error)
