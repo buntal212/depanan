@@ -889,7 +889,39 @@ td {
 }
 
 .faktur-table {
-  font-size: 12px;
+  font-size: 14px;
+  table-layout: fixed;
+}
+
+.faktur-table th:nth-child(1),
+.faktur-table td:nth-child(1) {
+  width: 3%;
+}
+
+.faktur-table th:nth-child(2),
+.faktur-table td:nth-child(2) {
+  width: 50%;
+  white-space: normal;
+}
+
+.faktur-table th:nth-child(3),
+.faktur-table td:nth-child(3) {
+  width: 7%;
+}
+
+.faktur-table th:nth-child(4),
+.faktur-table td:nth-child(4) {
+  width: 14%;
+}
+
+.faktur-table th:nth-child(5),
+.faktur-table td:nth-child(5) {
+  width: 12%;
+}
+
+.faktur-table th:nth-child(6),
+.faktur-table td:nth-child(6) {
+  width: 14%;
 }
 
 .faktur-table th,
